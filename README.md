@@ -70,44 +70,74 @@ The system automatically calculates scaling factors to compensate for printer va
 - Vertical scaling: Adjusts for height differences
 - These calculations ensure that your labels will print at the correct size
 
-### Example Workflow
-1. Page Setup:
-   - Select your page format (A4, A5, Letter, Legal)
+## Setup and Usage
+
+### Initial Configuration
+
+1. Basic Setup
+   - Open `index.html` in your web browser
+   - Select page format (A4, A5, Letter, Legal)
    - Choose orientation (portrait/landscape)
-   - Configure basic QR code settings (prefix, digits)
+   - Configure QR code basics:
+     * Start number and prefix (e.g., "ASN")
+     * Number of leading zeros
+     * Display options (show/hide prefix, borders)
 
-2. Label Configuration:
-   - Enter target values from specifications or measurements
-   - Configure text formatting (font, size)
+2. Label Dimensions
+   - Enter target values from:
+     * Manufacturer specifications
+     * Measured existing labels
+     * Custom requirements
+   - Configure text formatting:
+     * Font family and size
+     * Font weight
+     * QR code spacing
    - Set initial spacing between labels
-   - Review the preview to check layout
+   - Review the preview layout
 
-3. First Print Adjustment:
+### Calibration Process
+
+1. First Print Adjustment
+   - Start with target values as initial actual values
    - Print a test page
    - Measure all dimensions carefully:
      * Label width and height
      * Horizontal and vertical spacing
      * Page margins on all sides
    - Enter measured values as actual values
-   - System calculates scaling factors automatically
+   - System automatically calculates scaling factors
 
-4. Verification and Fine-tuning:
+2. Verification
    - Print another test page with scaling applied
    - Verify all measurements are now correct
    - Make minor adjustments if needed
    - Test with a full page of labels
 
-5. Save Configuration:
+3. Save Your Settings
    - Once everything is perfect, save your configuration
-   - Document printer settings used (paper type, scaling settings)
+   - Document printer settings used
    - Keep measurements for future reference
+   - Consider creating a printer preset
 
-### Tips for Accurate Measurements
-- Use a high-quality ruler or caliper
-- Measure multiple labels and take the average
-- Consider both width and height
-- Check spacing between labels
-- Verify margins on all sides
+### Regular Usage
+
+1. Daily Operation
+   - Load your saved configuration if needed
+   - Enter starting ASN number
+   - Verify preview looks correct
+   - Print labels as needed
+
+2. Maintenance
+   - Periodically verify measurements
+   - Update actual values if printer behavior changes
+   - Keep backup of working configurations
+
+### Tips for Success
+- Always use 100% scaling in printer settings
+- Select appropriate media type (Labels/Thick Paper)
+- Perform test prints on plain paper first
+- Verify QR code readability
+- Document successful printer settings
 
 ## Printing Setup and Configuration
 
@@ -145,67 +175,6 @@ The system automatically calculates scaling factors to compensate for printer va
 - Hold test print against label sheet to verify alignment
 - Save working printer settings for future use
 - Consider creating a dedicated printer preset
-
-## Usage
-
-1. Open `index.html` in your web browser
-
-2. Select page format and orientation:
-   - Choose between A4, A5, US Letter, or Legal format
-   - Select portrait or landscape orientation
-   - Page dimensions are automatically updated
-
-3. Configure QR code settings:
-   - Start number: First ASN number
-   - ASN prefix: Prefix for your ASN numbers (e.g., "ASN")
-   - Leading zeros: Number of digits for numbering
-   - Display prefix: Show/hide prefix in label
-   - Show borders: Show/hide label borders
-
-4. Adjust page margins:
-   - Target and actual values adjustable for all margins
-   - Visual warnings for overlaps
-   - Automatic scaling calculation
-
-5. Set label dimensions:
-   - Width and height of labels (customizable for different label types)
-   - Horizontal and vertical spacing
-   - Real-time preview of changes
-   - Automatic calculation of labels per page
-
-6. Configure text formatting:
-   - Font family (default: Arial)
-   - Font size (default: 11pt)
-   - Font weight
-   - QR code spacing
-
-7. Save/Load configuration:
-   - Click "Save Configuration" to export
-   - Use "Load Configuration" to import
-   - "Reset to Default" for standard settings
-
-8. Preview and print:
-   - "Update Labels" to refresh preview
-   - "Print Labels" for print-optimized output
-
-## Label Customization Examples
-
-The generator can be adapted for various label types:
-
-- Small inventory labels (e.g., 20mm × 10mm)
-- Large shipping labels (e.g., 50mm × 30mm)
-- Square labels for product tracking
-- Custom-sized labels for specific applications
-
-Simply adjust the label dimensions and spacing to match your specific requirements.
-
-## Troubleshooting
-
-- Detailed calculation information displayed for margin overlaps
-- Scaling factors help with precise adjustments
-- Verify actual print dimensions with a ruler
-- Adjust actual values accordingly
-- Check page format settings if labels appear incorrectly sized
 
 ## Dependencies
 

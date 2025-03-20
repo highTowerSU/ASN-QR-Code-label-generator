@@ -71,21 +71,36 @@ The system automatically calculates scaling factors to compensate for printer va
 - These calculations ensure that your labels will print at the correct size
 
 ### Example Workflow
-1. Initial Setup:
-   - Enter target values from your label sheet specifications
-   - Set actual values equal to target values initially
-   - Make a test print
+1. Page Setup:
+   - Select your page format (A4, A5, Letter, Legal)
+   - Choose orientation (portrait/landscape)
+   - Configure basic QR code settings (prefix, digits)
 
-2. Measurement and Adjustment:
-   - Measure the printed labels carefully
-   - Enter the measured dimensions as actual values
-   - The system will calculate scaling factors
-   - Make another test print to verify
+2. Label Configuration:
+   - Enter target values from specifications or measurements
+   - Configure text formatting (font, size)
+   - Set initial spacing between labels
+   - Review the preview to check layout
 
-3. Fine-tuning:
-   - If needed, adjust actual values further
-   - Each printer may need slightly different values
-   - Save your configuration once perfect
+3. First Print Adjustment:
+   - Print a test page
+   - Measure all dimensions carefully:
+     * Label width and height
+     * Horizontal and vertical spacing
+     * Page margins on all sides
+   - Enter measured values as actual values
+   - System calculates scaling factors automatically
+
+4. Verification and Fine-tuning:
+   - Print another test page with scaling applied
+   - Verify all measurements are now correct
+   - Make minor adjustments if needed
+   - Test with a full page of labels
+
+5. Save Configuration:
+   - Once everything is perfect, save your configuration
+   - Document printer settings used (paper type, scaling settings)
+   - Keep measurements for future reference
 
 ### Tips for Accurate Measurements
 - Use a high-quality ruler or caliper

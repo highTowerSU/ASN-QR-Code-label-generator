@@ -50,11 +50,19 @@ The generator uses a sophisticated target and actual value system to ensure prec
 
 ### Actual Values
 - These are the real measurements from your test prints
-- How to determine:
-  1. Use target values for initial test print
-  2. Measure the actual printed dimensions with a precise ruler
-  3. Enter these measurements as actual values
-  4. The generator will automatically calculate scaling factors
+- Process to determine:
+  1. Start with your target values as initial actual values
+  2. Generate and print a test page
+  3. Measure the actual printed dimensions carefully
+  4. Enter these measured values as your new actual values
+  5. The generator will automatically calculate scaling factors to compensate for differences
+
+For example:
+- Target value: 25.4mm × 10mm
+- Initial actual value: Same as target (25.4mm × 10mm)
+- After test print measurement: 25.8mm × 10.2mm
+- Enter 25.8mm × 10.2mm as actual values
+- System calculates scaling: 25.4/25.8 = 0.984 (width), 10/10.2 = 0.980 (height)
 
 ### Automatic Scaling
 The system automatically calculates scaling factors to compensate for printer variations:

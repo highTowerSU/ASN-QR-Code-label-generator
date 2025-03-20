@@ -533,7 +533,7 @@
   <body x-data="qrCodeApp()" x-init="generateLabels()">
     <div class="main-layout">
       <div class="form-container">
-        <div class="container mx-auto print-hidden">
+    <div class="container mx-auto print-hidden">
           <div class="flex justify-between items-center mb-4">
             <h1 class="text-xl font-bold">ASN QR-Code Etiketten Generator</h1>
             <span class="text-sm text-gray-600">v0.909</span>
@@ -606,7 +606,7 @@
                   </div>
                   <div class="input-group">
                     <input type="number" x-model="actualPaddingTop" 
-                      class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
+                      class="mt-1 block rounded-md border-red-300 text-red-600 shadow-sm focus:border-red-500 focus:ring-red-500 number-input" 
                       min="0" step="0.01" @input="calculatePaddingScaling()" />
                   </div>
                 </div>
@@ -622,7 +622,7 @@
                   </div>
                   <div class="input-group">
                     <input type="number" x-model="actualPaddingBottom" 
-                      class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
+                      class="mt-1 block rounded-md border-red-300 text-red-600 shadow-sm focus:border-red-500 focus:ring-red-500 number-input" 
                       min="0" step="0.01" @input="calculatePaddingScaling()" />
                   </div>
                 </div>
@@ -638,7 +638,7 @@
                   </div>
                   <div class="input-group">
                     <input type="number" x-model="actualPaddingLeft" 
-                      class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
+                      class="mt-1 block rounded-md border-red-300 text-red-600 shadow-sm focus:border-red-500 focus:ring-red-500 number-input" 
                       min="0" step="0.01" @input="calculatePaddingScaling()" />
                   </div>
                 </div>
@@ -654,7 +654,7 @@
                   </div>
                   <div class="input-group">
                     <input type="number" x-model="actualPaddingRight" 
-                      class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
+                      class="mt-1 block rounded-md border-red-300 text-red-600 shadow-sm focus:border-red-500 focus:ring-red-500 number-input" 
                       min="0" step="0.01" @input="calculatePaddingScaling()" />
                   </div>
                 </div>
@@ -689,23 +689,7 @@
                   </div>
                   <div class="input-group">
                     <input type="number" x-model="actualWidth" 
-                      class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
-                      min="0" step="0.01" @input="calculateScaling()" />
-                  </div>
-                </div>
-
-                <div class="input-row">
-                  <div class="input-group">
-                    <label class="text-sm font-medium text-gray-700">Etikettenhöhe</label>
-                  </div>
-                  <div class="input-group">
-                    <input type="number" x-model="targetHeight" 
-                      class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
-                      min="0" step="0.01" />
-                  </div>
-                  <div class="input-group">
-                    <input type="number" x-model="actualHeight" 
-                      class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
+                      class="mt-1 block rounded-md border-blue-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
                       min="0" step="0.01" @input="calculateScaling()" />
                   </div>
                 </div>
@@ -721,7 +705,23 @@
                   </div>
                   <div class="input-group">
                     <input type="number" x-model="actualGapHorizontal" 
+                      class="mt-1 block rounded-md border-blue-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
+                      min="0" step="0.01" @input="calculateScaling()" />
+                  </div>
+                </div>
+
+                <div class="input-row">
+                  <div class="input-group">
+                    <label class="text-sm font-medium text-gray-700">Etikettenhöhe</label>
+                  </div>
+                  <div class="input-group">
+                    <input type="number" x-model="targetHeight" 
                       class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
+                      min="0" step="0.01" />
+                  </div>
+                  <div class="input-group">
+                    <input type="number" x-model="actualHeight" 
+                      class="mt-1 block rounded-md border-blue-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
                       min="0" step="0.01" @input="calculateScaling()" />
                   </div>
                 </div>
@@ -737,7 +737,7 @@
                   </div>
                   <div class="input-group">
                     <input type="number" x-model="actualGapVertical" 
-                      class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
+                      class="mt-1 block rounded-md border-blue-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
                       min="0" step="0.01" @input="calculateScaling()" />
                   </div>
                 </div>
@@ -820,7 +820,7 @@
                   </select>
                 </div>
               </div>
-            </div>
+          </div>
 
             <!-- Action Buttons -->
             <div class="action-buttons">
@@ -830,19 +830,50 @@
               <button @click.prevent="printLabels()" class="btn btn-success">
                 Print Labels
               </button>
-            </div>
+          </div>
           </form>
         </div>
-      </div>
+          </div>
       
       <div class="preview-container print-hidden">
         <div class="page-preview">
           <div class="a4-border"></div>
           <div class="padding-visualization"></div>
-          <div class="padding-label padding-top" x-text="paddingTop + 'mm'"></div>
-          <div class="padding-label padding-bottom" x-text="paddingBottom + 'mm'"></div>
-          <div class="padding-label padding-left" x-text="paddingLeft + 'mm'"></div>
-          <div class="padding-label padding-right" x-text="paddingRight + 'mm'"></div>
+          <div class="padding-label padding-top">
+            <div x-text="targetPaddingTop + 'mm'" class="mb-1 text-red-600"></div>
+            <div x-text="'[' + paddingTop + 'mm]'" class="text-blue-600 text-xs"></div>
+          </div>
+          <div class="padding-label padding-bottom">
+            <div x-text="targetPaddingBottom + 'mm'" class="mb-1 text-red-600"></div>
+            <div x-text="'[' + calculatedBottomMargin.toFixed(2) + 'mm]'" class="text-blue-600 text-xs"></div>
+          </div>
+          <div class="padding-label padding-left">
+            <div x-text="targetPaddingLeft + 'mm'" class="mb-1 text-red-600"></div>
+            <div x-text="'[' + paddingLeft + 'mm]'" class="text-blue-600 text-xs"></div>
+          </div>
+          <div class="padding-label padding-right">
+            <div x-text="targetPaddingRight + 'mm'" class="mb-1 text-red-600"></div>
+            <div x-text="'[' + calculatedRightMargin.toFixed(2) + 'mm]'" class="text-blue-600 text-xs"></div>
+          </div>
+          <div x-show="isOverflowingRight || isOverflowingBottom" 
+               class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-4" 
+               role="alert">
+            <template x-if="isOverflowingRight">
+          <div>
+                <p class="mb-2">Warnung: Etiketten überlappen den rechten Rand um <span x-text="Math.abs(calculatedRightMargin).toFixed(2)"></span>mm</p>
+                <p class="text-sm">Details der Berechnung:</p>
+                <ul class="text-sm list-disc ml-4">
+                  <li>Gesamtbreite der Etiketten: <span x-text="marginCalculationDetails.totalLabelWidth"></span>mm</li>
+                  <li>Gesamtbreite der Abstände: <span x-text="marginCalculationDetails.totalGapWidth"></span>mm</li>
+                  <li>Gesamtbreite benötigt: <span x-text="marginCalculationDetails.totalWidth"></span>mm</li>
+                  <li>Verfügbare Breite: <span x-text="marginCalculationDetails.availableWidth"></span>mm</li>
+                </ul>
+              </div>
+            </template>
+            <template x-if="isOverflowingBottom">
+              <p class="mt-2">Warnung: Etiketten überlappen den unteren Rand um <span x-text="Math.abs(calculatedBottomMargin).toFixed(2)"></span>mm</p>
+            </template>
+          </div>
           <div class="page" id="label-container"></div>
         </div>
       </div>
@@ -898,6 +929,39 @@
           // Neue Variablen für die Etikettenanzahl
           labelsPerRow: 7,
           maxRows: 27,
+          calculatedRightMargin: 0,
+          calculatedBottomMargin: 0,
+          isOverflowingRight: false,
+          isOverflowingBottom: false,
+          marginCalculationDetails: null,
+
+          calculateMargins() {
+            // Berechne den tatsächlichen rechten Rand basierend auf den Etiketten-Parametern
+            const totalLabelWidth = this.labelsPerRow * parseFloat(this.actualWidth);
+            const totalGapWidth = (this.labelsPerRow - 1) * parseFloat(this.actualGapHorizontal);
+            const totalWidth = totalLabelWidth + totalGapWidth;
+            const availableWidth = 210 - parseFloat(this.actualPaddingLeft); // A4 Breite - linker Rand
+            this.calculatedRightMargin = availableWidth - totalWidth;
+            this.isOverflowingRight = this.calculatedRightMargin < 0;
+
+            // Berechne den tatsächlichen unteren Rand basierend auf den Etiketten-Parametern
+            const totalLabelHeight = this.maxRows * parseFloat(this.actualHeight);
+            const totalGapHeight = (this.maxRows - 1) * parseFloat(this.actualGapVertical);
+            const totalHeight = totalLabelHeight + totalGapHeight;
+            const availableHeight = 297 - parseFloat(this.actualPaddingTop); // A4 Höhe - oberer Rand
+            this.calculatedBottomMargin = availableHeight - totalHeight;
+            this.isOverflowingBottom = this.calculatedBottomMargin < 0;
+
+            // Füge detaillierte Berechnungsinformationen hinzu
+            this.marginCalculationDetails = {
+              totalLabelWidth: totalLabelWidth.toFixed(2),
+              totalGapWidth: totalGapWidth.toFixed(2),
+              totalWidth: totalWidth.toFixed(2),
+              availableWidth: availableWidth.toFixed(2)
+            };
+
+            this.renderLabels();
+          },
 
           calculateScaling() {
             if (this.actualWidth && this.targetWidth) {
@@ -977,7 +1041,7 @@
               let qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(text)}`;
               this.labels.push({ qrCodeUrl, text });
             }
-            this.renderLabels();
+            this.calculateMargins();
           },
 
           renderLabels() {
@@ -1063,7 +1127,7 @@
                   img.onload = img.onerror = resolve;
                 }))
             ).then(() => {
-              window.print();
+            window.print();
               
               // Cleanup
               document.head.removeChild(style);

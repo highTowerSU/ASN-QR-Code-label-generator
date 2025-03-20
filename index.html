@@ -557,24 +557,30 @@
               <h2 class="section-title">QR Code Settings</h2>
               <div class="input-grid input-grid-5">
                 <div class="input-group">
-                  <label for="startNumber">Start Number</label>
-                  <input type="number" id="startNumber" x-model="startNumber" required min="1" step="1" class="border number-input" />
+                  <label for="prefix" class="text-sm font-medium text-gray-700">ASN Prefix</label>
+                  <input type="text" id="prefix" x-model="prefix" required 
+                    class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 prefix-input" 
+                    placeholder="ASN" />
                 </div>
                 <div class="input-group">
-                  <label for="prefix">ASN Prefix</label>
-                  <input type="text" id="prefix" x-model="prefix" required class="border prefix-input" placeholder="ASN" />
+                  <label for="leadingZeros" class="text-sm font-medium text-gray-700">Leading Zeros</label>
+                  <input type="number" id="leadingZeros" x-model="leadingZeros" required min="0" max="10" step="1" 
+                    class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" />
                 </div>
                 <div class="input-group">
-                  <label for="leadingZeros">Leading Zeros</label>
-                  <input type="number" id="leadingZeros" x-model="leadingZeros" required min="0" max="10" step="1" class="border number-input" />
+                  <label for="startNumber" class="text-sm font-medium text-gray-700">Start Number</label>
+                  <input type="number" id="startNumber" x-model="startNumber" required min="1" step="1" 
+                    class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" />
                 </div>
                 <div class="checkbox-container">
-                  <input type="checkbox" id="showPrefix" x-model="showPrefix" class="border" />
-                  <label for="showPrefix">Display Prefix</label>
+                  <input type="checkbox" id="showPrefix" x-model="showPrefix" 
+                    class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500" />
+                  <label for="showPrefix" class="text-sm font-medium text-gray-700">Display Prefix</label>
                 </div>
                 <div class="checkbox-container">
-                  <input type="checkbox" id="showBorder" x-model="showBorder" class="border" />
-                  <label for="showBorder">Show Label Borders</label>
+                  <input type="checkbox" id="showBorder" x-model="showBorder" 
+                    class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500" />
+                  <label for="showBorder" class="text-sm font-medium text-gray-700">Show Label Borders</label>
                 </div>
               </div>
             </div>
@@ -591,49 +597,65 @@
 
                 <div class="input-row">
                   <div class="input-group">
-                    <label>Rand oben</label>
+                    <label class="text-sm font-medium text-gray-700">Rand oben</label>
                   </div>
                   <div class="input-group">
-                    <input type="number" x-model="targetPaddingTop" class="border number-input" min="0" step="0.01" />
+                    <input type="number" x-model="targetPaddingTop" 
+                      class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
+                      min="0" step="0.01" />
                   </div>
                   <div class="input-group">
-                    <input type="number" x-model="actualPaddingTop" class="border number-input" min="0" step="0.01" @input="calculatePaddingScaling()" />
-                  </div>
-                </div>
-
-                <div class="input-row">
-                  <div class="input-group">
-                    <label>Rand unten</label>
-                  </div>
-                  <div class="input-group">
-                    <input type="number" x-model="targetPaddingBottom" class="border number-input" min="0" step="0.01" />
-                  </div>
-                  <div class="input-group">
-                    <input type="number" x-model="actualPaddingBottom" class="border number-input" min="0" step="0.01" @input="calculatePaddingScaling()" />
+                    <input type="number" x-model="actualPaddingTop" 
+                      class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
+                      min="0" step="0.01" @input="calculatePaddingScaling()" />
                   </div>
                 </div>
 
                 <div class="input-row">
                   <div class="input-group">
-                    <label>Rand links</label>
+                    <label class="text-sm font-medium text-gray-700">Rand unten</label>
                   </div>
                   <div class="input-group">
-                    <input type="number" x-model="targetPaddingLeft" class="border number-input" min="0" step="0.01" />
+                    <input type="number" x-model="targetPaddingBottom" 
+                      class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
+                      min="0" step="0.01" />
                   </div>
                   <div class="input-group">
-                    <input type="number" x-model="actualPaddingLeft" class="border number-input" min="0" step="0.01" @input="calculatePaddingScaling()" />
+                    <input type="number" x-model="actualPaddingBottom" 
+                      class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
+                      min="0" step="0.01" @input="calculatePaddingScaling()" />
                   </div>
                 </div>
 
                 <div class="input-row">
                   <div class="input-group">
-                    <label>Rand rechts</label>
+                    <label class="text-sm font-medium text-gray-700">Rand links</label>
                   </div>
                   <div class="input-group">
-                    <input type="number" x-model="targetPaddingRight" class="border number-input" min="0" step="0.01" />
+                    <input type="number" x-model="targetPaddingLeft" 
+                      class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
+                      min="0" step="0.01" />
                   </div>
                   <div class="input-group">
-                    <input type="number" x-model="actualPaddingRight" class="border number-input" min="0" step="0.01" @input="calculatePaddingScaling()" />
+                    <input type="number" x-model="actualPaddingLeft" 
+                      class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
+                      min="0" step="0.01" @input="calculatePaddingScaling()" />
+                  </div>
+                </div>
+
+                <div class="input-row">
+                  <div class="input-group">
+                    <label class="text-sm font-medium text-gray-700">Rand rechts</label>
+                  </div>
+                  <div class="input-group">
+                    <input type="number" x-model="targetPaddingRight" 
+                      class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
+                      min="0" step="0.01" />
+                  </div>
+                  <div class="input-group">
+                    <input type="number" x-model="actualPaddingRight" 
+                      class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
+                      min="0" step="0.01" @input="calculatePaddingScaling()" />
                   </div>
                 </div>
               </div>
@@ -658,49 +680,65 @@
 
                 <div class="input-row">
                   <div class="input-group">
-                    <label>Etikettenbreite</label>
+                    <label class="text-sm font-medium text-gray-700">Etikettenbreite</label>
                   </div>
                   <div class="input-group">
-                    <input type="number" x-model="targetWidth" class="border number-input" min="0" step="0.01" />
+                    <input type="number" x-model="targetWidth" 
+                      class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
+                      min="0" step="0.01" />
                   </div>
                   <div class="input-group">
-                    <input type="number" x-model="actualWidth" class="border number-input" min="0" step="0.01" @input="calculateScaling()" />
-                  </div>
-                </div>
-
-                <div class="input-row">
-                  <div class="input-group">
-                    <label>Etikettenhöhe</label>
-                  </div>
-                  <div class="input-group">
-                    <input type="number" x-model="targetHeight" class="border number-input" min="0" step="0.01" />
-                  </div>
-                  <div class="input-group">
-                    <input type="number" x-model="actualHeight" class="border number-input" min="0" step="0.01" @input="calculateScaling()" />
+                    <input type="number" x-model="actualWidth" 
+                      class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
+                      min="0" step="0.01" @input="calculateScaling()" />
                   </div>
                 </div>
 
                 <div class="input-row">
                   <div class="input-group">
-                    <label>Horizontaler Abstand</label>
+                    <label class="text-sm font-medium text-gray-700">Etikettenhöhe</label>
                   </div>
                   <div class="input-group">
-                    <input type="number" x-model="targetGapHorizontal" class="border number-input" min="0" step="0.01" />
+                    <input type="number" x-model="targetHeight" 
+                      class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
+                      min="0" step="0.01" />
                   </div>
                   <div class="input-group">
-                    <input type="number" x-model="actualGapHorizontal" class="border number-input" min="0" step="0.01" @input="calculateScaling()" />
+                    <input type="number" x-model="actualHeight" 
+                      class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
+                      min="0" step="0.01" @input="calculateScaling()" />
                   </div>
                 </div>
 
                 <div class="input-row">
                   <div class="input-group">
-                    <label>Vertikaler Abstand</label>
+                    <label class="text-sm font-medium text-gray-700">Horizontaler Abstand</label>
                   </div>
                   <div class="input-group">
-                    <input type="number" x-model="targetGapVertical" class="border number-input" min="0" step="0.01" />
+                    <input type="number" x-model="targetGapHorizontal" 
+                      class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
+                      min="0" step="0.01" />
                   </div>
                   <div class="input-group">
-                    <input type="number" x-model="actualGapVertical" class="border number-input" min="0" step="0.01" @input="calculateScaling()" />
+                    <input type="number" x-model="actualGapHorizontal" 
+                      class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
+                      min="0" step="0.01" @input="calculateScaling()" />
+                  </div>
+                </div>
+
+                <div class="input-row">
+                  <div class="input-group">
+                    <label class="text-sm font-medium text-gray-700">Vertikaler Abstand</label>
+                  </div>
+                  <div class="input-group">
+                    <input type="number" x-model="targetGapVertical" 
+                      class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
+                      min="0" step="0.01" />
+                  </div>
+                  <div class="input-group">
+                    <input type="number" x-model="actualGapVertical" 
+                      class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
+                      min="0" step="0.01" @input="calculateScaling()" />
                   </div>
                 </div>
               </div>
@@ -725,10 +763,12 @@
 
                 <div class="input-row">
                   <div class="input-group">
-                    <label>Etiketten pro Zeile</label>
+                    <label class="text-sm font-medium text-gray-700">Etiketten pro Zeile</label>
                   </div>
                   <div class="input-group">
-                    <input type="number" x-model="labelsPerRow" class="border number-input" min="1" step="1" @input="generateLabels()" />
+                    <input type="number" x-model="labelsPerRow" 
+                      class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
+                      min="1" step="1" @input="generateLabels()" />
                   </div>
                   <div class="input-group">
                   </div>
@@ -736,10 +776,12 @@
 
                 <div class="input-row">
                   <div class="input-group">
-                    <label>Anzahl Zeilen</label>
+                    <label class="text-sm font-medium text-gray-700">Anzahl Zeilen</label>
                   </div>
                   <div class="input-group">
-                    <input type="number" x-model="maxRows" class="border number-input" min="1" step="1" @input="generateLabels()" />
+                    <input type="number" x-model="maxRows" 
+                      class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
+                      min="1" step="1" @input="generateLabels()" />
                   </div>
                   <div class="input-group">
                   </div>
@@ -1135,9 +1177,9 @@
               created: new Date().toISOString(),
               purpose: "This file contains the settings for the QR code label layout, " +
                       "including page margins, label dimensions, spacing, and text formatting.",
-              usage: "This file can be imported using the 'Load Configuration' button in the application.",
-              generator: "ASN QR Code Label Generator",
-              repository: "https://github.com/muguu/ASN-QR-Code-label-generator"
+                      usage: "This file can be imported using the 'Load Configuration' button in the application.",
+                      generator: "ASN QR Code Label Generator",
+                      repository: "https://github.com/muguu/ASN-QR-Code-label-generator"
             },
             pageMargins: {
               top: {

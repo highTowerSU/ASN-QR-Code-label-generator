@@ -12,84 +12,73 @@
         @page {
           size: 210mm 297mm;
           margin: 0;
-          bleed: 0;
-          marks: none;
-          page-break-inside: avoid;
         }
-        html {
-          zoom: 100%;
-          -webkit-print-scale-adjust: exact;
-          print-scale-adjust: exact;
+        html, body {
+          margin: 0;
+          padding: 0;
+          width: 210mm;
+          height: 297mm;
+          background-color: white;
         }
-        body, html {
+        .print-hidden {
+          display: none !important;
+        }
+        .print-only {
+          display: block;
+          position: fixed;
+          top: 0;
+          left: 0;
           width: 210mm;
           height: 297mm;
           margin: 0;
           padding: 0;
-          overflow: hidden;
-          -webkit-print-color-adjust: exact;
-          print-color-adjust: exact;
-          page-break-before: avoid;
-          page-break-after: avoid;
-          page-break-inside: avoid;
-          orphans: 2;
-          widows: 2;
+          background-color: white;
         }
-        .print-hidden {
-          display: none;
-        }
-        .page {
-          margin: 0;
-          padding: 0;
-          position: fixed;
+        .print-only .page {
+          position: absolute;
           top: 0;
           left: 0;
-          transform-origin: top left;
-          transform: scale(1.013);
-          break-inside: avoid;
-          break-before: page;
-          page-break-before: always;
-          page: auto;
-        }
-        .page-preview {
           margin: 0;
           padding: 0;
-          box-shadow: none;
+          width: 210mm;
+          height: 297mm;
+          display: grid;
+          grid-template-columns: repeat(7, 25.61mm);
+          grid-template-rows: repeat(27, 10.06mm);
+          gap: 0mm 2.63mm;
+          background-color: white;
         }
-        * {
-          -webkit-print-color-adjust: exact !important;
-          print-color-adjust: exact !important;
-          color-adjust: exact !important;
+        .print-only .label {
+          width: 25.61mm;
+          height: 10.06mm;
+          border: var(--label-border, 0.1mm solid black);
+          background-color: white;
+          margin: 0;
+          padding: 0;
         }
       }
+
       .page {
         --mm-to-px: 3.779528;
-        --label-width-px: calc(25.61mm * 1.013 * var(--mm-to-px));
-        --label-height-px: calc(10.06mm * 1.010 * var(--mm-to-px));
-        --gap-horizontal-px: calc(var(--gap-horizontal, 2.63) * var(--mm-to-px));
-        --gap-vertical-px: calc(var(--gap-vertical, 0) * var(--mm-to-px));
-        --total-width-px: calc((7 * var(--label-width-px)) + (6 * var(--gap-horizontal-px)));
-        --total-height-px: calc(27 * var(--label-height-px));
-        
         width: calc(210mm - var(--padding-left) - var(--padding-right));
         height: calc(297mm - var(--padding-top) - var(--padding-bottom));
         box-sizing: border-box;
         display: grid;
-        grid-template-columns: repeat(7, calc(25.61mm * 1.013));
-        grid-template-rows: repeat(27, calc(10.06mm * 1.010));
+        grid-template-columns: repeat(7, 25.61mm);
+        grid-template-rows: repeat(27, 10.06mm);
         gap: var(--gap-vertical, 0mm) var(--gap-horizontal, 2.63mm);
         justify-content: start;
         align-content: start;
         position: absolute;
-        top: calc(var(--padding-top) - 31.83mm);
-        left: calc(var(--padding-left) - 10.05mm);
+        top: var(--padding-top);
+        left: var(--padding-left);
         background-color: white;
         margin: 0;
         padding: 0;
       }
       .label {
-        width: calc(25.61mm * 1.013);
-        height: calc(10.06mm * 1.010);
+        width: 25.61mm;
+        height: 10.06mm;
         display: flex;
         align-items: center;
         justify-content: flex-start;
@@ -447,6 +436,12 @@
       .btn-success:hover {
         background-color: #047857;
       }
+
+      @media screen {
+        .print-only {
+          display: none;
+        }
+      }
     </style>
   </head>
   <body x-data="qrCodeApp()" x-init="generateLabels()">
@@ -577,6 +572,11 @@
           <div class="page" id="label-container"></div>
         </div>
       </div>
+
+      <!-- Separate print version -->
+      <div class="print-only">
+        <div class="page" id="print-label-container"></div>
+      </div>
     </div>
 
     <script>
@@ -615,9 +615,15 @@
 
           renderLabels() {
             let container = document.getElementById("label-container");
+            let printContainer = document.getElementById("print-label-container");
             container.innerHTML = "";
+            printContainer.innerHTML = "";
+            
             container.style.gap = `${this.gapVertical}mm ${this.gapHorizontal}mm`;
+            printContainer.style.gap = `${this.gapVertical}mm ${this.gapHorizontal}mm`;
+            
             container.style.setProperty('--label-border', this.showBorder ? '0.1mm solid black' : 'none');
+            printContainer.style.setProperty('--label-border', this.showBorder ? '0.1mm solid black' : 'none');
             
             // Setze CSS-Variablen für Padding-Visualisierung
             document.documentElement.style.setProperty('--padding-top', (this.paddingTop || 0) + 'mm');
@@ -628,14 +634,13 @@
             document.documentElement.style.setProperty('--text-font', this.textFont);
             document.documentElement.style.setProperty('--text-weight', this.textWeight);
             
-            // Berechne die tatsächliche Anzahl der Labels basierend auf der verfügbaren Fläche
-            const availableWidth = 210 - (parseFloat(this.paddingLeft) || 0) - (parseFloat(this.paddingRight) || 0);
-            const availableHeight = 297 - (parseFloat(this.paddingTop) || 0) - (parseFloat(this.paddingBottom) || 0);
+            // Berechne die tatsächliche Anzahl der Labels
             const labelsPerRow = 7;
             const labelsPerColumn = 27;
             const totalLabels = labelsPerRow * labelsPerColumn;
             
             this.labels.slice(0, totalLabels).forEach((label) => {
+              // Preview version
               let labelDiv = document.createElement("div");
               labelDiv.classList.add("label");
               let qrImg = document.createElement("img");
@@ -647,6 +652,10 @@
               labelDiv.appendChild(qrImg);
               labelDiv.appendChild(textDiv);
               container.appendChild(labelDiv);
+
+              // Print version
+              let printLabelDiv = labelDiv.cloneNode(true);
+              printContainer.appendChild(printLabelDiv);
             });
           },
 
@@ -658,8 +667,16 @@
             const style = document.createElement('style');
             style.textContent = `
               @page { size: 210mm 297mm; margin: 0; }
-              body { margin: 0; padding: 0; }
-              .page { page-break-after: always; }
+              @media print {
+                html, body {
+                  margin: 0 !important;
+                  padding: 0 !important;
+                }
+                .print-only .page {
+                  margin-top: 13.33mm !important;
+                  margin-left: 8.42mm !important;
+                }
+              }
             `;
             document.head.appendChild(style);
 

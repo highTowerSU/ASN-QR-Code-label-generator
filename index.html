@@ -1298,16 +1298,29 @@
       function loadConfig(event) {
         const file = event.target.files[0];
         if (!file) {
+          showNotification('Keine Datei ausgewählt', 'error');
           return;
         }
 
         const reader = new FileReader();
         reader.onload = function(e) {
           try {
+            console.log('Lade Konfigurationsdatei...');
             const config = JSON.parse(e.target.result);
-            const alpineApp = document.querySelector('[x-data]').__x.$data;
-            
-            // Setze die Werte direkt im Alpine.js Datenmodell
+            console.log('Geladene Konfiguration:', config);
+
+            // Hole Alpine.js Instanz
+            const alpineElement = document.querySelector('[x-data="qrCodeApp()"]');
+            if (!alpineElement) {
+              throw new Error('Alpine.js Element nicht gefunden');
+            }
+
+            const alpineApp = Alpine.evaluate(alpineElement, '$data');
+            if (!alpineApp) {
+              throw new Error('Alpine.js Daten nicht verfügbar');
+            }
+
+            // Setze die Werte im Alpine.js Datenmodell
             if (config.pageMargins) {
               alpineApp.targetPaddingTop = config.pageMargins.top.target;
               alpineApp.actualPaddingTop = config.pageMargins.top.actual;
@@ -1345,20 +1358,26 @@
             }
 
             // Berechne die Skalierungsfaktoren neu
-            alpineApp.calculateScaling();
-            alpineApp.calculatePaddingScaling();
+            if (typeof alpineApp.calculateScaling === 'function') {
+              alpineApp.calculateScaling();
+            }
+            if (typeof alpineApp.calculatePaddingScaling === 'function') {
+              alpineApp.calculatePaddingScaling();
+            }
             
             // Generiere die Labels neu
-            alpineApp.generateLabels();
+            if (typeof alpineApp.generateLabels === 'function') {
+              alpineApp.generateLabels();
+            }
 
             showNotification('✓ Konfiguration wurde erfolgreich geladen');
-            console.log('Geladene Konfiguration:', config);
+            console.log('Konfiguration erfolgreich geladen und angewendet');
 
             // Setze das Datei-Input zurück
             event.target.value = '';
           } catch (error) {
-            console.error('Fehler beim Laden der Konfiguration:', error);
-            showNotification('Fehler beim Laden der Konfigurationsdatei', 'error');
+            console.error('Detaillierter Fehler beim Laden:', error);
+            showNotification('Fehler beim Laden der Konfiguration: ' + error.message, 'error');
             event.target.value = '';
           }
         };

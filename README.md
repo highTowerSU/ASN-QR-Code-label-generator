@@ -40,9 +40,13 @@ The generator uses a sophisticated target and actual value system to ensure prec
 ### Target Values
 - These are your desired measurements, which can come from:
   - Manufacturer specifications for your label sheets
+  - Measurements from existing label sheets
   - Your own requirements for custom labels
   - Standard label dimensions
-- Example: If your label sheet specifies 25.4mm × 10mm labels, these are your target values
+- Examples:
+  - If your label sheet specifies 25.4mm × 10mm labels, use these as target values
+  - If you measured an existing label sheet with 25.35mm × 10mm labels, use these measurements
+  - For custom labels, use your required dimensions
 
 ### Actual Values
 - These are the real measurements from your test prints

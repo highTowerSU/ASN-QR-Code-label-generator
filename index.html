@@ -8,6 +8,28 @@
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     <style>
+      /* Neue Styles für die Spaltenüberschriften */
+      .column-header {
+        text-align: left;
+        font-weight: bold;
+        padding: 0 0 0.5rem 0;
+        margin: 0 0 0.5rem 0;
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      .input-grid {
+        display: grid;
+        gap: 0.75rem;
+      }
+
+      .input-grid .column-headers {
+        display: contents;
+      }
+
+      .input-grid .input-row {
+        display: contents;
+      }
+
       @media print {
         @page {
           size: 210mm 297mm;
@@ -24,7 +46,7 @@
           display: none !important;
         }
         .print-only {
-          display: block;
+          display: block !important;
           position: fixed;
           top: 0;
           left: 0;
@@ -45,8 +67,9 @@
           display: grid;
           grid-template-columns: repeat(7, 25.61mm);
           grid-template-rows: repeat(27, 10.06mm);
-          gap: 0mm 2.63mm;
+          gap: var(--gap-vertical, 0mm) var(--gap-horizontal, 2.63mm);
           background-color: white;
+          transform: translate(var(--padding-left), var(--padding-top));
         }
         .print-only .label {
           width: 25.61mm;
@@ -448,7 +471,10 @@
     <div class="main-layout">
       <div class="form-container">
         <div class="container mx-auto print-hidden">
-          <h1 class="text-xl font-bold mb-3">QR Code Label Generator</h1>
+          <div class="flex justify-between items-center mb-3">
+            <h1 class="text-xl font-bold">QR Code Label Generator</h1>
+            <span class="text-sm text-gray-600">v0.905</span>
+          </div>
           <form @submit.prevent="generateLabels()">
             <!-- QR Code Configuration -->
             <div class="section-group">
@@ -479,38 +505,149 @@
 
             <!-- Page Margin Settings -->
             <div class="section-group">
-              <h2 class="section-title">Page Margins (mm)</h2>
-              <div class="input-grid input-grid-4">
-                <div class="input-group">
-                  <label for="paddingTop">Top</label>
-                  <input type="number" id="paddingTop" x-model="paddingTop" class="border number-input" min="0" step="0.5" />
+              <h2 class="section-title">Seitenränder und Skalierung (mm)</h2>
+              <div class="input-grid" style="grid-template-columns: auto auto auto;">
+                <div class="column-headers">
+                  <div class="column-header">Parameter</div>
+                  <div class="column-header">Soll (mm)</div>
+                  <div class="column-header">Ist (mm)</div>
                 </div>
-                <div class="input-group">
-                  <label for="paddingBottom">Bottom</label>
-                  <input type="number" id="paddingBottom" x-model="paddingBottom" class="border number-input" min="0" step="0.5" />
+
+                <div class="input-row">
+                  <div class="input-group">
+                    <label>Rand oben</label>
+                  </div>
+                  <div class="input-group">
+                    <input type="number" x-model="targetPaddingTop" class="border number-input" min="0" step="0.01" />
+                  </div>
+                  <div class="input-group">
+                    <input type="number" x-model="actualPaddingTop" class="border number-input" min="0" step="0.01" @input="calculatePaddingScaling()" />
+                  </div>
                 </div>
-                <div class="input-group">
-                  <label for="paddingLeft">Left</label>
-                  <input type="number" id="paddingLeft" x-model="paddingLeft" class="border number-input" min="0" step="0.5" />
+
+                <div class="input-row">
+                  <div class="input-group">
+                    <label>Rand unten</label>
+                  </div>
+                  <div class="input-group">
+                    <input type="number" x-model="targetPaddingBottom" class="border number-input" min="0" step="0.01" />
+                  </div>
+                  <div class="input-group">
+                    <input type="number" x-model="actualPaddingBottom" class="border number-input" min="0" step="0.01" @input="calculatePaddingScaling()" />
+                  </div>
                 </div>
-                <div class="input-group">
-                  <label for="paddingRight">Right</label>
-                  <input type="number" id="paddingRight" x-model="paddingRight" class="border number-input" min="0" step="0.5" />
+
+                <div class="input-row">
+                  <div class="input-group">
+                    <label>Rand links</label>
+                  </div>
+                  <div class="input-group">
+                    <input type="number" x-model="targetPaddingLeft" class="border number-input" min="0" step="0.01" />
+                  </div>
+                  <div class="input-group">
+                    <input type="number" x-model="actualPaddingLeft" class="border number-input" min="0" step="0.01" @input="calculatePaddingScaling()" />
+                  </div>
+                </div>
+
+                <div class="input-row">
+                  <div class="input-group">
+                    <label>Rand rechts</label>
+                  </div>
+                  <div class="input-group">
+                    <input type="number" x-model="targetPaddingRight" class="border number-input" min="0" step="0.01" />
+                  </div>
+                  <div class="input-group">
+                    <input type="number" x-model="actualPaddingRight" class="border number-input" min="0" step="0.01" @input="calculatePaddingScaling()" />
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-4 p-2 bg-gray-100 rounded">
+                <div class="flex justify-between items-center">
+                  <span class="font-bold text-sm">Berechneter Skalierungsfaktor für Ränder:</span>
+                  <span x-text="'Horizontal: ' + (paddingScalingX || '1.000') + ' / Vertikal: ' + (paddingScalingY || '1.000')" class="font-mono text-xs"></span>
                 </div>
               </div>
             </div>
 
             <!-- Label Spacing Settings -->
             <div class="section-group">
-              <h2 class="section-title">Label Spacing (mm)</h2>
-              <div class="input-grid input-grid-2">
+              <h2 class="section-title">Etikettenmaße und Skalierung</h2>
+              <div class="input-grid" style="grid-template-columns: auto auto auto;">
+                <div class="column-headers">
+                  <div class="column-header">Parameter</div>
+                  <div class="column-header">Soll (mm)</div>
+                  <div class="column-header">Ist (mm)</div>
+                </div>
+
+                <div class="input-row">
+                  <div class="input-group">
+                    <label>Etikettenbreite</label>
+                  </div>
+                  <div class="input-group">
+                    <input type="number" x-model="targetWidth" class="border number-input" min="0" step="0.01" />
+                  </div>
+                  <div class="input-group">
+                    <input type="number" x-model="actualWidth" class="border number-input" min="0" step="0.01" @input="calculateScaling()" />
+                  </div>
+                </div>
+
+                <div class="input-row">
+                  <div class="input-group">
+                    <label>Etikettenhöhe</label>
+                  </div>
+                  <div class="input-group">
+                    <input type="number" x-model="targetHeight" class="border number-input" min="0" step="0.01" />
+                  </div>
+                  <div class="input-group">
+                    <input type="number" x-model="actualHeight" class="border number-input" min="0" step="0.01" @input="calculateScaling()" />
+                  </div>
+                </div>
+
+                <div class="input-row">
+                  <div class="input-group">
+                    <label>Horizontaler Abstand</label>
+                  </div>
+                  <div class="input-group">
+                    <input type="number" x-model="targetGapHorizontal" class="border number-input" min="0" step="0.01" />
+                  </div>
+                  <div class="input-group">
+                    <input type="number" x-model="actualGapHorizontal" class="border number-input" min="0" step="0.01" @input="calculateScaling()" />
+                  </div>
+                </div>
+
+                <div class="input-row">
+                  <div class="input-group">
+                    <label>Vertikaler Abstand</label>
+                  </div>
+                  <div class="input-group">
+                    <input type="number" x-model="targetGapVertical" class="border number-input" min="0" step="0.01" />
+                  </div>
+                  <div class="input-group">
+                    <input type="number" x-model="actualGapVertical" class="border number-input" min="0" step="0.01" @input="calculateScaling()" />
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-4 p-2 bg-gray-100 rounded">
+                <div class="flex justify-between items-center">
+                  <span class="font-bold text-sm">Berechneter Skalierungsfaktor:</span>
+                  <span x-text="'Horizontal: ' + (scalingFactorX || '1.000') + ' / Vertikal: ' + (scalingFactorY || '1.000')" class="font-mono text-xs"></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Label Count Settings -->
+            <div class="section-group">
+              <h2 class="section-title">Etikettenanzahl</h2>
+              <div class="input-grid" style="grid-template-columns: auto auto;">
                 <div class="input-group">
-                  <label for="gapVertical">Vertical Gap</label>
-                  <input type="number" id="gapVertical" x-model="gapVertical" class="border number-input" min="0" step="0.1" />
+                  <label>Etiketten pro Zeile</label>
+                  <input type="number" x-model="labelsPerRow" class="border number-input" min="1" step="1" @input="generateLabels()" />
                 </div>
                 <div class="input-group">
-                  <label for="gapHorizontal">Horizontal Gap</label>
-                  <input type="number" id="gapHorizontal" x-model="gapHorizontal" class="border number-input" min="0" step="0.1" />
+                  <label>Maximale Anzahl Zeilen</label>
+                  <input type="number" x-model="maxRows" class="border number-input" min="1" step="1" @input="generateLabels()" />
                 </div>
               </div>
             </div>
@@ -587,20 +724,111 @@
           leadingZeros: 4,
           showPrefix: true,
           showBorder: true,
-          paddingTop: 13.33,    // Gemessener oberer Rand
+          paddingTop: 12.63,    // Korrigierter oberer Rand (13.33mm - 0.7mm)
           paddingRight: 8.36,   // Gemessener rechter Rand
           paddingBottom: 13.87, // Gemessener unterer Rand
-          paddingLeft: 8.42,    // Gemessener linker Rand
+          paddingLeft: 9.90,    // Korrigierter linker Rand (8.42mm + 1.48mm)
           gapVertical: 0,       // Gemessener vertikaler Abstand
           gapHorizontal: 2.63,  // Gemessener horizontaler Abstand
           labels: [],
           textSize: '12',
           textFont: 'Tahoma',
           textWeight: 'normal',
+          // Neue Variablen für Soll- und Ist-Werte
+          targetWidth: 25.61,
+          targetHeight: 10.06,
+          targetGapHorizontal: 2.63,
+          targetGapVertical: 0,
+          actualWidth: 25.61,      // Mit Soll-Wert initialisiert
+          actualHeight: 10.06,     // Mit Soll-Wert initialisiert
+          actualGapHorizontal: 2.63, // Mit Soll-Wert initialisiert
+          actualGapVertical: 0,    // Mit Soll-Wert initialisiert
+          scalingFactorX: null,
+          scalingFactorY: null,
+          // Neue Variablen für Soll- und Ist-Werte der Ränder
+          targetPaddingTop: 12.63,
+          targetPaddingBottom: 13.87,
+          targetPaddingLeft: 9.90,
+          targetPaddingRight: 8.36,
+          actualPaddingTop: 12.63,    // Mit Soll-Wert initialisiert
+          actualPaddingBottom: 13.87, // Mit Soll-Wert initialisiert
+          actualPaddingLeft: 9.90,    // Mit Soll-Wert initialisiert
+          actualPaddingRight: 8.36,   // Mit Soll-Wert initialisiert
+          paddingScalingX: null,
+          paddingScalingY: null,
+          // Neue Variablen für die Etikettenanzahl
+          labelsPerRow: 7,
+          maxRows: 27,
+
+          calculateScaling() {
+            if (this.actualWidth && this.targetWidth) {
+              const widthScaling = parseFloat(this.targetWidth) / parseFloat(this.actualWidth);
+              this.scalingFactorX = widthScaling.toFixed(3);
+              // Wende die Skalierung sofort auf die horizontalen Abstände an
+              if (this.actualGapHorizontal && this.targetGapHorizontal) {
+                this.gapHorizontal = parseFloat(this.targetGapHorizontal);
+              }
+            }
+            if (this.actualHeight && this.targetHeight) {
+              const heightScaling = parseFloat(this.targetHeight) / parseFloat(this.actualHeight);
+              this.scalingFactorY = heightScaling.toFixed(3);
+              // Wende die Skalierung sofort auf die vertikalen Abstände an
+              if (this.actualGapVertical && this.targetGapVertical) {
+                this.gapVertical = parseFloat(this.targetGapVertical);
+              }
+            }
+            this.renderLabels();
+          },
+
+          applyScaling() {
+            if (this.scalingFactorX && this.scalingFactorY) {
+              // Wende Skalierung auf die Abstände an
+              this.gapHorizontal = this.targetGapHorizontal;
+              this.gapVertical = this.targetGapVertical;
+              
+              // Generiere Labels neu
+              this.generateLabels();
+            }
+          },
+
+          calculatePaddingScaling() {
+            if (this.actualPaddingLeft && this.targetPaddingLeft && this.actualPaddingRight && this.targetPaddingRight) {
+              const leftScaling = parseFloat(this.targetPaddingLeft) / parseFloat(this.actualPaddingLeft);
+              const rightScaling = parseFloat(this.targetPaddingRight) / parseFloat(this.actualPaddingRight);
+              const horizontalScaling = (leftScaling + rightScaling) / 2;
+              this.paddingScalingX = horizontalScaling.toFixed(3);
+              // Wende die Skalierung sofort auf die horizontalen Ränder an
+              this.paddingLeft = parseFloat(this.targetPaddingLeft);
+              this.paddingRight = parseFloat(this.targetPaddingRight);
+            }
+            if (this.actualPaddingTop && this.targetPaddingTop && this.actualPaddingBottom && this.targetPaddingBottom) {
+              const topScaling = parseFloat(this.targetPaddingTop) / parseFloat(this.actualPaddingTop);
+              const bottomScaling = parseFloat(this.targetPaddingBottom) / parseFloat(this.actualPaddingBottom);
+              const verticalScaling = (topScaling + bottomScaling) / 2;
+              this.paddingScalingY = verticalScaling.toFixed(3);
+              // Wende die Skalierung sofort auf die vertikalen Ränder an
+              this.paddingTop = parseFloat(this.targetPaddingTop);
+              this.paddingBottom = parseFloat(this.targetPaddingBottom);
+            }
+            this.renderLabels();
+          },
+
+          applyPaddingScaling() {
+            if (this.paddingScalingX && this.paddingScalingY) {
+              // Wende Skalierung auf die Seitenränder an
+              this.paddingLeft = this.targetPaddingLeft;
+              this.paddingRight = this.targetPaddingRight;
+              this.paddingTop = this.targetPaddingTop;
+              this.paddingBottom = this.targetPaddingBottom;
+              
+              // Generiere Labels neu
+              this.generateLabels();
+            }
+          },
 
           generateLabels() {
             this.labels = [];
-            let totalLabels = 7 * 27;
+            let totalLabels = this.labelsPerRow * this.maxRows;
             let startNumberInt = parseInt(this.startNumber, 10);
             for (let i = 0; i < totalLabels; i++) {
               let number = startNumberInt + i;
@@ -619,27 +847,32 @@
             container.innerHTML = "";
             printContainer.innerHTML = "";
             
-            container.style.gap = `${this.gapVertical}mm ${this.gapHorizontal}mm`;
-            printContainer.style.gap = `${this.gapVertical}mm ${this.gapHorizontal}mm`;
+            // Setze die CSS-Variablen für das Layout
+            const root = document.documentElement;
+            root.style.setProperty('--padding-top', `${this.paddingTop}mm`);
+            root.style.setProperty('--padding-right', `${this.paddingRight}mm`);
+            root.style.setProperty('--padding-bottom', `${this.paddingBottom}mm`);
+            root.style.setProperty('--padding-left', `${this.paddingLeft}mm`);
+            root.style.setProperty('--gap-vertical', `${this.gapVertical}mm`);
+            root.style.setProperty('--gap-horizontal', `${this.gapHorizontal}mm`);
+            root.style.setProperty('--text-size', `${this.textSize}px`);
+            root.style.setProperty('--text-font', this.textFont);
+            root.style.setProperty('--text-weight', this.textWeight);
             
-            container.style.setProperty('--label-border', this.showBorder ? '0.1mm solid black' : 'none');
-            printContainer.style.setProperty('--label-border', this.showBorder ? '0.1mm solid black' : 'none');
+            // Setze die Grid-Templates für beide Container
+            const columnsStyle = `repeat(${this.labelsPerRow}, 25.61mm)`;
+            const rowsStyle = `repeat(${this.maxRows}, 10.06mm)`;
+            container.style.gridTemplateColumns = columnsStyle;
+            container.style.gridTemplateRows = rowsStyle;
+            printContainer.style.gridTemplateColumns = columnsStyle;
+            printContainer.style.gridTemplateRows = rowsStyle;
             
-            // Setze CSS-Variablen für Padding-Visualisierung
-            document.documentElement.style.setProperty('--padding-top', (this.paddingTop || 0) + 'mm');
-            document.documentElement.style.setProperty('--padding-right', (this.paddingRight || 0) + 'mm');
-            document.documentElement.style.setProperty('--padding-bottom', (this.paddingBottom || 0) + 'mm');
-            document.documentElement.style.setProperty('--padding-left', (this.paddingLeft || 0) + 'mm');
-            document.documentElement.style.setProperty('--text-size', this.textSize + 'px');
-            document.documentElement.style.setProperty('--text-font', this.textFont);
-            document.documentElement.style.setProperty('--text-weight', this.textWeight);
+            // Setze die Rahmen für beide Container
+            const borderStyle = this.showBorder ? '0.1mm solid black' : 'none';
+            container.style.setProperty('--label-border', borderStyle);
+            printContainer.style.setProperty('--label-border', borderStyle);
             
-            // Berechne die tatsächliche Anzahl der Labels
-            const labelsPerRow = 7;
-            const labelsPerColumn = 27;
-            const totalLabels = labelsPerRow * labelsPerColumn;
-            
-            this.labels.slice(0, totalLabels).forEach((label) => {
+            this.labels.forEach((label) => {
               // Preview version
               let labelDiv = document.createElement("div");
               labelDiv.classList.add("label");
@@ -673,8 +906,11 @@
                   padding: 0 !important;
                 }
                 .print-only .page {
-                  margin-top: 13.33mm !important;
-                  margin-left: 8.42mm !important;
+                  margin: 0 !important;
+                  padding: 0 !important;
+                  top: var(--padding-top) !important;
+                  left: var(--padding-left) !important;
+                  transform: none !important;
                 }
               }
             `;

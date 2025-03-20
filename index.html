@@ -95,7 +95,7 @@
         .print-only .qr-code {
           width: 9mm !important;
           height: 9mm !important;
-          margin: 0 0 0 0.6mm !important;
+          margin: 0 0 0 var(--qr-code-spacing, 0.6mm) !important;
           padding: 0 !important;
         }
 
@@ -154,7 +154,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-left: 0.5mm;
+        margin-left: var(--qr-code-spacing, 0.6mm);
       }
       .text {
         flex: 1;
@@ -536,7 +536,7 @@
     <div class="container mx-auto print-hidden">
           <div class="flex justify-between items-center mb-4">
             <h1 class="text-xl font-bold">ASN QR-Code Etiketten Generator</h1>
-            <span class="text-sm text-gray-600">v0.909</span>
+            <span class="text-sm text-gray-600">v0.910</span>
           </div>
 
           <div class="flex gap-4 mb-4">
@@ -793,36 +793,49 @@
 
             <!-- Neue Sektion für Textformatierung -->
             <div class="section-group">
-              <h3 class="section-title">Textformatierung</h3>
-              <div class="input-grid input-grid-4">
-                <div class="input-group">
-                  <label for="text-size" class="text-sm font-medium text-gray-700">Schriftgröße (px)</label>
-                  <input type="number" id="text-size" x-model="textSize" class="text-size-input mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" min="6" max="20" step="0.5">
+              <h2 class="section-title">Textformatierung</h2>
+              <div class="input-grid">
+                <div class="input-row">
+                  <div class="input-group">
+                    <label class="text-sm font-medium text-gray-700">Schriftart</label>
+                    <select x-model="fontFamily" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                      <option value="Arial">Arial</option>
+                      <option value="Helvetica">Helvetica</option>
+                      <option value="Times New Roman">Times New Roman</option>
+                      <option value="Courier New">Courier New</option>
+                    </select>
+                  </div>
                 </div>
-                <div class="input-group">
-                  <label for="text-font" class="text-sm font-medium text-gray-700">Schriftart</label>
-                  <select id="text-font" x-model="textFont" class="font-select mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                    <option value="Arial">Arial</option>
-                    <option value="Helvetica">Helvetica</option>
-                    <option value="Times New Roman">Times New Roman</option>
-                    <option value="Courier New">Courier New</option>
-                    <option value="Verdana">Verdana</option>
-                    <option value="Tahoma">Tahoma</option>
-                  </select>
+
+                <div class="input-row">
+                  <div class="input-group">
+                    <label class="text-sm font-medium text-gray-700">Schriftgröße (pt)</label>
+                    <input type="number" x-model="fontSize" 
+                      class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
+                      min="6" step="0.5" value="11" />
+                  </div>
                 </div>
-                <div class="input-group">
-                  <label for="text-weight" class="text-sm font-medium text-gray-700">Schriftstärke</label>
-                  <select id="text-weight" x-model="textWeight" class="font-weight-select mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                    <option value="normal">Normal</option>
-                    <option value="bold">Fett</option>
-                    <option value="lighter">Leicht</option>
-                    <option value="500">Medium</option>
-                    <option value="600">Semi-Bold</option>
-                    <option value="800">Extra-Bold</option>
-                  </select>
+
+                <div class="input-row">
+                  <div class="input-group">
+                    <label class="text-sm font-medium text-gray-700">Schriftstärke</label>
+                    <select x-model="fontWeight" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                      <option value="normal">Normal</option>
+                      <option value="bold">Fett</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="input-row">
+                  <div class="input-group">
+                    <label class="text-sm font-medium text-gray-700">QR-Code Abstand (mm)</label>
+                    <input type="number" x-model="qrCodeSpacing" 
+                      class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
+                      min="0" step="0.1" value="0.6" />
+                  </div>
                 </div>
               </div>
-          </div>
+            </div>
 
             <!-- Action Buttons -->
             <div class="action-buttons">
@@ -904,6 +917,7 @@
           textSize: '12',
           textFont: 'Tahoma',
           textWeight: 'normal',
+          qrCodeSpacing: 0.6,
           // Neue Variablen für Soll- und Ist-Werte
           targetWidth: 25.35,   // Neue Etikettenbreite
           targetHeight: 10.0,   // Neue Etikettenhöhe
@@ -934,6 +948,9 @@
           isOverflowingRight: false,
           isOverflowingBottom: false,
           marginCalculationDetails: null,
+          fontFamily: 'Arial',
+          fontSize: 11,
+          fontWeight: 'normal',
 
           calculateMargins() {
             // Berechne den tatsächlichen rechten Rand basierend auf den Etiketten-Parametern
@@ -1058,9 +1075,10 @@
             root.style.setProperty('--padding-left', `${this.paddingLeft}mm`);
             root.style.setProperty('--gap-vertical', `${this.gapVertical}mm`);
             root.style.setProperty('--gap-horizontal', `${this.gapHorizontal}mm`);
-            root.style.setProperty('--text-size', `${this.textSize}px`);
-            root.style.setProperty('--text-font', this.textFont);
-            root.style.setProperty('--text-weight', this.textWeight);
+            root.style.setProperty('--text-size', `${this.fontSize}pt`);
+            root.style.setProperty('--text-font', this.fontFamily);
+            root.style.setProperty('--text-weight', this.fontWeight);
+            root.style.setProperty('--qr-code-spacing', `${this.qrCodeSpacing}mm`);
             
             // Setze die Grid-Templates für beide Container
             const columnsStyle = `repeat(${this.labelsPerRow}, 25.61mm)`;
@@ -1236,7 +1254,7 @@
 
           const config = {
             metadata: {
-              version: document.querySelector('.text-gray-600').textContent || "v0.909",
+              version: document.querySelector('.text-gray-600').textContent || "v0.910",
               description: "Configuration file for the ASN QR Code Label Generator",
               created: new Date().toISOString(),
               purpose: "This file contains the settings for the QR code label layout, " +

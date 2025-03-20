@@ -543,6 +543,10 @@
             <button onclick="saveConfig()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
               Konfiguration Speichern
             </button>
+            <label class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded cursor-pointer">
+              Konfiguration Laden
+              <input type="file" id="configUpload" accept=".json" class="hidden" onchange="loadConfig(event)">
+            </label>
             <button onclick="resetConfig()" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
               Auf Standard zurücksetzen
             </button>
@@ -1187,43 +1191,8 @@
       // Setze die Konfiguration auf die Standardwerte zurück
       async function resetConfig() {
         try {
-          if (!defaultConfig) {
-            defaultConfig = await loadDefaultConfig();
-          }
-          if (!defaultConfig) {
-            throw new Error('Standardkonfiguration konnte nicht geladen werden');
-          }
-
-          // Setze alle Eingabefelder auf die Standardwerte
-          document.getElementById('marginTopTarget').value = defaultConfig.pageMargins.top.target;
-          document.getElementById('marginTopActual').value = defaultConfig.pageMargins.top.actual;
-          document.getElementById('marginBottomTarget').value = defaultConfig.pageMargins.bottom.target;
-          document.getElementById('marginBottomActual').value = defaultConfig.pageMargins.bottom.actual;
-          document.getElementById('marginLeftTarget').value = defaultConfig.pageMargins.left.target;
-          document.getElementById('marginLeftActual').value = defaultConfig.pageMargins.left.actual;
-          document.getElementById('marginRightTarget').value = defaultConfig.pageMargins.right.target;
-          document.getElementById('marginRightActual').value = defaultConfig.pageMargins.right.actual;
-          
-          document.getElementById('labelWidthTarget').value = defaultConfig.labelDimensions.width.target;
-          document.getElementById('labelWidthActual').value = defaultConfig.labelDimensions.width.actual;
-          document.getElementById('labelHeightTarget').value = defaultConfig.labelDimensions.height.target;
-          document.getElementById('labelHeightActual').value = defaultConfig.labelDimensions.height.actual;
-          
-          document.getElementById('labelsPerRow').value = defaultConfig.labelCount.labelsPerRow;
-          document.getElementById('numberOfRows').value = defaultConfig.labelCount.numberOfRows;
-          
-          document.getElementById('horizontalSpacing').value = defaultConfig.spacing.horizontal;
-          document.getElementById('verticalSpacing').value = defaultConfig.spacing.vertical;
-
-          // Speichere die Standardwerte auch im localStorage
-          localStorage.setItem('labelConfig', JSON.stringify(defaultConfig));
-          
-          // Aktualisiere die Anzeige
-          const alpineApp = document.querySelector('[x-data]').__x.$data;
-          alpineApp.generateLabels();
-          
-          showNotification('✓ Konfiguration wurde auf Standardwerte zurückgesetzt');
-          console.log('Zurückgesetzte Konfiguration:', defaultConfig);
+          // Lade die Seite neu
+          window.location.reload();
         } catch (error) {
           console.error('Fehler beim Zurücksetzen:', error);
           showNotification('Fehler beim Zurücksetzen der Konfiguration', 'error');
@@ -1305,6 +1274,84 @@
 
       // Füge Event Listener hinzu
       document.addEventListener('DOMContentLoaded', initConfig);
+
+      // Lade die hochgeladene Konfigurationsdatei
+      function loadConfig(event) {
+        const file = event.target.files[0];
+        if (!file) {
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          try {
+            const config = JSON.parse(e.target.result);
+            const alpineApp = document.querySelector('[x-data]').__x.$data;
+            
+            // Setze die Werte direkt im Alpine.js Datenmodell
+            if (config.pageMargins) {
+              alpineApp.targetPaddingTop = config.pageMargins.top.target;
+              alpineApp.actualPaddingTop = config.pageMargins.top.actual;
+              alpineApp.targetPaddingBottom = config.pageMargins.bottom.target;
+              alpineApp.actualPaddingBottom = config.pageMargins.bottom.actual;
+              alpineApp.targetPaddingLeft = config.pageMargins.left.target;
+              alpineApp.actualPaddingLeft = config.pageMargins.left.actual;
+              alpineApp.targetPaddingRight = config.pageMargins.right.target;
+              alpineApp.actualPaddingRight = config.pageMargins.right.actual;
+            }
+
+            if (config.labelDimensions) {
+              alpineApp.targetWidth = config.labelDimensions.width.target;
+              alpineApp.actualWidth = config.labelDimensions.width.actual;
+              alpineApp.targetHeight = config.labelDimensions.height.target;
+              alpineApp.actualHeight = config.labelDimensions.height.actual;
+            }
+
+            if (config.labelCount) {
+              alpineApp.labelsPerRow = config.labelCount.labelsPerRow;
+              alpineApp.maxRows = config.labelCount.numberOfRows;
+            }
+
+            if (config.spacing) {
+              alpineApp.targetGapHorizontal = config.spacing.horizontal;
+              alpineApp.targetGapVertical = config.spacing.vertical;
+              alpineApp.gapHorizontal = config.spacing.horizontal;
+              alpineApp.gapVertical = config.spacing.vertical;
+            }
+
+            if (config.text) {
+              alpineApp.textSize = config.text.fontSize;
+              alpineApp.textFont = config.text.fontFamily;
+              alpineApp.textWeight = config.text.fontWeight || 'normal';
+            }
+
+            // Berechne die Skalierungsfaktoren neu
+            alpineApp.calculateScaling();
+            alpineApp.calculatePaddingScaling();
+            
+            // Generiere die Labels neu
+            alpineApp.generateLabels();
+
+            showNotification('✓ Konfiguration wurde erfolgreich geladen');
+            console.log('Geladene Konfiguration:', config);
+
+            // Setze das Datei-Input zurück
+            event.target.value = '';
+          } catch (error) {
+            console.error('Fehler beim Laden der Konfiguration:', error);
+            showNotification('Fehler beim Laden der Konfigurationsdatei', 'error');
+            event.target.value = '';
+          }
+        };
+
+        reader.onerror = function() {
+          console.error('Fehler beim Lesen der Datei');
+          showNotification('Fehler beim Lesen der Datei', 'error');
+          event.target.value = '';
+        };
+
+        reader.readAsText(file);
+      }
     </script>
   </body>
 </html>

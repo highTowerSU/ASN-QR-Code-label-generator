@@ -491,9 +491,18 @@
     <div class="main-layout">
       <div class="form-container">
         <div class="container mx-auto print-hidden">
-          <div class="flex justify-between items-center mb-3">
-            <h1 class="text-xl font-bold">QR Code Label Generator</h1>
-            <span class="text-sm text-gray-600">v0.908</span>
+          <div class="flex justify-between items-center mb-4">
+            <h1 class="text-xl font-bold">ASN QR-Code Etiketten Generator</h1>
+            <span class="text-sm text-gray-600">v0.909</span>
+          </div>
+
+          <div class="flex gap-4 mb-4">
+            <button onclick="saveConfig()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+              Konfiguration Speichern
+            </button>
+            <button onclick="resetConfig()" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+              Auf Standard zurücksetzen
+            </button>
           </div>
           <form @submit.prevent="generateLabels()">
             <!-- QR Code Configuration -->
@@ -972,6 +981,223 @@
           },
         };
       }
+
+      let defaultConfig = null;
+
+      // Lade die Standardkonfiguration
+      async function loadDefaultConfig() {
+        try {
+          console.log('Versuche config.json zu laden...');
+          const response = await fetch('./config.json');
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          console.log('config.json erfolgreich geladen');
+          const config = await response.json();
+          console.log('Geladene Konfiguration:', config);
+          defaultConfig = config;
+          return config;
+        } catch (error) {
+          console.error('Detaillierter Fehler beim Laden der Standardkonfiguration:', error);
+          // Fallback: Verwende hartcodierte Standardwerte
+          const fallbackConfig = {
+            "pageMargins": {
+              "top": {
+                "target": 12.63,
+                "actual": 12.63
+              },
+              "bottom": {
+                "target": 13.87,
+                "actual": 13.87
+              },
+              "left": {
+                "target": 9.90,
+                "actual": 9.90
+              },
+              "right": {
+                "target": 8.36,
+                "actual": 8.36
+              }
+            },
+            "labelDimensions": {
+              "width": {
+                "target": 25.61,
+                "actual": 25.61
+              },
+              "height": {
+                "target": 10.06,
+                "actual": 10.06
+              }
+            },
+            "labelCount": {
+              "labelsPerRow": 7,
+              "numberOfRows": 27
+            },
+            "spacing": {
+              "horizontal": 2.63,
+              "vertical": 0
+            },
+            "qrCode": {
+              "width": 9,
+              "height": 9,
+              "marginLeft": 0.5
+            },
+            "text": {
+              "fontSize": 11,
+              "fontFamily": "Arial",
+              "maxWidth": 14,
+              "paddingLeft": 1
+            }
+          };
+          console.log('Verwende Fallback-Konfiguration:', fallbackConfig);
+          defaultConfig = fallbackConfig;
+          return fallbackConfig;
+        }
+      }
+
+      // Lade die gespeicherte Konfiguration aus dem localStorage
+      function loadSavedConfig() {
+        const savedConfig = localStorage.getItem('labelConfig');
+        return savedConfig ? JSON.parse(savedConfig) : null;
+      }
+
+      // Speichere die aktuelle Konfiguration
+      function saveConfig() {
+        const config = {
+          pageMargins: {
+            top: {
+              target: parseFloat(document.getElementById('marginTopTarget').value),
+              actual: parseFloat(document.getElementById('marginTopActual').value)
+            },
+            bottom: {
+              target: parseFloat(document.getElementById('marginBottomTarget').value),
+              actual: parseFloat(document.getElementById('marginBottomActual').value)
+            },
+            left: {
+              target: parseFloat(document.getElementById('marginLeftTarget').value),
+              actual: parseFloat(document.getElementById('marginLeftActual').value)
+            },
+            right: {
+              target: parseFloat(document.getElementById('marginRightTarget').value),
+              actual: parseFloat(document.getElementById('marginRightActual').value)
+            }
+          },
+          labelDimensions: {
+            width: {
+              target: parseFloat(document.getElementById('labelWidthTarget').value),
+              actual: parseFloat(document.getElementById('labelWidthActual').value)
+            },
+            height: {
+              target: parseFloat(document.getElementById('labelHeightTarget').value),
+              actual: parseFloat(document.getElementById('labelHeightActual').value)
+            }
+          },
+          labelCount: {
+            labelsPerRow: parseInt(document.getElementById('labelsPerRow').value),
+            numberOfRows: parseInt(document.getElementById('numberOfRows').value)
+          },
+          spacing: {
+            horizontal: parseFloat(document.getElementById('horizontalSpacing').value),
+            vertical: parseFloat(document.getElementById('verticalSpacing').value)
+          }
+        };
+
+        localStorage.setItem('labelConfig', JSON.stringify(config));
+        alert('Konfiguration wurde gespeichert!');
+      }
+
+      // Setze die Konfiguration auf die Standardwerte zurück
+      async function resetConfig() {
+        if (!defaultConfig) {
+          defaultConfig = await loadDefaultConfig();
+        }
+        if (!defaultConfig) {
+          alert('Fehler: Standardkonfiguration konnte nicht geladen werden!');
+          return;
+        }
+
+        // Setze alle Eingabefelder auf die Standardwerte
+        document.getElementById('marginTopTarget').value = defaultConfig.pageMargins.top.target;
+        document.getElementById('marginTopActual').value = defaultConfig.pageMargins.top.actual;
+        document.getElementById('marginBottomTarget').value = defaultConfig.pageMargins.bottom.target;
+        document.getElementById('marginBottomActual').value = defaultConfig.pageMargins.bottom.actual;
+        document.getElementById('marginLeftTarget').value = defaultConfig.pageMargins.left.target;
+        document.getElementById('marginLeftActual').value = defaultConfig.pageMargins.left.actual;
+        document.getElementById('marginRightTarget').value = defaultConfig.pageMargins.right.target;
+        document.getElementById('marginRightActual').value = defaultConfig.pageMargins.right.actual;
+        
+        document.getElementById('labelWidthTarget').value = defaultConfig.labelDimensions.width.target;
+        document.getElementById('labelWidthActual').value = defaultConfig.labelDimensions.width.actual;
+        document.getElementById('labelHeightTarget').value = defaultConfig.labelDimensions.height.target;
+        document.getElementById('labelHeightActual').value = defaultConfig.labelDimensions.height.actual;
+        
+        document.getElementById('labelsPerRow').value = defaultConfig.labelCount.labelsPerRow;
+        document.getElementById('numberOfRows').value = defaultConfig.labelCount.numberOfRows;
+        
+        document.getElementById('horizontalSpacing').value = defaultConfig.spacing.horizontal;
+        document.getElementById('verticalSpacing').value = defaultConfig.spacing.vertical;
+
+        // Speichere die Standardwerte auch im localStorage
+        localStorage.setItem('labelConfig', JSON.stringify(defaultConfig));
+        alert('Konfiguration wurde auf Standardwerte zurückgesetzt!');
+        
+        // Aktualisiere die Anzeige
+        updateDisplay();
+      }
+
+      // Initialisiere die Konfiguration beim Laden der Seite
+      async function initConfig() {
+        console.log('Starte Initialisierung...');
+        
+        // Lade zuerst die Standardkonfiguration
+        const defaultConf = await loadDefaultConfig();
+        console.log('Standardkonfiguration geladen:', defaultConf);
+        
+        // Versuche dann, die gespeicherte Konfiguration zu laden
+        const savedConfig = loadSavedConfig();
+        console.log('Gespeicherte Konfiguration:', savedConfig);
+        
+        // Verwende die gespeicherte Konfiguration oder die Standardkonfiguration
+        const config = savedConfig || defaultConf;
+        console.log('Verwende Konfiguration:', config);
+        
+        if (config) {
+          try {
+            // Setze alle Eingabefelder auf die geladenen Werte
+            document.getElementById('marginTopTarget').value = config.pageMargins.top.target;
+            document.getElementById('marginTopActual').value = config.pageMargins.top.actual;
+            document.getElementById('marginBottomTarget').value = config.pageMargins.bottom.target;
+            document.getElementById('marginBottomActual').value = config.pageMargins.bottom.actual;
+            document.getElementById('marginLeftTarget').value = config.pageMargins.left.target;
+            document.getElementById('marginLeftActual').value = config.pageMargins.left.actual;
+            document.getElementById('marginRightTarget').value = config.pageMargins.right.target;
+            document.getElementById('marginRightActual').value = config.pageMargins.right.actual;
+            
+            document.getElementById('labelWidthTarget').value = config.labelDimensions.width.target;
+            document.getElementById('labelWidthActual').value = config.labelDimensions.width.actual;
+            document.getElementById('labelHeightTarget').value = config.labelDimensions.height.target;
+            document.getElementById('labelHeightActual').value = config.labelDimensions.height.actual;
+            
+            document.getElementById('labelsPerRow').value = config.labelCount.labelsPerRow;
+            document.getElementById('numberOfRows').value = config.labelCount.numberOfRows;
+            
+            document.getElementById('horizontalSpacing').value = config.spacing.horizontal;
+            document.getElementById('verticalSpacing').value = config.spacing.vertical;
+            
+            console.log('Alle Werte wurden gesetzt');
+            
+            // Aktualisiere die Anzeige
+            updateDisplay();
+          } catch (error) {
+            console.error('Fehler beim Setzen der Werte:', error);
+          }
+        } else {
+          console.error('Keine Konfiguration verfügbar');
+        }
+      }
+
+      // Füge Event Listener hinzu
+      document.addEventListener('DOMContentLoaded', initConfig);
     </script>
   </body>
 </html>

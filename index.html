@@ -758,7 +758,7 @@
                 <div class="column-headers">
                   <div class="column-header">Parameter</div>
                   <div class="column-header">Wert</div>
-                  <div class="column-header"></div>
+                  <div class="column-header">Berechnete Ränder</div>
                 </div>
 
                 <div class="input-row">
@@ -767,10 +767,11 @@
                   </div>
                   <div class="input-group">
                     <input type="number" x-model="labelsPerRow" 
-                      class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
-                      min="1" step="1" @input="generateLabels()" />
+                      class="mt-1 block rounded-md border-blue-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
+                      min="1" step="1" @input="calculateMargins()" />
                   </div>
                   <div class="input-group">
+                    <div class="text-sm text-blue-600 mt-1">Rechts: [<span x-text="calculatedRightMargin.toFixed(2)"></span>mm]</div>
                   </div>
                 </div>
 
@@ -780,10 +781,11 @@
                   </div>
                   <div class="input-group">
                     <input type="number" x-model="maxRows" 
-                      class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
-                      min="1" step="1" @input="generateLabels()" />
+                      class="mt-1 block rounded-md border-blue-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
+                      min="1" step="1" @input="calculateMargins()" />
                   </div>
                   <div class="input-group">
+                    <div class="text-sm text-blue-600 mt-1">Unten: [<span x-text="calculatedBottomMargin.toFixed(2)"></span>mm]</div>
                   </div>
                 </div>
               </div>
@@ -841,7 +843,6 @@
           <div class="padding-visualization"></div>
           <div class="padding-label padding-top">
             <div x-text="targetPaddingTop + 'mm'" class="mb-1 text-red-600"></div>
-            <div x-text="'[' + paddingTop + 'mm]'" class="text-blue-600 text-xs"></div>
           </div>
           <div class="padding-label padding-bottom">
             <div x-text="targetPaddingBottom + 'mm'" class="mb-1 text-red-600"></div>
@@ -849,7 +850,6 @@
           </div>
           <div class="padding-label padding-left">
             <div x-text="targetPaddingLeft + 'mm'" class="mb-1 text-red-600"></div>
-            <div x-text="'[' + paddingLeft + 'mm]'" class="text-blue-600 text-xs"></div>
           </div>
           <div class="padding-label padding-right">
             <div x-text="targetPaddingRight + 'mm'" class="mb-1 text-red-600"></div>

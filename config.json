@@ -1,0 +1,49 @@
+{
+  "pageMargins": {
+    "top": {
+      "target": 13.14,
+      "actual": 13.14
+    },
+    "bottom": {
+      "target": 13.7,
+      "actual": 13.7
+    },
+    "left": {
+      "target": 8.4,
+      "actual": 8.4
+    },
+    "right": {
+      "target": 8.5,
+      "actual": 8.5
+    }
+  },
+  "labelDimensions": {
+    "width": {
+      "target": 25.35,
+      "actual": 25.35
+    },
+    "height": {
+      "target": 10.0,
+      "actual": 10.0
+    }
+  },
+  "labelCount": {
+    "labelsPerRow": 7,
+    "numberOfRows": 27
+  },
+  "spacing": {
+    "horizontal": 2.5,
+    "vertical": 0
+  },
+  "qrCode": {
+    "width": 9,
+    "height": 9,
+    "marginLeft": 0.5
+  },
+  "text": {
+    "fontSize": 11,
+    "fontFamily": "Arial",
+    "maxWidth": 14,
+    "paddingLeft": 1
+  }
+} 

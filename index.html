@@ -37,13 +37,15 @@
         @page {
           size: 210mm 297mm;
           margin: 0;
+          padding: 0;
         }
         
         html, body {
-          margin: 0;
-          padding: 0;
+          margin: 0 !important;
+          padding: 0 !important;
           width: 210mm;
           height: 297mm;
+          position: relative;
         }
 
         .print-hidden {
@@ -52,7 +54,9 @@
 
         .print-only {
           display: block !important;
-          position: relative !important;
+          position: absolute !important;
+          top: 0 !important;
+          left: 0 !important;
           margin: 0 !important;
           padding: 0 !important;
           width: 210mm;
@@ -61,41 +65,55 @@
 
         .print-only .page {
           position: absolute !important;
+          top: 13.14mm !important;    /* Neuer oberer Rand */
+          left: 8.4mm !important;     /* Neuer linker Rand */
           margin: 0 !important;
           padding: 0 !important;
-          top: 12.63mm !important;    /* Fester oberer Rand */
-          left: 9.90mm !important;    /* Fester linker Rand */
-          width: calc(210mm - 9.90mm - 8.36mm) !important;  /* Feste Breite */
-          height: calc(297mm - 12.63mm - 13.87mm) !important;  /* Feste Höhe */
-          transform: none !important;
+          width: calc(210mm - 8.4mm - 8.5mm) !important;  /* Neue Gesamtbreite minus linker und rechter Rand */
+          height: calc(297mm - 13.14mm - 13.7mm) !important;  /* Neue Gesamthöhe minus oberer und unterer Rand */
+          display: grid !important;
+          grid-template-columns: repeat(7, 25.35mm) !important;  /* Neue Etikettenbreite */
+          grid-template-rows: repeat(27, 10.0mm) !important;     /* Neue Etikettenhöhe */
+          gap: 0mm 2.5mm !important;  /* Neuer horizontaler Abstand */
           box-sizing: border-box !important;
+          transform: none !important;
+          background: none !important;
         }
 
         .print-only .label {
           margin: 0 !important;
           padding: 0 !important;
-          width: 25.61mm !important;
-          height: 10.06mm !important;
+          width: 25.35mm !important;  /* Neue Etikettenbreite */
+          height: 10.0mm !important;  /* Neue Etikettenhöhe */
+          display: flex !important;
+          align-items: center !important;
+          justify-content: flex-start !important;
+          box-sizing: border-box !important;
+          background: none !important;
         }
 
         .print-only .qr-code {
-          width: 9mm;
-          height: 9mm;
-          margin-left: 0.5mm;
+          width: 9mm !important;
+          height: 9mm !important;
+          margin: 0 0 0 0.5mm !important;
+          padding: 0 !important;
         }
 
         .print-only .text {
-          flex: 1;
-          font-size: var(--text-size, 11px);
-          font-family: var(--text-font, Arial);
-          font-weight: var(--text-weight, normal);
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          text-align: left;
-          padding-left: 1mm;
-          max-width: 14mm;
-          line-height: 1;
+          margin: 0 !important;
+          padding: 0 0 0 1mm !important;
+          font-size: var(--text-size, 11px) !important;
+          line-height: 1 !important;
+          white-space: nowrap !important;
+          overflow: hidden !important;
+          text-overflow: ellipsis !important;
+          max-width: 14mm !important;
+        }
+
+        /* Entferne alle anderen möglichen Einflüsse */
+        .container, .form-container, form {
+          margin: 0 !important;
+          padding: 0 !important;
         }
       }
 
@@ -772,36 +790,36 @@
           leadingZeros: 4,
           showPrefix: true,
           showBorder: true,
-          paddingTop: 12.63,    // Korrigierter oberer Rand (13.33mm - 0.7mm)
-          paddingRight: 8.36,   // Gemessener rechter Rand
-          paddingBottom: 13.87, // Gemessener unterer Rand
-          paddingLeft: 9.90,    // Korrigierter linker Rand (8.42mm + 1.48mm)
-          gapVertical: 0,       // Gemessener vertikaler Abstand
-          gapHorizontal: 2.63,  // Gemessener horizontaler Abstand
+          paddingTop: 13.14,    // Neuer oberer Rand
+          paddingRight: 8.5,    // Neuer rechter Rand
+          paddingBottom: 13.7,  // Neuer unterer Rand
+          paddingLeft: 8.4,     // Neuer linker Rand
+          gapVertical: 0,       // Vertikaler Abstand
+          gapHorizontal: 2.5,   // Neuer horizontaler Abstand
           labels: [],
           textSize: '12',
           textFont: 'Tahoma',
           textWeight: 'normal',
           // Neue Variablen für Soll- und Ist-Werte
-          targetWidth: 25.61,
-          targetHeight: 10.06,
-          targetGapHorizontal: 2.63,
+          targetWidth: 25.35,   // Neue Etikettenbreite
+          targetHeight: 10.0,   // Neue Etikettenhöhe
+          targetGapHorizontal: 2.5,  // Neuer horizontaler Abstand
           targetGapVertical: 0,
-          actualWidth: 25.61,      // Mit Soll-Wert initialisiert
-          actualHeight: 10.06,     // Mit Soll-Wert initialisiert
-          actualGapHorizontal: 2.63, // Mit Soll-Wert initialisiert
+          actualWidth: 25.35,      // Mit Soll-Wert initialisiert
+          actualHeight: 10.0,      // Mit Soll-Wert initialisiert
+          actualGapHorizontal: 2.5,  // Mit Soll-Wert initialisiert
           actualGapVertical: 0,    // Mit Soll-Wert initialisiert
           scalingFactorX: null,
           scalingFactorY: null,
           // Neue Variablen für Soll- und Ist-Werte der Ränder
-          targetPaddingTop: 12.63,
-          targetPaddingBottom: 13.87,
-          targetPaddingLeft: 9.90,
-          targetPaddingRight: 8.36,
-          actualPaddingTop: 12.63,    // Mit Soll-Wert initialisiert
-          actualPaddingBottom: 13.87, // Mit Soll-Wert initialisiert
-          actualPaddingLeft: 9.90,    // Mit Soll-Wert initialisiert
-          actualPaddingRight: 8.36,   // Mit Soll-Wert initialisiert
+          targetPaddingTop: 13.14,    // Neuer oberer Rand
+          targetPaddingBottom: 13.7,  // Neuer unterer Rand
+          targetPaddingLeft: 8.4,     // Neuer linker Rand
+          targetPaddingRight: 8.5,    // Neuer rechter Rand
+          actualPaddingTop: 13.14,    // Mit Soll-Wert initialisiert
+          actualPaddingBottom: 13.7,  // Mit Soll-Wert initialisiert
+          actualPaddingLeft: 8.4,     // Mit Soll-Wert initialisiert
+          actualPaddingRight: 8.5,    // Mit Soll-Wert initialisiert
           paddingScalingX: null,
           paddingScalingY: null,
           // Neue Variablen für die Etikettenanzahl
@@ -1003,30 +1021,30 @@
           const fallbackConfig = {
             "pageMargins": {
               "top": {
-                "target": 12.63,
-                "actual": 12.63
+                "target": 13.14,
+                "actual": 13.14
               },
               "bottom": {
-                "target": 13.87,
-                "actual": 13.87
+                "target": 13.7,
+                "actual": 13.7
               },
               "left": {
-                "target": 9.90,
-                "actual": 9.90
+                "target": 8.4,
+                "actual": 8.4
               },
               "right": {
-                "target": 8.36,
-                "actual": 8.36
+                "target": 8.5,
+                "actual": 8.5
               }
             },
             "labelDimensions": {
               "width": {
-                "target": 25.61,
-                "actual": 25.61
+                "target": 25.35,
+                "actual": 25.35
               },
               "height": {
-                "target": 10.06,
-                "actual": 10.06
+                "target": 10.0,
+                "actual": 10.0
               }
             },
             "labelCount": {
@@ -1034,7 +1052,7 @@
               "numberOfRows": 27
             },
             "spacing": {
-              "horizontal": 2.63,
+              "horizontal": 2.5,
               "vertical": 0
             },
             "qrCode": {

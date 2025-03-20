@@ -46,4 +46,4 @@ MIT License - See LICENSE file for details
 ## Author
 
 Original implementation by Tobias Maier
-GitHub Repository: [Your GitHub Username]
+GitHub Repository: [muguu](https://github.com/muguu/ASN-QR-Code-label-generator)

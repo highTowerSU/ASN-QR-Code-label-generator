@@ -109,6 +109,43 @@ The system automatically calculates scaling factors to compensate for printer va
 - Check spacing between labels
 - Verify margins on all sides
 
+## Printing Setup and Configuration
+
+### Critical Print Settings
+- Ensure printer scaling is set to 100% (no automatic scaling)
+- Set appropriate media type:
+  - "Labels" if available
+  - "Thick Paper" or "Card Stock" as alternative
+  - Avoid "Plain Paper" setting
+- Disable any automatic adjustments or "Fit to Page" options
+- For duplex printers: Select single-sided printing
+
+### Browser Print Settings
+- Use the browser's print dialog (⌘P or Ctrl+P)
+- Set margins to "None" or "Minimum"
+- Ensure "Scale" is set to 100%
+- Disable headers and footers
+- Select "Color" even for black/white printing to ensure proper QR code contrast
+
+### Tested Configurations
+
+#### Example Setup 1 (Verified Working)
+- Operating System: macOS 15.3.2 (24D81)
+- Browser: Safari
+- Printer: Brother MFC-L2740DW series
+- Labels: Avery L4731REV-25
+- Print Settings:
+  - Media Type: Labels
+  - Resolution: HQ 1200dpi
+  - Scaling: 100%
+  - Toner Save Mode: Off
+
+#### Additional Tips
+- Perform a test print on plain paper first
+- Hold test print against label sheet to verify alignment
+- Save working printer settings for future use
+- Consider creating a dedicated printer preset
+
 ## Usage
 
 1. Open `index.html` in your web browser

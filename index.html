@@ -11,7 +11,15 @@
       @media print {
         @page {
           size: 210mm 297mm;
-          margin: 12mm 6mm 9mm 6mm; /* Erzwingt Ränder oben, rechts, unten, links */
+          margin: 0;
+          bleed: 0;
+          marks: none;
+          page-break-inside: avoid;
+        }
+        html {
+          zoom: 100%;
+          -webkit-print-scale-adjust: exact;
+          print-scale-adjust: exact;
         }
         body, html {
           width: 210mm;
@@ -20,28 +28,68 @@
           padding: 0;
           overflow: hidden;
           -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
+          page-break-before: avoid;
+          page-break-after: avoid;
+          page-break-inside: avoid;
+          orphans: 2;
+          widows: 2;
         }
         .print-hidden {
           display: none;
         }
+        .page {
+          margin: 0;
+          padding: 0;
+          position: fixed;
+          top: 0;
+          left: 0;
+          transform-origin: top left;
+          transform: scale(1.013);
+          break-inside: avoid;
+          break-before: page;
+          page-break-before: always;
+          page: auto;
+        }
+        .page-preview {
+          margin: 0;
+          padding: 0;
+          box-shadow: none;
+        }
+        * {
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
+          color-adjust: exact !important;
+        }
       }
       .page {
+        --mm-to-px: 3.779528;
+        --label-width-px: calc(25.61mm * 1.013 * var(--mm-to-px));
+        --label-height-px: calc(10.06mm * 1.010 * var(--mm-to-px));
+        --gap-horizontal-px: calc(var(--gap-horizontal, 2.63) * var(--mm-to-px));
+        --gap-vertical-px: calc(var(--gap-vertical, 0) * var(--mm-to-px));
+        --total-width-px: calc((7 * var(--label-width-px)) + (6 * var(--gap-horizontal-px)));
+        --total-height-px: calc(27 * var(--label-height-px));
+        
         width: calc(210mm - var(--padding-left) - var(--padding-right));
         height: calc(297mm - var(--padding-top) - var(--padding-bottom));
         box-sizing: border-box;
         display: grid;
-        grid-template-columns: repeat(7, 25.4mm);
-        grid-template-rows: repeat(27, 10mm);
-        gap: var(--gap-vertical, 0mm) var(--gap-horizontal, 0mm);
+        grid-template-columns: repeat(7, calc(25.61mm * 1.013));
+        grid-template-rows: repeat(27, calc(10.06mm * 1.010));
+        gap: var(--gap-vertical, 0mm) var(--gap-horizontal, 2.63mm);
         justify-content: start;
         align-content: start;
         position: absolute;
-        top: var(--padding-top);
-        left: var(--padding-left);
+        top: calc(var(--padding-top) - 31.83mm);
+        left: calc(var(--padding-left) - 10.05mm);
+        background-color: white;
+        margin: 0;
+        padding: 0;
       }
       .label {
-        width: 25.4mm;
-        height: 10mm;
+        width: calc(25.61mm * 1.013);
+        height: calc(10.06mm * 1.010);
         display: flex;
         align-items: center;
         justify-content: flex-start;
@@ -49,7 +97,8 @@
         padding: 0mm;
         box-sizing: border-box;
         overflow: hidden;
-        margin-left: 0;
+        margin: 0;
+        background-color: white;
       }
       .qr-code {
         width: 9mm;
@@ -61,7 +110,9 @@
       }
       .text {
         flex: 1;
-        font-size: 11px;
+        font-size: var(--text-size, 11px);
+        font-family: var(--text-font, Arial);
+        font-weight: var(--text-weight, normal);
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -77,10 +128,15 @@
         margin: 20px auto;
         width: 210mm;
         height: 297mm;
+        overflow: visible;
+        background-color: white;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
       }
       
       .a4-border {
         position: absolute;
+        top: 0;
+        left: 0;
         width: 210mm;
         height: 297mm;
         border: 2px solid #000;
@@ -108,6 +164,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        z-index: 10;
       }
       
       .padding-top {
@@ -129,6 +186,11 @@
         left: 0;
         width: var(--padding-left);
         height: calc(297mm - var(--padding-top) - var(--padding-bottom));
+        writing-mode: vertical-rl;
+        transform: rotate(180deg);
+        display: flex;
+        justify-content: center;
+        align-items: center;
       }
       
       .padding-right {
@@ -136,14 +198,24 @@
         right: 0;
         width: var(--padding-right);
         height: calc(297mm - var(--padding-top) - var(--padding-bottom));
+        writing-mode: vertical-rl;
+        transform: rotate(180deg);
+        display: flex;
+        justify-content: center;
+        align-items: center;
       }
       
       /* Container für die Vorschau */
       .preview-container {
         display: flex;
         flex-direction: column;
+        align-items: center;
         margin-top: 2rem;
         margin-bottom: 2rem;
+        position: relative;
+        width: 100%;
+        overflow-x: auto;
+        padding: 20px;
       }
       
       .main-layout {
@@ -160,10 +232,26 @@
 
       /* Neue Styles für die Eingabefelder */
       .number-input {
-        width: 80px !important;
+        width: 100px !important;
+        padding: 0.25rem 0.5rem !important;
+        text-align: right;
       }
 
       .prefix-input {
+        width: 100px !important;
+        padding: 0.25rem 0.5rem !important;
+      }
+
+      .text-size-input {
+        width: 100px !important;
+        text-align: right;
+      }
+
+      .font-select {
+        width: 140px !important;
+      }
+
+      .font-weight-select {
         width: 120px !important;
       }
 
@@ -176,7 +264,24 @@
       .input-group {
         display: flex;
         flex-direction: column;
-        align-items: flex-start;
+        gap: 0.25rem;
+        min-width: fit-content;
+      }
+      
+      .input-group label {
+        font-size: 0.75rem;
+        color: #4b5563;
+        white-space: nowrap;
+      }
+      
+      .input-group input[type="number"] {
+        -moz-appearance: textfield;
+      }
+      
+      .input-group input[type="number"]::-webkit-inner-spin-button,
+      .input-group input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
       }
       
       /* Angepasste Styles für Abstände */
@@ -415,6 +520,39 @@
               </div>
             </div>
 
+            <!-- Neue Sektion für Textformatierung -->
+            <div class="section-group">
+              <h3 class="section-title">Textformatierung</h3>
+              <div class="input-grid input-grid-4">
+                <div class="input-group">
+                  <label for="text-size" class="text-sm font-medium text-gray-700">Schriftgröße (px)</label>
+                  <input type="number" id="text-size" x-model="textSize" class="text-size-input mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" min="6" max="20" step="0.5">
+                </div>
+                <div class="input-group">
+                  <label for="text-font" class="text-sm font-medium text-gray-700">Schriftart</label>
+                  <select id="text-font" x-model="textFont" class="font-select mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    <option value="Arial">Arial</option>
+                    <option value="Helvetica">Helvetica</option>
+                    <option value="Times New Roman">Times New Roman</option>
+                    <option value="Courier New">Courier New</option>
+                    <option value="Verdana">Verdana</option>
+                    <option value="Tahoma">Tahoma</option>
+                  </select>
+                </div>
+                <div class="input-group">
+                  <label for="text-weight" class="text-sm font-medium text-gray-700">Schriftstärke</label>
+                  <select id="text-weight" x-model="textWeight" class="font-weight-select mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    <option value="normal">Normal</option>
+                    <option value="bold">Fett</option>
+                    <option value="lighter">Leicht</option>
+                    <option value="500">Medium</option>
+                    <option value="600">Semi-Bold</option>
+                    <option value="800">Extra-Bold</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
             <!-- Action Buttons -->
             <div class="action-buttons">
               <button @click.prevent="generateLabels()" class="btn btn-primary">
@@ -449,13 +587,16 @@
           leadingZeros: 4,
           showPrefix: true,
           showBorder: true,
-          paddingTop: 12,
-          paddingRight: 6,
-          paddingBottom: 9,
-          paddingLeft: 6,
-          gapVertical: 0,
-          gapHorizontal: 1.5,
+          paddingTop: 13.33,    // Gemessener oberer Rand
+          paddingRight: 8.36,   // Gemessener rechter Rand
+          paddingBottom: 13.87, // Gemessener unterer Rand
+          paddingLeft: 8.42,    // Gemessener linker Rand
+          gapVertical: 0,       // Gemessener vertikaler Abstand
+          gapHorizontal: 2.63,  // Gemessener horizontaler Abstand
           labels: [],
+          textSize: '12',
+          textFont: 'Tahoma',
+          textWeight: 'normal',
 
           generateLabels() {
             this.labels = [];
@@ -479,12 +620,22 @@
             container.style.setProperty('--label-border', this.showBorder ? '0.1mm solid black' : 'none');
             
             // Setze CSS-Variablen für Padding-Visualisierung
-            document.documentElement.style.setProperty('--padding-top', this.paddingTop + 'mm');
-            document.documentElement.style.setProperty('--padding-right', this.paddingRight + 'mm');
-            document.documentElement.style.setProperty('--padding-bottom', this.paddingBottom + 'mm');
-            document.documentElement.style.setProperty('--padding-left', this.paddingLeft + 'mm');
+            document.documentElement.style.setProperty('--padding-top', (this.paddingTop || 0) + 'mm');
+            document.documentElement.style.setProperty('--padding-right', (this.paddingRight || 0) + 'mm');
+            document.documentElement.style.setProperty('--padding-bottom', (this.paddingBottom || 0) + 'mm');
+            document.documentElement.style.setProperty('--padding-left', (this.paddingLeft || 0) + 'mm');
+            document.documentElement.style.setProperty('--text-size', this.textSize + 'px');
+            document.documentElement.style.setProperty('--text-font', this.textFont);
+            document.documentElement.style.setProperty('--text-weight', this.textWeight);
             
-            this.labels.forEach((label) => {
+            // Berechne die tatsächliche Anzahl der Labels basierend auf der verfügbaren Fläche
+            const availableWidth = 210 - (parseFloat(this.paddingLeft) || 0) - (parseFloat(this.paddingRight) || 0);
+            const availableHeight = 297 - (parseFloat(this.paddingTop) || 0) - (parseFloat(this.paddingBottom) || 0);
+            const labelsPerRow = 7;
+            const labelsPerColumn = 27;
+            const totalLabels = labelsPerRow * labelsPerColumn;
+            
+            this.labels.slice(0, totalLabels).forEach((label) => {
               let labelDiv = document.createElement("div");
               labelDiv.classList.add("label");
               let qrImg = document.createElement("img");
@@ -500,7 +651,32 @@
           },
 
           printLabels() {
-            window.print();
+            // Speichere aktuelle Scroll-Position
+            const scrollPos = window.scrollY;
+
+            // Setze optimale Druckeinstellungen
+            const style = document.createElement('style');
+            style.textContent = `
+              @page { size: 210mm 297mm; margin: 0; }
+              body { margin: 0; padding: 0; }
+              .page { page-break-after: always; }
+            `;
+            document.head.appendChild(style);
+
+            // Warte auf Bilder
+            Promise.all(
+              Array.from(document.images)
+                .filter(img => !img.complete)
+                .map(img => new Promise(resolve => {
+                  img.onload = img.onerror = resolve;
+                }))
+            ).then(() => {
+              window.print();
+              
+              // Cleanup
+              document.head.removeChild(style);
+              window.scrollTo(0, scrollPos);
+            });
           },
         };
       }

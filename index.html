@@ -174,8 +174,8 @@
       .page-preview {
         position: relative;
         margin: 20px auto;
-        width: 210mm;
-        height: 297mm;
+        width: var(--page-width);
+        height: var(--page-height);
         overflow: visible;
         background-color: white;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -185,8 +185,8 @@
         position: absolute;
         top: 0;
         left: 0;
-        width: 210mm;
-        height: 297mm;
+        width: var(--page-width);
+        height: var(--page-height);
         border: 2px solid #000;
         pointer-events: none;
         box-sizing: border-box;
@@ -194,8 +194,8 @@
       
       .padding-visualization {
         position: absolute;
-        width: calc(210mm - var(--padding-left) - var(--padding-right));
-        height: calc(297mm - var(--padding-top) - var(--padding-bottom));
+        width: calc(var(--page-width) - var(--padding-left) - var(--padding-right));
+        height: calc(var(--page-height) - var(--padding-top) - var(--padding-bottom));
         border: 2px dashed #ff0000;
         top: var(--padding-top);
         left: var(--padding-left);
@@ -218,14 +218,14 @@
       .padding-top {
         top: 0;
         left: var(--padding-left);
-        width: calc(210mm - var(--padding-left) - var(--padding-right));
+        width: calc(var(--page-width) - var(--padding-left) - var(--padding-right));
         height: var(--padding-top);
       }
       
       .padding-bottom {
         bottom: 0;
         left: var(--padding-left);
-        width: calc(210mm - var(--padding-left) - var(--padding-right));
+        width: calc(var(--page-width) - var(--padding-left) - var(--padding-right));
         height: var(--padding-bottom);
       }
       
@@ -233,7 +233,7 @@
         top: var(--padding-top);
         left: 0;
         width: var(--padding-left);
-        height: calc(297mm - var(--padding-top) - var(--padding-bottom));
+        height: calc(var(--page-height) - var(--padding-top) - var(--padding-bottom));
         writing-mode: vertical-rl;
         transform: rotate(180deg);
         display: flex;
@@ -245,7 +245,7 @@
         top: var(--padding-top);
         right: 0;
         width: var(--padding-right);
-        height: calc(297mm - var(--padding-top) - var(--padding-bottom));
+        height: calc(var(--page-height) - var(--padding-top) - var(--padding-bottom));
         writing-mode: vertical-rl;
         transform: rotate(180deg);
         display: flex;
@@ -535,20 +535,20 @@
       <div class="form-container">
     <div class="container mx-auto print-hidden">
           <div class="flex justify-between items-center mb-4">
-            <h1 class="text-xl font-bold">ASN QR-Code Etiketten Generator</h1>
-            <span class="text-sm text-gray-600">v0.910</span>
+            <h1 class="text-xl font-bold">ASN QR Code Label Generator</h1>
+            <span class="text-sm text-gray-600">v0.911</span>
           </div>
 
           <div class="flex gap-4 mb-4">
             <button onclick="saveConfig()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-              Konfiguration Speichern
+              Save Configuration
             </button>
             <label class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded cursor-pointer">
-              Konfiguration Laden
+              Load Configuration
               <input type="file" id="configUpload" accept=".json" class="hidden" onchange="loadConfig(event)">
             </label>
             <button onclick="resetConfig()" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
-              Auf Standard zurücksetzen
+              Reset to Default
             </button>
           </div>
           <form @submit.prevent="generateLabels()">
@@ -585,19 +585,74 @@
               </div>
             </div>
 
-            <!-- Page Margin Settings -->
-            <div class="section-group">
-              <h2 class="section-title">Seitenränder und Skalierung (mm)</h2>
+            <!-- Page Format Settings -->
+            <div class="section-group mb-6">
+              <h2 class="section-title">Page Format</h2>
               <div class="input-grid">
                 <div class="column-headers">
                   <div class="column-header">Parameter</div>
-                  <div class="column-header">Soll (mm)</div>
-                  <div class="column-header">Ist (mm)</div>
+                  <div class="column-header">Value</div>
+                  <div class="column-header">Dimensions</div>
                 </div>
 
                 <div class="input-row">
                   <div class="input-group">
-                    <label class="text-sm font-medium text-gray-700">Rand oben</label>
+                    <label class="text-sm font-medium text-gray-700">Page Format</label>
+                  </div>
+                  <div class="input-group">
+                    <select x-model="pageFormat" @change="updatePageFormat()" 
+                      class="mt-1 block w-full h-9 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                      <option value="A4">A4</option>
+                      <option value="A5">A5</option>
+                      <option value="Letter">US Letter</option>
+                      <option value="Legal">US Legal</option>
+                    </select>
+                  </div>
+                  <div class="input-group">
+                    <div class="text-sm text-gray-600 mt-1">
+                      Width: <span x-text="pageWidth"></span>mm × Height: <span x-text="pageHeight"></span>mm
+                    </div>
+                  </div>
+                </div>
+
+                <div class="input-row">
+                  <div class="input-group">
+                    <label class="text-sm font-medium text-gray-700">Orientation</label>
+                  </div>
+                  <div class="input-group">
+                    <select x-model="pageOrientation" @change="updatePageOrientation()" 
+                      class="mt-1 block w-full h-9 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                      <option value="portrait">Portrait</option>
+                      <option value="landscape">Landscape</option>
+                    </select>
+                  </div>
+                  <div class="input-group">
+                    <div class="text-sm text-gray-600 mt-1">
+                      <template x-if="pageOrientation === 'portrait'">
+                        Portrait Mode
+                      </template>
+                      <template x-if="pageOrientation === 'landscape'">
+                        Landscape Mode
+                      </template>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Page Margins Settings -->
+            <div class="section-group">
+              <h2 class="section-title">Page Margins</h2>
+              <div class="input-grid">
+                <div class="column-headers">
+                  <div class="column-header">Parameter</div>
+                  <div class="column-header">Target (mm)</div>
+                  <div class="column-header">Actual (mm)</div>
+                </div>
+
+                <div class="input-row">
+                  <div class="input-group">
+                    <label class="text-sm font-medium text-gray-700">Top Margin</label>
                   </div>
                   <div class="input-group">
                     <input type="number" x-model="targetPaddingTop" 
@@ -613,7 +668,7 @@
 
                 <div class="input-row">
                   <div class="input-group">
-                    <label class="text-sm font-medium text-gray-700">Rand unten</label>
+                    <label class="text-sm font-medium text-gray-700">Bottom Margin</label>
                   </div>
                   <div class="input-group">
                     <input type="number" x-model="targetPaddingBottom" 
@@ -629,7 +684,7 @@
 
                 <div class="input-row">
                   <div class="input-group">
-                    <label class="text-sm font-medium text-gray-700">Rand links</label>
+                    <label class="text-sm font-medium text-gray-700">Left Margin</label>
                   </div>
                   <div class="input-group">
                     <input type="number" x-model="targetPaddingLeft" 
@@ -645,7 +700,7 @@
 
                 <div class="input-row">
                   <div class="input-group">
-                    <label class="text-sm font-medium text-gray-700">Rand rechts</label>
+                    <label class="text-sm font-medium text-gray-700">Right Margin</label>
                   </div>
                   <div class="input-group">
                     <input type="number" x-model="targetPaddingRight" 
@@ -662,25 +717,25 @@
 
               <div class="mt-4 p-2 bg-gray-100 rounded">
                 <div class="flex justify-between items-center">
-                  <span class="font-bold text-sm">Berechneter Skalierungsfaktor für Ränder:</span>
-                  <span x-text="'Horizontal: ' + (paddingScalingX || '1.000') + ' / Vertikal: ' + (paddingScalingY || '1.000')" class="font-mono text-xs"></span>
+                  <span class="font-bold text-sm">Calculated Scaling Factor for Margins:</span>
+                  <span x-text="'Horizontal: ' + (paddingScalingX || '1.000') + ' / Vertical: ' + (paddingScalingY || '1.000')" class="font-mono text-xs"></span>
                 </div>
               </div>
             </div>
 
             <!-- Label Spacing Settings -->
             <div class="section-group">
-              <h2 class="section-title">Etikettenmaße und Skalierung</h2>
+              <h2 class="section-title">Label Dimensions</h2>
               <div class="input-grid">
                 <div class="column-headers">
                   <div class="column-header">Parameter</div>
-                  <div class="column-header">Soll (mm)</div>
-                  <div class="column-header">Ist (mm)</div>
+                  <div class="column-header">Target (mm)</div>
+                  <div class="column-header">Actual (mm)</div>
                 </div>
 
                 <div class="input-row">
                   <div class="input-group">
-                    <label class="text-sm font-medium text-gray-700">Etikettenbreite</label>
+                    <label class="text-sm font-medium text-gray-700">Label Width</label>
                   </div>
                   <div class="input-group">
                     <input type="number" x-model="targetWidth" 
@@ -696,7 +751,7 @@
 
                 <div class="input-row">
                   <div class="input-group">
-                    <label class="text-sm font-medium text-gray-700">Horizontaler Abstand</label>
+                    <label class="text-sm font-medium text-gray-700">Horizontal Gap</label>
                   </div>
                   <div class="input-group">
                     <input type="number" x-model="targetGapHorizontal" 
@@ -712,7 +767,7 @@
 
                 <div class="input-row">
                   <div class="input-group">
-                    <label class="text-sm font-medium text-gray-700">Etikettenhöhe</label>
+                    <label class="text-sm font-medium text-gray-700">Label Height</label>
                   </div>
                   <div class="input-group">
                     <input type="number" x-model="targetHeight" 
@@ -728,7 +783,7 @@
 
                 <div class="input-row">
                   <div class="input-group">
-                    <label class="text-sm font-medium text-gray-700">Vertikaler Abstand</label>
+                    <label class="text-sm font-medium text-gray-700">Vertical Gap</label>
                   </div>
                   <div class="input-group">
                     <input type="number" x-model="targetGapVertical" 
@@ -745,47 +800,47 @@
 
               <div class="mt-4 p-2 bg-gray-100 rounded">
                 <div class="flex justify-between items-center">
-                  <span class="font-bold text-sm">Berechneter Skalierungsfaktor:</span>
-                  <span x-text="'Horizontal: ' + (scalingFactorX || '1.000') + ' / Vertikal: ' + (scalingFactorY || '1.000')" class="font-mono text-xs"></span>
+                  <span class="font-bold text-sm">Calculated Scaling Factor:</span>
+                  <span x-text="'Horizontal: ' + (scalingFactorX || '1.000') + ' / Vertical: ' + (scalingFactorY || '1.000')" class="font-mono text-xs"></span>
                 </div>
               </div>
             </div>
 
             <!-- Label Count Settings -->
             <div class="section-group">
-              <h2 class="section-title">Etikettenanzahl</h2>
+              <h2 class="section-title">Label Count</h2>
               <div class="input-grid">
                 <div class="column-headers">
                   <div class="column-header">Parameter</div>
-                  <div class="column-header">Wert</div>
-                  <div class="column-header">Berechnete Ränder</div>
+                  <div class="column-header">Value</div>
+                  <div class="column-header">Calculated Margins</div>
                 </div>
 
                 <div class="input-row">
                   <div class="input-group">
-                    <label class="text-sm font-medium text-gray-700">Etiketten pro Zeile</label>
+                    <label class="text-sm font-medium text-gray-700">Labels per Row</label>
                   </div>
                   <div class="input-group">
                     <input type="number" x-model="labelsPerRow" 
-                      class="mt-1 block rounded-md border-blue-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
+                      class="mt-1 block w-full h-9 rounded-md border-blue-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
                       min="1" step="1" @input="calculateMargins()" />
                   </div>
                   <div class="input-group">
-                    <div class="text-sm text-blue-600 mt-1">Rechts: [<span x-text="calculatedRightMargin.toFixed(2)"></span>mm]</div>
+                    <div class="text-sm text-blue-600 mt-1">Right: [<span x-text="calculatedRightMargin.toFixed(2)"></span>mm]</div>
                   </div>
                 </div>
 
                 <div class="input-row">
                   <div class="input-group">
-                    <label class="text-sm font-medium text-gray-700">Anzahl Zeilen</label>
+                    <label class="text-sm font-medium text-gray-700">Number of Rows</label>
                   </div>
                   <div class="input-group">
                     <input type="number" x-model="maxRows" 
-                      class="mt-1 block rounded-md border-blue-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
+                      class="mt-1 block w-full h-9 rounded-md border-blue-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
                       min="1" step="1" @input="calculateMargins()" />
                   </div>
                   <div class="input-group">
-                    <div class="text-sm text-blue-600 mt-1">Unten: [<span x-text="calculatedBottomMargin.toFixed(2)"></span>mm]</div>
+                    <div class="text-sm text-blue-600 mt-1">Bottom: [<span x-text="calculatedBottomMargin.toFixed(2)"></span>mm]</div>
                   </div>
                 </div>
               </div>
@@ -793,11 +848,11 @@
 
             <!-- Neue Sektion für Textformatierung -->
             <div class="section-group">
-              <h2 class="section-title">Textformatierung</h2>
+              <h2 class="section-title">Text Formatting</h2>
               <div class="input-grid">
                 <div class="input-row">
                   <div class="input-group">
-                    <label class="text-sm font-medium text-gray-700">Schriftart</label>
+                    <label class="text-sm font-medium text-gray-700">Font Family</label>
                     <select x-model="fontFamily" class="mt-1 block w-full h-9 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                       <option value="Arial">Arial</option>
                       <option value="Helvetica">Helvetica</option>
@@ -809,7 +864,7 @@
 
                 <div class="input-row">
                   <div class="input-group">
-                    <label class="text-sm font-medium text-gray-700">Schriftgröße (pt)</label>
+                    <label class="text-sm font-medium text-gray-700">Font Size (pt)</label>
                     <input type="number" x-model="fontSize" 
                       class="mt-1 block w-full h-9 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
                       min="6" step="0.5" value="11" />
@@ -818,17 +873,17 @@
 
                 <div class="input-row">
                   <div class="input-group">
-                    <label class="text-sm font-medium text-gray-700">Schriftstärke</label>
+                    <label class="text-sm font-medium text-gray-700">Font Weight</label>
                     <select x-model="fontWeight" class="mt-1 block w-full h-9 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                       <option value="normal">Normal</option>
-                      <option value="bold">Fett</option>
+                      <option value="bold">Bold</option>
                     </select>
                   </div>
                 </div>
 
                 <div class="input-row">
                   <div class="input-group">
-                    <label class="text-sm font-medium text-gray-700">QR-Code Abstand (mm)</label>
+                    <label class="text-sm font-medium text-gray-700">QR Code Spacing (mm)</label>
                     <input type="number" x-model="qrCodeSpacing" 
                       class="mt-1 block w-full h-9 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
                       min="0" step="0.1" value="0.6" />
@@ -873,18 +928,18 @@
                role="alert">
             <template x-if="isOverflowingRight">
           <div>
-                <p class="mb-2">Warnung: Etiketten überlappen den rechten Rand um <span x-text="Math.abs(calculatedRightMargin).toFixed(2)"></span>mm</p>
-                <p class="text-sm">Details der Berechnung:</p>
+                <p class="mb-2">Warning: Labels overlap the right margin by <span x-text="Math.abs(calculatedRightMargin).toFixed(2)"></span>mm</p>
+                <p class="text-sm">Calculation details:</p>
                 <ul class="text-sm list-disc ml-4">
-                  <li>Gesamtbreite der Etiketten: <span x-text="marginCalculationDetails.totalLabelWidth"></span>mm</li>
-                  <li>Gesamtbreite der Abstände: <span x-text="marginCalculationDetails.totalGapWidth"></span>mm</li>
-                  <li>Gesamtbreite benötigt: <span x-text="marginCalculationDetails.totalWidth"></span>mm</li>
-                  <li>Verfügbare Breite: <span x-text="marginCalculationDetails.availableWidth"></span>mm</li>
+                  <li>Total label width: <span x-text="marginCalculationDetails.totalLabelWidth"></span>mm</li>
+                  <li>Total gap width: <span x-text="marginCalculationDetails.totalGapWidth"></span>mm</li>
+                  <li>Total width needed: <span x-text="marginCalculationDetails.totalWidth"></span>mm</li>
+                  <li>Available width: <span x-text="marginCalculationDetails.availableWidth"></span>mm</li>
                 </ul>
               </div>
             </template>
             <template x-if="isOverflowingBottom">
-              <p class="mt-2">Warnung: Etiketten überlappen den unteren Rand um <span x-text="Math.abs(calculatedBottomMargin).toFixed(2)"></span>mm</p>
+              <p class="mt-2">Warning: Labels overlap the bottom margin by <span x-text="Math.abs(calculatedBottomMargin).toFixed(2)"></span>mm</p>
             </template>
           </div>
           <div class="page" id="label-container"></div>
@@ -951,13 +1006,47 @@
           fontFamily: 'Arial',
           fontSize: 11,
           fontWeight: 'normal',
+          pageFormat: 'A4',
+          pageOrientation: 'portrait',
+          pageWidth: 210,
+          pageHeight: 297,
+
+          // Page format definitions
+          pageFormats: {
+            'A4': { width: 210, height: 297 },
+            'A5': { width: 148, height: 210 },
+            'Letter': { width: 215.9, height: 279.4 },
+            'Legal': { width: 215.9, height: 355.6 }
+          },
+
+          updatePageFormat() {
+            const format = this.pageFormats[this.pageFormat];
+            if (this.pageOrientation === 'portrait') {
+              this.pageWidth = format.width;
+              this.pageHeight = format.height;
+            } else {
+              this.pageWidth = format.height;
+              this.pageHeight = format.width;
+            }
+            this.calculateMargins();
+            this.renderLabels();
+          },
+
+          updatePageOrientation() {
+            // Swap width and height
+            const tempWidth = this.pageWidth;
+            this.pageWidth = this.pageHeight;
+            this.pageHeight = tempWidth;
+            this.calculateMargins();
+            this.renderLabels();
+          },
 
           calculateMargins() {
             // Berechne den tatsächlichen rechten Rand basierend auf den Etiketten-Parametern
             const totalLabelWidth = this.labelsPerRow * parseFloat(this.actualWidth);
             const totalGapWidth = (this.labelsPerRow - 1) * parseFloat(this.actualGapHorizontal);
             const totalWidth = totalLabelWidth + totalGapWidth;
-            const availableWidth = 210 - parseFloat(this.actualPaddingLeft); // A4 Breite - linker Rand
+            const availableWidth = this.pageWidth - parseFloat(this.actualPaddingLeft); // Seitenbreite - linker Rand
             this.calculatedRightMargin = availableWidth - totalWidth;
             this.isOverflowingRight = this.calculatedRightMargin < 0;
 
@@ -965,7 +1054,7 @@
             const totalLabelHeight = this.maxRows * parseFloat(this.actualHeight);
             const totalGapHeight = (this.maxRows - 1) * parseFloat(this.actualGapVertical);
             const totalHeight = totalLabelHeight + totalGapHeight;
-            const availableHeight = 297 - parseFloat(this.actualPaddingTop); // A4 Höhe - oberer Rand
+            const availableHeight = this.pageHeight - parseFloat(this.actualPaddingTop); // Seitenhöhe - oberer Rand
             this.calculatedBottomMargin = availableHeight - totalHeight;
             this.isOverflowingBottom = this.calculatedBottomMargin < 0;
 
@@ -1069,6 +1158,8 @@
             
             // Setze die CSS-Variablen für das Layout
             const root = document.documentElement;
+            root.style.setProperty('--page-width', `${this.pageWidth}mm`);
+            root.style.setProperty('--page-height', `${this.pageHeight}mm`);
             root.style.setProperty('--padding-top', `${this.paddingTop}mm`);
             root.style.setProperty('--padding-right', `${this.paddingRight}mm`);
             root.style.setProperty('--padding-bottom', `${this.paddingBottom}mm`);
@@ -1120,7 +1211,7 @@
             // Setze optimale Druckeinstellungen
             const style = document.createElement('style');
             style.textContent = `
-              @page { size: 210mm 297mm; margin: 0; }
+              @page { size: ${this.pageWidth}mm ${this.pageHeight}mm; margin: 0; }
               @media print {
                 html, body {
                   margin: 0 !important;
@@ -1254,7 +1345,7 @@
 
           const config = {
             metadata: {
-              version: document.querySelector('.text-gray-600').textContent || "v0.910",
+              version: document.querySelector('.text-gray-600').textContent || "v0.911",
               description: "Configuration file for the ASN QR Code Label Generator",
               created: new Date().toISOString(),
               purpose: "This file contains the settings for the QR code label layout, " +
@@ -1323,7 +1414,7 @@
           window.URL.revokeObjectURL(url);
           document.body.removeChild(a);
           
-          showNotification('✓ Konfiguration wurde erfolgreich gespeichert');
+          showNotification('✓ Configuration saved successfully');
           console.log('Konfiguration erfolgreich gespeichert');
         } catch (error) {
           console.error('Detaillierter Fehler beim Speichern:', error);
@@ -1494,7 +1585,7 @@
               alpineApp.generateLabels();
             }
 
-            showNotification('✓ Konfiguration wurde erfolgreich geladen');
+            showNotification('✓ Configuration loaded successfully');
             console.log('Konfiguration erfolgreich geladen und angewendet');
 
             // Setze das Datei-Input zurück

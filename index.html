@@ -38,49 +38,64 @@
           size: 210mm 297mm;
           margin: 0;
         }
+        
         html, body {
           margin: 0;
           padding: 0;
           width: 210mm;
           height: 297mm;
-          background-color: white;
         }
+
         .print-hidden {
           display: none !important;
         }
+
         .print-only {
           display: block !important;
-          position: fixed;
-          top: 0;
-          left: 0;
+          position: relative !important;
+          margin: 0 !important;
+          padding: 0 !important;
           width: 210mm;
           height: 297mm;
-          margin: 0;
-          padding: 0;
-          background-color: white;
         }
+
         .print-only .page {
-          position: absolute;
-          top: 0;
-          left: 0;
-          margin: 0;
-          padding: 0;
-          width: 210mm;
-          height: 297mm;
-          display: grid;
-          grid-template-columns: repeat(7, 25.61mm);
-          grid-template-rows: repeat(27, 10.06mm);
-          gap: var(--gap-vertical, 0mm) var(--gap-horizontal, 2.63mm);
-          background-color: white;
-          transform: translate(var(--padding-left), var(--padding-top));
+          position: absolute !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          top: 12.63mm !important;    /* Fester oberer Rand */
+          left: 9.90mm !important;    /* Fester linker Rand */
+          width: calc(210mm - 9.90mm - 8.36mm) !important;  /* Feste Breite */
+          height: calc(297mm - 12.63mm - 13.87mm) !important;  /* Feste Höhe */
+          transform: none !important;
+          box-sizing: border-box !important;
         }
+
         .print-only .label {
-          width: 25.61mm;
-          height: 10.06mm;
-          border: var(--label-border, 0.1mm solid black);
-          background-color: white;
-          margin: 0;
-          padding: 0;
+          margin: 0 !important;
+          padding: 0 !important;
+          width: 25.61mm !important;
+          height: 10.06mm !important;
+        }
+
+        .print-only .qr-code {
+          width: 9mm;
+          height: 9mm;
+          margin-left: 0.5mm;
+        }
+
+        .print-only .text {
+          flex: 1;
+          font-size: var(--text-size, 11px);
+          font-family: var(--text-font, Arial);
+          font-weight: var(--text-weight, normal);
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          text-align: left;
+          padding-left: 1mm;
+          max-width: 14mm;
+          line-height: 1;
         }
       }
 
@@ -478,7 +493,7 @@
         <div class="container mx-auto print-hidden">
           <div class="flex justify-between items-center mb-3">
             <h1 class="text-xl font-bold">QR Code Label Generator</h1>
-            <span class="text-sm text-gray-600">v0.907</span>
+            <span class="text-sm text-gray-600">v0.908</span>
           </div>
           <form @submit.prevent="generateLabels()">
             <!-- QR Code Configuration -->

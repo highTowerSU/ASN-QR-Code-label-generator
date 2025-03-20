@@ -503,6 +503,31 @@
           display: none;
         }
       }
+
+      .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        color: white;
+        font-weight: bold;
+        z-index: 1000;
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+      }
+
+      .notification.success {
+        background-color: #10B981;
+      }
+
+      .notification.error {
+        background-color: #EF4444;
+      }
+
+      .notification.show {
+        opacity: 1;
+      }
     </style>
   </head>
   <body x-data="qrCodeApp()" x-init="generateLabels()">
@@ -781,6 +806,8 @@
         <div class="page" id="print-label-container"></div>
       </div>
     </div>
+
+    <div id="notification" class="notification" style="display: none;"></div>
 
     <script>
       function qrCodeApp() {
@@ -1079,88 +1106,149 @@
         return savedConfig ? JSON.parse(savedConfig) : null;
       }
 
-      // Speichere die aktuelle Konfiguration
+      // Speichere die aktuelle Konfiguration als Download
       function saveConfig() {
-        const config = {
-          pageMargins: {
-            top: {
-              target: parseFloat(document.getElementById('marginTopTarget').value),
-              actual: parseFloat(document.getElementById('marginTopActual').value)
+        try {
+          const config = {
+            pageMargins: {
+              top: {
+                target: parseFloat(document.querySelector('[x-model="targetPaddingTop"]').value),
+                actual: parseFloat(document.querySelector('[x-model="actualPaddingTop"]').value)
+              },
+              bottom: {
+                target: parseFloat(document.querySelector('[x-model="targetPaddingBottom"]').value),
+                actual: parseFloat(document.querySelector('[x-model="actualPaddingBottom"]').value)
+              },
+              left: {
+                target: parseFloat(document.querySelector('[x-model="targetPaddingLeft"]').value),
+                actual: parseFloat(document.querySelector('[x-model="actualPaddingLeft"]').value)
+              },
+              right: {
+                target: parseFloat(document.querySelector('[x-model="targetPaddingRight"]').value),
+                actual: parseFloat(document.querySelector('[x-model="actualPaddingRight"]').value)
+              }
             },
-            bottom: {
-              target: parseFloat(document.getElementById('marginBottomTarget').value),
-              actual: parseFloat(document.getElementById('marginBottomActual').value)
+            labelDimensions: {
+              width: {
+                target: parseFloat(document.querySelector('[x-model="targetWidth"]').value),
+                actual: parseFloat(document.querySelector('[x-model="actualWidth"]').value)
+              },
+              height: {
+                target: parseFloat(document.querySelector('[x-model="targetHeight"]').value),
+                actual: parseFloat(document.querySelector('[x-model="actualHeight"]').value)
+              }
             },
-            left: {
-              target: parseFloat(document.getElementById('marginLeftTarget').value),
-              actual: parseFloat(document.getElementById('marginLeftActual').value)
+            labelCount: {
+              labelsPerRow: parseInt(document.querySelector('[x-model="labelsPerRow"]').value),
+              numberOfRows: parseInt(document.querySelector('[x-model="maxRows"]').value)
             },
-            right: {
-              target: parseFloat(document.getElementById('marginRightTarget').value),
-              actual: parseFloat(document.getElementById('marginRightActual').value)
+            spacing: {
+              horizontal: parseFloat(document.querySelector('[x-model="targetGapHorizontal"]').value),
+              vertical: parseFloat(document.querySelector('[x-model="targetGapVertical"]').value)
+            },
+            qrCode: {
+              width: 9,
+              height: 9,
+              marginLeft: 0.6
+            },
+            text: {
+              fontSize: parseInt(document.querySelector('[x-model="textSize"]').value),
+              fontFamily: document.querySelector('[x-model="textFont"]').value,
+              maxWidth: 14,
+              paddingLeft: 1
             }
-          },
-          labelDimensions: {
-            width: {
-              target: parseFloat(document.getElementById('labelWidthTarget').value),
-              actual: parseFloat(document.getElementById('labelWidthActual').value)
-            },
-            height: {
-              target: parseFloat(document.getElementById('labelHeightTarget').value),
-              actual: parseFloat(document.getElementById('labelHeightActual').value)
-            }
-          },
-          labelCount: {
-            labelsPerRow: parseInt(document.getElementById('labelsPerRow').value),
-            numberOfRows: parseInt(document.getElementById('numberOfRows').value)
-          },
-          spacing: {
-            horizontal: parseFloat(document.getElementById('horizontalSpacing').value),
-            vertical: parseFloat(document.getElementById('verticalSpacing').value)
-          }
-        };
+          };
 
-        localStorage.setItem('labelConfig', JSON.stringify(config));
-        alert('Konfiguration wurde gespeichert!');
+          // Erstelle einen Blob mit den JSON-Daten
+          const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' });
+          
+          // Erstelle einen Download-Link
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'config.json';
+          
+          // Füge den Link zum Dokument hinzu und klicke ihn
+          document.body.appendChild(a);
+          a.click();
+          
+          // Cleanup
+          window.URL.revokeObjectURL(url);
+          document.body.removeChild(a);
+          
+          showNotification('✓ Konfiguration wurde zum Download angeboten');
+          console.log('Gespeicherte Konfiguration:', config);
+        } catch (error) {
+          console.error('Fehler beim Speichern:', error);
+          showNotification('Fehler beim Erstellen der Konfigurationsdatei', 'error');
+        }
       }
 
       // Setze die Konfiguration auf die Standardwerte zurück
       async function resetConfig() {
-        if (!defaultConfig) {
-          defaultConfig = await loadDefaultConfig();
-        }
-        if (!defaultConfig) {
-          alert('Fehler: Standardkonfiguration konnte nicht geladen werden!');
-          return;
-        }
+        try {
+          if (!defaultConfig) {
+            defaultConfig = await loadDefaultConfig();
+          }
+          if (!defaultConfig) {
+            throw new Error('Standardkonfiguration konnte nicht geladen werden');
+          }
 
-        // Setze alle Eingabefelder auf die Standardwerte
-        document.getElementById('marginTopTarget').value = defaultConfig.pageMargins.top.target;
-        document.getElementById('marginTopActual').value = defaultConfig.pageMargins.top.actual;
-        document.getElementById('marginBottomTarget').value = defaultConfig.pageMargins.bottom.target;
-        document.getElementById('marginBottomActual').value = defaultConfig.pageMargins.bottom.actual;
-        document.getElementById('marginLeftTarget').value = defaultConfig.pageMargins.left.target;
-        document.getElementById('marginLeftActual').value = defaultConfig.pageMargins.left.actual;
-        document.getElementById('marginRightTarget').value = defaultConfig.pageMargins.right.target;
-        document.getElementById('marginRightActual').value = defaultConfig.pageMargins.right.actual;
-        
-        document.getElementById('labelWidthTarget').value = defaultConfig.labelDimensions.width.target;
-        document.getElementById('labelWidthActual').value = defaultConfig.labelDimensions.width.actual;
-        document.getElementById('labelHeightTarget').value = defaultConfig.labelDimensions.height.target;
-        document.getElementById('labelHeightActual').value = defaultConfig.labelDimensions.height.actual;
-        
-        document.getElementById('labelsPerRow').value = defaultConfig.labelCount.labelsPerRow;
-        document.getElementById('numberOfRows').value = defaultConfig.labelCount.numberOfRows;
-        
-        document.getElementById('horizontalSpacing').value = defaultConfig.spacing.horizontal;
-        document.getElementById('verticalSpacing').value = defaultConfig.spacing.vertical;
+          // Setze alle Eingabefelder auf die Standardwerte
+          document.getElementById('marginTopTarget').value = defaultConfig.pageMargins.top.target;
+          document.getElementById('marginTopActual').value = defaultConfig.pageMargins.top.actual;
+          document.getElementById('marginBottomTarget').value = defaultConfig.pageMargins.bottom.target;
+          document.getElementById('marginBottomActual').value = defaultConfig.pageMargins.bottom.actual;
+          document.getElementById('marginLeftTarget').value = defaultConfig.pageMargins.left.target;
+          document.getElementById('marginLeftActual').value = defaultConfig.pageMargins.left.actual;
+          document.getElementById('marginRightTarget').value = defaultConfig.pageMargins.right.target;
+          document.getElementById('marginRightActual').value = defaultConfig.pageMargins.right.actual;
+          
+          document.getElementById('labelWidthTarget').value = defaultConfig.labelDimensions.width.target;
+          document.getElementById('labelWidthActual').value = defaultConfig.labelDimensions.width.actual;
+          document.getElementById('labelHeightTarget').value = defaultConfig.labelDimensions.height.target;
+          document.getElementById('labelHeightActual').value = defaultConfig.labelDimensions.height.actual;
+          
+          document.getElementById('labelsPerRow').value = defaultConfig.labelCount.labelsPerRow;
+          document.getElementById('numberOfRows').value = defaultConfig.labelCount.numberOfRows;
+          
+          document.getElementById('horizontalSpacing').value = defaultConfig.spacing.horizontal;
+          document.getElementById('verticalSpacing').value = defaultConfig.spacing.vertical;
 
-        // Speichere die Standardwerte auch im localStorage
-        localStorage.setItem('labelConfig', JSON.stringify(defaultConfig));
-        alert('Konfiguration wurde auf Standardwerte zurückgesetzt!');
+          // Speichere die Standardwerte auch im localStorage
+          localStorage.setItem('labelConfig', JSON.stringify(defaultConfig));
+          
+          // Aktualisiere die Anzeige
+          const alpineApp = document.querySelector('[x-data]').__x.$data;
+          alpineApp.generateLabels();
+          
+          showNotification('✓ Konfiguration wurde auf Standardwerte zurückgesetzt');
+          console.log('Zurückgesetzte Konfiguration:', defaultConfig);
+        } catch (error) {
+          console.error('Fehler beim Zurücksetzen:', error);
+          showNotification('Fehler beim Zurücksetzen der Konfiguration', 'error');
+        }
+      }
+
+      // Benachrichtigungsfunktion
+      function showNotification(message, type = 'success') {
+        const notification = document.getElementById('notification');
+        notification.textContent = message;
+        notification.className = `notification ${type}`;
+        notification.style.display = 'block';
         
-        // Aktualisiere die Anzeige
-        updateDisplay();
+        // Animation starten
+        setTimeout(() => {
+          notification.classList.add('show');
+        }, 10);
+
+        // Nach 3 Sekunden ausblenden
+        setTimeout(() => {
+          notification.classList.remove('show');
+          setTimeout(() => {
+            notification.style.display = 'none';
+          }, 300);
+        }, 3000);
       }
 
       // Initialisiere die Konfiguration beim Laden der Seite
@@ -1205,7 +1293,8 @@
             console.log('Alle Werte wurden gesetzt');
             
             // Aktualisiere die Anzeige
-            updateDisplay();
+            const alpineApp = document.querySelector('[x-data]').__x.$data;
+            alpineApp.generateLabels();
           } catch (error) {
             console.error('Fehler beim Setzen der Werte:', error);
           }

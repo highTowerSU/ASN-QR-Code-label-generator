@@ -33,6 +33,55 @@ A web-based tool for generating printable QR code labels for Paperless-ngx ASN (
   - Left: 8.4mm
   - Right: 8.5mm
 
+## Understanding Target/Actual Values and Scaling
+
+The generator uses a sophisticated target (Soll) and actual (Ist) value system to ensure precise label printing:
+
+### Target Values (Soll)
+- These are your desired measurements, which can come from:
+  - Manufacturer specifications for your label sheets
+  - Your own requirements for custom labels
+  - Standard label dimensions
+- Example: If your label sheet specifies 25.4mm × 10mm labels, these are your target values
+
+### Actual Values (Ist)
+- These are the real measurements from your test prints
+- How to determine:
+  1. Use target values for initial test print
+  2. Measure the actual printed dimensions with a precise ruler
+  3. Enter these measurements as actual values
+  4. The generator will automatically calculate scaling factors
+
+### Automatic Scaling
+The system automatically calculates scaling factors to compensate for printer variations:
+- Horizontal scaling: Adjusts for width differences
+- Vertical scaling: Adjusts for height differences
+- These calculations ensure that your labels will print at the correct size
+
+### Example Workflow
+1. Initial Setup:
+   - Enter target values from your label sheet specifications
+   - Set actual values equal to target values
+   - Make a test print
+
+2. Measurement and Adjustment:
+   - Measure the printed labels carefully
+   - Enter the measured dimensions as actual values
+   - The system will calculate scaling factors
+   - Make another test print to verify
+
+3. Fine-tuning:
+   - If needed, adjust actual values further
+   - Each printer may need slightly different values
+   - Save your configuration once perfect
+
+### Tips for Accurate Measurements
+- Use a high-quality ruler or caliper
+- Measure multiple labels and take the average
+- Consider both width and height
+- Check spacing between labels
+- Verify margins on all sides
+
 ## Usage
 
 1. Open `index.html` in your web browser

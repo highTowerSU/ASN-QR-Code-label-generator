@@ -26,15 +26,18 @@
         }
       }
       .page {
-        width: 210mm;
-        height: 297mm;
+        width: calc(210mm - var(--padding-left) - var(--padding-right));
+        height: calc(297mm - var(--padding-top) - var(--padding-bottom));
         box-sizing: border-box;
         display: grid;
         grid-template-columns: repeat(7, 25.4mm);
         grid-template-rows: repeat(27, 10mm);
         gap: var(--gap-vertical, 0mm) var(--gap-horizontal, 0mm);
-        justify-content: center;
+        justify-content: start;
         align-content: start;
+        position: absolute;
+        top: var(--padding-top);
+        left: var(--padding-left);
       }
       .label {
         width: 25.4mm;
@@ -46,6 +49,7 @@
         padding: 0mm;
         box-sizing: border-box;
         overflow: hidden;
+        margin-left: 0;
       }
       .qr-code {
         width: 9mm;
@@ -53,7 +57,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-left: 1mm;
+        margin-left: 0.5mm;
       }
       .text {
         flex: 1;
@@ -62,7 +66,7 @@
         overflow: hidden;
         text-overflow: ellipsis;
         text-align: left;
-        padding-left: 2mm;
+        padding-left: 1mm;
         max-width: 14mm;
         line-height: 1;
       }
@@ -71,6 +75,8 @@
       .page-preview {
         position: relative;
         margin: 20px auto;
+        width: 210mm;
+        height: 297mm;
       }
       
       .a4-border {
@@ -79,6 +85,7 @@
         height: 297mm;
         border: 2px solid #000;
         pointer-events: none;
+        box-sizing: border-box;
       }
       
       .padding-visualization {
@@ -89,6 +96,7 @@
         top: var(--padding-top);
         left: var(--padding-left);
         pointer-events: none;
+        box-sizing: border-box;
       }
       
       /* Beschriftungen für Padding */
@@ -129,93 +137,190 @@
         width: var(--padding-right);
         height: calc(297mm - var(--padding-top) - var(--padding-bottom));
       }
+      
+      /* Container für die Vorschau */
+      .preview-container {
+        display: flex;
+        flex-direction: column;
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+      }
+      
+      .main-layout {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 1rem;
+      }
+      
+      .form-container {
+        width: 100%;
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      /* Neue Styles für die Eingabefelder */
+      .number-input {
+        width: 80px !important;
+      }
+
+      .prefix-input {
+        width: 120px !important;
+      }
+
+      .checkbox-container {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .input-group {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      /* Angepasste Styles für Abstände */
+      .section-group {
+        margin-bottom: 1rem; /* Reduziert von 1.5rem (mb-6) auf 1rem (mb-4) */
+      }
+      
+      .section-title {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem; /* Reduziert von 0.75rem (mb-3) auf 0.5rem (mb-2) */
+      }
+      
+      .input-grid {
+        display: grid;
+        gap: 0.75rem; /* Reduziert von 1.25rem (gap-5) auf 0.75rem (gap-3) */
+      }
+      
+      .input-grid-4 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      @media (min-width: 768px) {
+        .input-grid-4 {
+          grid-template-columns: repeat(4, 1fr);
+        }
+      }
+      
+      .input-grid-2 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .action-buttons {
+        margin-top: 1rem;
+        display: flex;
+        gap: 0.75rem;
+      }
+      
+      .input-grid-5 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      @media (min-width: 768px) {
+        .input-grid-5 {
+          grid-template-columns: repeat(5, 1fr);
+        }
+      }
     </style>
   </head>
   <body x-data="qrCodeApp()" x-init="generateLabels()">
-    <div class="container mx-auto print-hidden">
-      <h1 class="mb-4 text-xl font-bold">QR Code Label Generator</h1>
-      <form @submit.prevent="generateLabels()" class="mb-8">
-        <!-- QR Code Configuration -->
-        <div class="mb-6">
-          <h2 class="text-lg font-semibold mb-3">QR Code Settings</h2>
-          <div class="grid grid-cols-4 gap-5">
-            <div>
-              <label for="startNumber" class="block mb-1">Start Number</label>
-              <input type="number" id="startNumber" x-model="startNumber" required min="1" step="1" class="border p-2 w-full" />
+    <div class="main-layout">
+      <div class="form-container">
+        <div class="container mx-auto print-hidden">
+          <h1 class="text-xl font-bold mb-3">QR Code Label Generator</h1>
+          <form @submit.prevent="generateLabels()">
+            <!-- QR Code Configuration -->
+            <div class="section-group">
+              <h2 class="section-title">QR Code Settings</h2>
+              <div class="input-grid input-grid-5">
+                <div class="input-group">
+                  <label for="startNumber" class="block mb-1">Start Number</label>
+                  <input type="number" id="startNumber" x-model="startNumber" required min="1" step="1" class="border p-2 number-input" />
+                </div>
+                <div class="input-group">
+                  <label for="prefix" class="block mb-1">ASN Prefix</label>
+                  <input type="text" id="prefix" x-model="prefix" required class="border p-2 prefix-input" placeholder="e.g. ASN" />
+                </div>
+                <div class="input-group">
+                  <label for="leadingZeros" class="block mb-1">Leading Zeros</label>
+                  <input type="number" id="leadingZeros" x-model="leadingZeros" required min="0" max="10" step="1" class="border p-2 number-input" />
+                </div>
+                <div class="checkbox-container">
+                  <input type="checkbox" id="showPrefix" x-model="showPrefix" class="border" />
+                  <label for="showPrefix">Display Prefix</label>
+                </div>
+                <div class="checkbox-container">
+                  <input type="checkbox" id="showBorder" x-model="showBorder" class="border" />
+                  <label for="showBorder">Show Label Borders</label>
+                </div>
+              </div>
             </div>
-            <div>
-              <label for="prefix" class="block mb-1">ASN Prefix</label>
-              <input type="text" id="prefix" x-model="prefix" required class="border p-2 w-full" placeholder="e.g. ASN" />
-            </div>
-            <div class="flex items-center">
-              <input type="checkbox" id="showPrefix" x-model="showPrefix" class="border p-2 mr-2" />
-              <label for="showPrefix">Display Prefix</label>
-            </div>
-            <div class="flex items-center">
-              <input type="checkbox" id="showBorder" x-model="showBorder" class="border p-2 mr-2" />
-              <label for="showBorder">Show Label Borders</label>
-            </div>
-          </div>
-        </div>
 
-        <!-- Page Margin Settings -->
-        <div class="mb-6">
-          <h2 class="text-lg font-semibold mb-3">Page Margins (mm)</h2>
-          <div class="grid grid-cols-4 gap-5">
-            <div>
-              <label for="paddingTop" class="block mb-1">Top Margin</label>
-              <input type="number" id="paddingTop" x-model="paddingTop" class="border p-2 w-full" min="0" step="0.5" />
+            <!-- Page Margin Settings -->
+            <div class="section-group">
+              <h2 class="section-title">Page Margins (mm)</h2>
+              <div class="input-grid input-grid-4">
+                <div class="input-group">
+                  <label for="paddingTop" class="block mb-1">Top Margin</label>
+                  <input type="number" id="paddingTop" x-model="paddingTop" class="border p-2 number-input" min="0" step="0.5" />
+                </div>
+                <div class="input-group">
+                  <label for="paddingBottom" class="block mb-1">Bottom Margin</label>
+                  <input type="number" id="paddingBottom" x-model="paddingBottom" class="border p-2 number-input" min="0" step="0.5" />
+                </div>
+                <div class="input-group">
+                  <label for="paddingLeft" class="block mb-1">Left Margin</label>
+                  <input type="number" id="paddingLeft" x-model="paddingLeft" class="border p-2 number-input" min="0" step="0.5" />
+                </div>
+                <div class="input-group">
+                  <label for="paddingRight" class="block mb-1">Right Margin</label>
+                  <input type="number" id="paddingRight" x-model="paddingRight" class="border p-2 number-input" min="0" step="0.5" />
+                </div>
+              </div>
             </div>
-            <div>
-              <label for="paddingRight" class="block mb-1">Right Margin</label>
-              <input type="number" id="paddingRight" x-model="paddingRight" class="border p-2 w-full" min="0" step="0.5" />
-            </div>
-            <div>
-              <label for="paddingBottom" class="block mb-1">Bottom Margin</label>
-              <input type="number" id="paddingBottom" x-model="paddingBottom" class="border p-2 w-full" min="0" step="0.5" />
-            </div>
-            <div>
-              <label for="paddingLeft" class="block mb-1">Left Margin</label>
-              <input type="number" id="paddingLeft" x-model="paddingLeft" class="border p-2 w-full" min="0" step="0.5" />
-            </div>
-          </div>
-        </div>
 
-        <!-- Label Spacing Settings -->
-        <div class="mb-6">
-          <h2 class="text-lg font-semibold mb-3">Label Spacing (mm)</h2>
-          <div class="grid grid-cols-2 gap-5">
-            <div>
-              <label for="gapVertical" class="block mb-1">Vertical Gap</label>
-              <input type="number" id="gapVertical" x-model="gapVertical" class="border p-2 w-full" min="0" step="0.1" />
+            <!-- Label Spacing Settings -->
+            <div class="section-group">
+              <h2 class="section-title">Label Spacing (mm)</h2>
+              <div class="input-grid input-grid-2">
+                <div class="input-group">
+                  <label for="gapVertical" class="block mb-1">Vertical Gap</label>
+                  <input type="number" id="gapVertical" x-model="gapVertical" class="border p-2 number-input" min="0" step="0.1" />
+                </div>
+                <div class="input-group">
+                  <label for="gapHorizontal" class="block mb-1">Horizontal Gap</label>
+                  <input type="number" id="gapHorizontal" x-model="gapHorizontal" class="border p-2 number-input" min="0" step="0.1" />
+                </div>
+              </div>
             </div>
-            <div>
-              <label for="gapHorizontal" class="block mb-1">Horizontal Gap</label>
-              <input type="number" id="gapHorizontal" x-model="gapHorizontal" class="border p-2 w-full" min="0" step="0.1" />
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+              <button @click.prevent="generateLabels()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                Update Labels
+              </button>
+              <button @click.prevent="printLabels()" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+                Print Labels
+              </button>
             </div>
-          </div>
+          </form>
         </div>
-
-        <!-- Action Buttons -->
-        <div class="flex gap-4">
-          <button @click.prevent="generateLabels()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-            Update Labels
-          </button>
-          <button @click.prevent="printLabels()" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
-            Print Labels
-          </button>
+      </div>
+      
+      <div class="preview-container print-hidden">
+        <div class="page-preview">
+          <div class="a4-border"></div>
+          <div class="padding-visualization"></div>
+          <div class="padding-label padding-top" x-text="paddingTop + 'mm'"></div>
+          <div class="padding-label padding-bottom" x-text="paddingBottom + 'mm'"></div>
+          <div class="padding-label padding-left" x-text="paddingLeft + 'mm'"></div>
+          <div class="padding-label padding-right" x-text="paddingRight + 'mm'"></div>
+          <div class="page" id="label-container"></div>
         </div>
-      </form>
-    </div>
-
-    <div class="page-preview print-hidden">
-      <div class="a4-border"></div>
-      <div class="padding-visualization"></div>
-      <div class="padding-label padding-top" x-text="paddingTop + 'mm'"></div>
-      <div class="padding-label padding-bottom" x-text="paddingBottom + 'mm'"></div>
-      <div class="padding-label padding-left" x-text="paddingLeft + 'mm'"></div>
-      <div class="padding-label padding-right" x-text="paddingRight + 'mm'"></div>
-      <div class="page" id="label-container"></div>
+      </div>
     </div>
 
     <script>
@@ -223,6 +328,7 @@
         return {
           startNumber: 1,
           prefix: "ASN",
+          leadingZeros: 4,
           showPrefix: true,
           showBorder: true,
           paddingTop: 12,
@@ -230,7 +336,7 @@
           paddingBottom: 9,
           paddingLeft: 6,
           gapVertical: 0,
-          gapHorizontal: 0,
+          gapHorizontal: 1.5,
           labels: [],
 
           generateLabels() {
@@ -239,7 +345,9 @@
             let startNumberInt = parseInt(this.startNumber, 10);
             for (let i = 0; i < totalLabels; i++) {
               let number = startNumberInt + i;
-              let text = this.showPrefix ? this.prefix + number.toString().padStart(4, "0") : number.toString().padStart(4, "0");
+              let text = this.showPrefix ? 
+                this.prefix + number.toString().padStart(this.leadingZeros, "0") : 
+                number.toString().padStart(this.leadingZeros, "0");
               let qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(text)}`;
               this.labels.push({ qrCodeUrl, text });
             }

@@ -38,7 +38,7 @@
   "qrCode": {
     "width": 9,
     "height": 9,
-    "marginLeft": 0.5
+    "marginLeft": 0.6
   },
   "text": {
     "fontSize": 11,

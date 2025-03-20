@@ -1110,81 +1110,100 @@
         return savedConfig ? JSON.parse(savedConfig) : null;
       }
 
-      // Speichere die aktuelle Konfiguration als Download
+      // Speichere die aktuelle Konfiguration
       function saveConfig() {
         try {
+          console.log('Starte Speichervorgang...');
+          
+          // Hole Alpine.js Instanz mit Fehlerprüfung
+          const alpineElement = document.querySelector('[x-data="qrCodeApp()"]');
+          if (!alpineElement) {
+            throw new Error('Alpine.js Element nicht gefunden');
+          }
+
+          const alpineApp = Alpine.evaluate(alpineElement, '$data');
+          if (!alpineApp) {
+            throw new Error('Alpine.js Daten nicht verfügbar');
+          }
+          
+          console.log('Alpine.js Daten gefunden:', alpineApp);
+
           const config = {
+            metadata: {
+              version: document.querySelector('.text-gray-600').textContent || "v0.909",
+              description: "Configuration file for the ASN QR Code Label Generator",
+              created: new Date().toISOString(),
+              purpose: "This file contains the settings for the QR code label layout, " +
+                      "including page margins, label dimensions, spacing, and text formatting.",
+              usage: "This file can be imported using the 'Load Configuration' button in the application.",
+              generator: "ASN QR Code Label Generator",
+              repository: "https://github.com/muguu/ASN-QR-Code-label-generator"
+            },
             pageMargins: {
               top: {
-                target: parseFloat(document.querySelector('[x-model="targetPaddingTop"]').value),
-                actual: parseFloat(document.querySelector('[x-model="actualPaddingTop"]').value)
+                target: parseFloat(alpineApp.targetPaddingTop),
+                actual: parseFloat(alpineApp.actualPaddingTop)
               },
               bottom: {
-                target: parseFloat(document.querySelector('[x-model="targetPaddingBottom"]').value),
-                actual: parseFloat(document.querySelector('[x-model="actualPaddingBottom"]').value)
+                target: parseFloat(alpineApp.targetPaddingBottom),
+                actual: parseFloat(alpineApp.actualPaddingBottom)
               },
               left: {
-                target: parseFloat(document.querySelector('[x-model="targetPaddingLeft"]').value),
-                actual: parseFloat(document.querySelector('[x-model="actualPaddingLeft"]').value)
+                target: parseFloat(alpineApp.targetPaddingLeft),
+                actual: parseFloat(alpineApp.actualPaddingLeft)
               },
               right: {
-                target: parseFloat(document.querySelector('[x-model="targetPaddingRight"]').value),
-                actual: parseFloat(document.querySelector('[x-model="actualPaddingRight"]').value)
+                target: parseFloat(alpineApp.targetPaddingRight),
+                actual: parseFloat(alpineApp.actualPaddingRight)
               }
             },
             labelDimensions: {
               width: {
-                target: parseFloat(document.querySelector('[x-model="targetWidth"]').value),
-                actual: parseFloat(document.querySelector('[x-model="actualWidth"]').value)
+                target: parseFloat(alpineApp.targetWidth),
+                actual: parseFloat(alpineApp.actualWidth)
               },
               height: {
-                target: parseFloat(document.querySelector('[x-model="targetHeight"]').value),
-                actual: parseFloat(document.querySelector('[x-model="actualHeight"]').value)
+                target: parseFloat(alpineApp.targetHeight),
+                actual: parseFloat(alpineApp.actualHeight)
               }
             },
             labelCount: {
-              labelsPerRow: parseInt(document.querySelector('[x-model="labelsPerRow"]').value),
-              numberOfRows: parseInt(document.querySelector('[x-model="maxRows"]').value)
+              labelsPerRow: parseInt(alpineApp.labelsPerRow),
+              numberOfRows: parseInt(alpineApp.maxRows)
             },
             spacing: {
-              horizontal: parseFloat(document.querySelector('[x-model="targetGapHorizontal"]').value),
-              vertical: parseFloat(document.querySelector('[x-model="targetGapVertical"]').value)
-            },
-            qrCode: {
-              width: 9,
-              height: 9,
-              marginLeft: 0.6
+              horizontal: parseFloat(alpineApp.targetGapHorizontal),
+              vertical: parseFloat(alpineApp.targetGapVertical)
             },
             text: {
-              fontSize: parseInt(document.querySelector('[x-model="textSize"]').value),
-              fontFamily: document.querySelector('[x-model="textFont"]').value,
-              maxWidth: 14,
-              paddingLeft: 1
+              fontSize: parseInt(alpineApp.textSize),
+              fontFamily: alpineApp.textFont,
+              fontWeight: alpineApp.textWeight || 'normal'
             }
           };
 
-          // Erstelle einen Blob mit den JSON-Daten
+          console.log('Konfiguration erstellt:', config);
+
+          // Erstelle einen Blob mit der JSON-Konfiguration
           const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' });
-          
-          // Erstelle einen Download-Link
           const url = window.URL.createObjectURL(blob);
+          
+          // Erstelle einen temporären Download-Link
           const a = document.createElement('a');
           a.href = url;
-          a.download = 'config.json';
-          
-          // Füge den Link zum Dokument hinzu und klicke ihn
+          a.download = 'asn-qr-label-config.json';
           document.body.appendChild(a);
           a.click();
           
-          // Cleanup
+          // Räume auf
           window.URL.revokeObjectURL(url);
           document.body.removeChild(a);
           
-          showNotification('✓ Konfiguration wurde zum Download angeboten');
-          console.log('Gespeicherte Konfiguration:', config);
+          showNotification('✓ Konfiguration wurde erfolgreich gespeichert');
+          console.log('Konfiguration erfolgreich gespeichert');
         } catch (error) {
-          console.error('Fehler beim Speichern:', error);
-          showNotification('Fehler beim Erstellen der Konfigurationsdatei', 'error');
+          console.error('Detaillierter Fehler beim Speichern:', error);
+          showNotification('Fehler beim Speichern der Konfiguration: ' + error.message, 'error');
         }
       }
 

@@ -725,7 +725,7 @@
     <div class="container mx-auto print-hidden">
           <div class="flex justify-between items-center mb-4">
             <h1 class="text-xl font-bold">ASN QR Code Label Generator</h1>
-            <span class="text-sm text-gray-600">v0.920</span>
+            <span class="text-sm text-gray-600">v0.950</span>
           </div>
 
           <div class="flex gap-4 mb-4">
@@ -2005,7 +2005,17 @@
                       generator: "ASN QR Code Label Generator",
                       repository: "https://github.com/muguu/ASN-QR-Code-label-generator"
             },
+            general: {
+              prefix: alpineApp.prefix,
+              leadingZeros: parseInt(alpineApp.leadingZeros),
+              startNumber: parseInt(alpineApp.startNumber)
+            },
+            pageFormat: {
+              format: alpineApp.pageFormat,
+              orientation: alpineApp.orientation
+            },
             pageMargins: {
+              viewMode: alpineApp.marginViewMode,
               top: {
                 target: parseFloat(alpineApp.targetPaddingTop),
                 actual: parseFloat(alpineApp.actualPaddingTop)
@@ -2045,6 +2055,20 @@
               fontSize: parseInt(alpineApp.textSize),
               fontFamily: alpineApp.textFont,
               fontWeight: alpineApp.textWeight || 'normal'
+            },
+            display: {
+              showBorder: alpineApp.showBorder,
+              printTestingEnabled: alpineApp.printTestingEnabled,
+              tonerSaveMode: alpineApp.tonerSaveMode
+            },
+            uiState: {
+              pageFormatOpen: alpineApp.pageFormatOpen,
+              pageMarginsOpen: alpineApp.pageMarginsOpen,
+              labelDimensionsOpen: alpineApp.labelDimensionsOpen,
+              labelCountOpen: alpineApp.labelCountOpen,
+              textFormattingOpen: alpineApp.textFormattingOpen,
+              printTestingOpen: alpineApp.printTestingOpen,
+              areAllSectionsOpen: alpineApp.areAllSectionsOpen
             }
           };
 
@@ -2187,7 +2211,19 @@
             }
 
             // Setze die Werte im Alpine.js Datenmodell
+            if (config.general) {
+              alpineApp.prefix = config.general.prefix;
+              alpineApp.leadingZeros = config.general.leadingZeros;
+              alpineApp.startNumber = config.general.startNumber;
+            }
+
+            if (config.pageFormat) {
+              alpineApp.pageFormat = config.pageFormat.format;
+              alpineApp.orientation = config.pageFormat.orientation;
+            }
+
             if (config.pageMargins) {
+              alpineApp.marginViewMode = config.pageMargins.viewMode;
               alpineApp.targetPaddingTop = config.pageMargins.top.target;
               alpineApp.actualPaddingTop = config.pageMargins.top.actual;
               alpineApp.targetPaddingBottom = config.pageMargins.bottom.target;
@@ -2213,28 +2249,32 @@
             if (config.spacing) {
               alpineApp.targetGapHorizontal = config.spacing.horizontal;
               alpineApp.targetGapVertical = config.spacing.vertical;
-              alpineApp.gapHorizontal = config.spacing.horizontal;
-              alpineApp.gapVertical = config.spacing.vertical;
             }
 
             if (config.text) {
               alpineApp.textSize = config.text.fontSize;
               alpineApp.textFont = config.text.fontFamily;
-              alpineApp.textWeight = config.text.fontWeight || 'normal';
+              alpineApp.textWeight = config.text.fontWeight;
             }
 
-            // Berechne die Skalierungsfaktoren neu
-            if (typeof alpineApp.calculateScaling === 'function') {
-              alpineApp.calculateScaling();
+            if (config.display) {
+              alpineApp.showBorder = config.display.showBorder;
+              alpineApp.printTestingEnabled = config.display.printTestingEnabled;
+              alpineApp.tonerSaveMode = config.display.tonerSaveMode;
             }
-            if (typeof alpineApp.calculatePaddingScaling === 'function') {
-              alpineApp.calculatePaddingScaling();
+
+            if (config.uiState) {
+              alpineApp.pageFormatOpen = config.uiState.pageFormatOpen;
+              alpineApp.pageMarginsOpen = config.uiState.pageMarginsOpen;
+              alpineApp.labelDimensionsOpen = config.uiState.labelDimensionsOpen;
+              alpineApp.labelCountOpen = config.uiState.labelCountOpen;
+              alpineApp.textFormattingOpen = config.uiState.textFormattingOpen;
+              alpineApp.printTestingOpen = config.uiState.printTestingOpen;
+              alpineApp.areAllSectionsOpen = config.uiState.areAllSectionsOpen;
             }
-            
-            // Generiere die Labels neu
-            if (typeof alpineApp.generateLabels === 'function') {
-              alpineApp.generateLabels();
-            }
+
+            // Aktualisiere die Labels
+            alpineApp.generateLabels();
 
             showNotification('✓ Configuration loaded successfully');
             console.log('Konfiguration erfolgreich geladen und angewendet');

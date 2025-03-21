@@ -1839,15 +1839,32 @@
 
           // Methode zum Zurücksetzen der Print Testing Einstellungen
           resetPrintTesting() {
-            if (!this.printTestingEnabled) {
+            // Setze die Einstellungen basierend auf dem Testing Mode
+            if (this.printTestingEnabled) {
+              // Aktiviere die Standard-Test-Einstellungen
+              this.marginViewMode = "both";
+              this.selectedLabels = "1,7,183,189"; // Ecklabels für 7x27 Layout
+              this.showBorder = true;
+              this.borderTestMode = false;
+              this.tonerSaveMode = "off";
+            } else {
+              // Deaktiviere alle Test-Einstellungen
               this.borderTestMode = false;
               this.marginViewMode = "none";
               this.selectedLabels = "";
               this.tonerSaveMode = "off";
               this.showBorder = false;
             }
-            // Aktualisiere die Labels sofort
-            this.renderLabels();
+            // Generiere die Labels komplett neu
+            this.labels = [];
+            this.generateLabels();
+          },
+
+          init() {
+            this.$watch('printTestingEnabled', (value) => {
+              this.resetPrintTesting();
+            });
+            this.generateLabels();
           },
 
           // Neue Variable für die Initialisierung

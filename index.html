@@ -750,20 +750,26 @@
                   <input type="text" id="prefix" x-model="prefix" required 
                     class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 prefix-input" 
                     placeholder="ASN" />
-          </div>
+                </div>
                 <div class="input-group">
                   <label for="leadingZeros" class="text-sm font-medium text-gray-700">Leading Zeros</label>
                   <input type="number" id="leadingZeros" x-model="leadingZeros" required min="0" max="10" step="1" 
                     class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" />
-          </div>
+                </div>
                 <div class="input-group">
                   <label for="startNumber" class="text-sm font-medium text-gray-700">Start Number</label>
                   <input type="number" id="startNumber" x-model="startNumber" required min="1" step="1" 
                     class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" />
-        </div>
-                <!-- Remove Show Label Borders checkbox from here -->
-          </div>
-          </div>
+                </div>
+                <div class="flex-grow"></div>
+                <div class="input-group text-left">
+                  <label class="text-sm font-medium text-gray-700">Sections</label>
+                  <button @click.prevent="toggleAllSections()" class="mt-1 text-sm text-blue-600 hover:text-blue-800 text-left">
+                    <span x-text="areAllSectionsOpen ? 'Collapse All' : 'Expand All'"></span>
+                  </button>
+                </div>
+              </div>
+            </div>
 
             <!-- Page Format Settings -->
             <div class="section-group border rounded-lg p-4 mb-4">
@@ -1478,12 +1484,24 @@
     <script>
       function qrCodeApp() {
         return {
-          pageFormatOpen: false, // Alle Bereiche standardmäßig eingeklappt
+          pageFormatOpen: false,
           pageMarginsOpen: false,
           labelDimensionsOpen: false,
           labelCountOpen: false,
           textFormattingOpen: false,
           printTestingOpen: false,
+          areAllSectionsOpen: false,
+
+          toggleAllSections() {
+            const newState = !this.areAllSectionsOpen;
+            this.pageFormatOpen = newState;
+            this.pageMarginsOpen = newState;
+            this.labelDimensionsOpen = newState;
+            this.labelCountOpen = newState;
+            this.textFormattingOpen = newState;
+            this.printTestingOpen = newState;
+            this.areAllSectionsOpen = newState;
+          },
           startNumber: 1,
           prefix: "ASN",
           leadingZeros: 4,

@@ -59,8 +59,8 @@
           left: 0 !important;
           margin: 0 !important;
           padding: 0 !important;
-          width: 210mm;
-          height: 297mm;
+        width: 210mm;
+        height: 297mm;
         }
 
         /* Neue Styles für die Visualisierungen im Druckmodus */
@@ -766,54 +766,68 @@
           </div>
 
             <!-- Page Format Settings -->
-            <div class="section-group mb-6">
-              <h2 class="section-title">Page Format</h2>
-              <div class="input-grid">
-                <div class="column-headers">
-                  <div class="column-header">Parameter</div>
-                  <div class="column-header">Value</div>
-                  <div class="column-header">Dimensions</div>
-          </div>
-
-                <div class="input-row">
-                  <div class="input-group">
-                    <label class="text-sm font-medium text-gray-700">Page Format</label>
-          </div>
-                  <div class="input-group">
-                    <select x-model="pageFormat" @change="updatePageFormat()" 
-                      class="mt-1 block w-full h-9 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                      <option value="A4">A4</option>
-                      <option value="A5">A5</option>
-                      <option value="Letter">US Letter</option>
-                      <option value="Legal">US Legal</option>
-                    </select>
-        </div>
-                  <div class="input-group">
-                    <div class="text-sm text-gray-600 mt-1">
-                      Width: <span x-text="pageWidth"></span>mm × Height: <span x-text="pageHeight"></span>mm
-          </div>
-          </div>
-        </div>
-
-                <div class="input-row">
-                  <div class="input-group">
-                    <label class="text-sm font-medium text-gray-700">Orientation</label>
+            <div class="section-group border rounded-lg p-4 mb-4">
+              <div class="flex items-center justify-between cursor-pointer" @click="pageFormatOpen = !pageFormatOpen">
+                <h2 class="section-title mb-0">Page Format</h2>
+                <svg class="w-6 h-6 transform transition-transform" :class="{ 'rotate-180': pageFormatOpen }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+              <div x-show="pageFormatOpen" 
+                   x-transition:enter="transition ease-out duration-200" 
+                   x-transition:enter-start="opacity-0 transform -translate-y-2" 
+                   x-transition:enter-end="opacity-100 transform translate-y-0" 
+                   x-transition:leave="transition ease-in duration-150" 
+                   x-transition:leave-start="opacity-100 transform translate-y-0" 
+                   x-transition:leave-end="opacity-0 transform -translate-y-2"
+                   class="mt-4">
+                <div class="input-grid">
+                  <div class="column-headers">
+                    <div class="column-header">Parameter</div>
+                    <div class="column-header">Value</div>
+                    <div class="column-header">Dimensions</div>
                   </div>
-                  <div class="input-group">
-                    <select x-model="pageOrientation" @change="updatePageOrientation()" 
-                      class="mt-1 block w-full h-9 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                      <option value="portrait">Portrait</option>
-                      <option value="landscape">Landscape</option>
-                    </select>
+
+                  <div class="input-row">
+                    <div class="input-group">
+                      <label class="text-sm font-medium text-gray-700">Page Format</label>
+                    </div>
+                    <div class="input-group">
+                      <select x-model="pageFormat" @change="updatePageFormat()" 
+                        class="mt-1 block w-full h-9 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        <option value="A4">A4</option>
+                        <option value="A5">A5</option>
+                        <option value="Letter">US Letter</option>
+                        <option value="Legal">US Legal</option>
+                      </select>
+                    </div>
+                    <div class="input-group">
+                      <div class="text-sm text-gray-600 mt-1">
+                        Width: <span x-text="pageWidth"></span>mm × Height: <span x-text="pageHeight"></span>mm
+                      </div>
+                    </div>
                   </div>
-                  <div class="input-group">
-                    <div class="text-sm text-gray-600 mt-1">
-                      <template x-if="pageOrientation === 'portrait'">
-                        Portrait Mode
-                      </template>
-                      <template x-if="pageOrientation === 'landscape'">
-                        Landscape Mode
-                      </template>
+
+                  <div class="input-row">
+                    <div class="input-group">
+                      <label class="text-sm font-medium text-gray-700">Orientation</label>
+                    </div>
+                    <div class="input-group">
+                      <select x-model="pageOrientation" @change="updatePageOrientation()" 
+                        class="mt-1 block w-full h-9 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        <option value="portrait">Portrait</option>
+                        <option value="landscape">Landscape</option>
+                      </select>
+                    </div>
+                    <div class="input-group">
+                      <div class="text-sm text-gray-600 mt-1">
+                        <template x-if="pageOrientation === 'portrait'">
+                          Portrait Mode
+                        </template>
+                        <template x-if="pageOrientation === 'landscape'">
+                          Landscape Mode
+                        </template>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1398,6 +1412,7 @@
     <script>
       function qrCodeApp() {
         return {
+          pageFormatOpen: true, // Neue Variable für den Akkordeon-Zustand
           startNumber: 1,
           prefix: "ASN",
           leadingZeros: 4,
@@ -1640,7 +1655,7 @@
 
               // Füge die Label-Klasse nur hinzu, wenn das Label ausgewählt ist oder wir nicht im Testing Mode sind
               if (isSelected) {
-                labelDiv.classList.add("label");
+              labelDiv.classList.add("label");
                 printLabelDiv.classList.add("label");
 
                 // Setze den Rahmen nur wenn showBorder aktiv ist UND wir im Testing Mode sind
@@ -1652,15 +1667,15 @@
                 // Füge den Inhalt hinzu
                 if (!this.printTestingEnabled || !this.borderTestMode) {
                   // Preview version
-                  let qrImg = document.createElement("img");
-                  qrImg.src = label.qrCodeUrl;
-                  qrImg.classList.add("qr-code");
+              let qrImg = document.createElement("img");
+              qrImg.src = label.qrCodeUrl;
+              qrImg.classList.add("qr-code");
                   labelDiv.appendChild(qrImg);
 
-                  let textDiv = document.createElement("div");
-                  textDiv.classList.add("text");
-                  textDiv.innerText = label.text;
-                  labelDiv.appendChild(textDiv);
+              let textDiv = document.createElement("div");
+              textDiv.classList.add("text");
+              textDiv.innerText = label.text;
+              labelDiv.appendChild(textDiv);
 
                   // Print version
                   let printQrImg = document.createElement("img");

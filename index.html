@@ -725,18 +725,18 @@
     <div class="container mx-auto print-hidden">
           <div class="flex justify-between items-center mb-4">
             <h1 class="text-xl font-bold">ASN QR Code Label Generator</h1>
-            <span class="text-sm text-gray-600">v0.919</span>
+            <span class="text-sm text-gray-600">v0.920</span>
           </div>
 
           <div class="flex gap-4 mb-4">
-            <button onclick="saveConfig()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            <button onclick="saveConfig()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-[200px] text-center">
               Save Configuration
             </button>
-            <label class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded cursor-pointer">
+            <label class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded cursor-pointer w-[200px] text-center">
               Load Configuration
               <input type="file" id="configUpload" accept=".json" class="hidden" onchange="loadConfig(event)">
             </label>
-            <button onclick="resetConfig()" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+            <button onclick="resetConfig()" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded w-[200px] text-center">
               Reset to Default
             </button>
           </div>
@@ -788,45 +788,46 @@
                     <div class="column-header">Dimensions</div>
                   </div>
 
+                  <!-- Page Format -->
                   <div class="input-row">
                     <div class="input-group">
                       <label class="text-sm font-medium text-gray-700">Page Format</label>
                     </div>
                     <div class="input-group">
-                      <select x-model="pageFormat" @change="updatePageFormat()" 
-                        class="mt-1 block w-full h-9 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                        <option value="A4">A4</option>
-                        <option value="A5">A5</option>
-                        <option value="Letter">US Letter</option>
-                        <option value="Legal">US Legal</option>
+                      <select x-model="pageFormat" @change="updatePageDimensions()"
+                        class="mt-1 block w-full h-9 rounded-md border-gray-300 text-xs shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        <option value="A4">A4 (210×297mm)</option>
+                        <option value="A5">A5 (148×210mm)</option>
+                        <option value="Letter">US Letter (215.9×279.4mm)</option>
+                        <option value="Legal">US Legal (215.9×355.6mm)</option>
                       </select>
                     </div>
                     <div class="input-group">
-                      <div class="text-sm text-gray-600 mt-1">
-                        Width: <span x-text="pageWidth"></span>mm × Height: <span x-text="pageHeight"></span>mm
-                      </div>
+                      <div class="text-sm text-gray-600">Select the page format for printing</div>
                     </div>
                   </div>
 
+                  <!-- Page Orientation -->
                   <div class="input-row">
                     <div class="input-group">
                       <label class="text-sm font-medium text-gray-700">Orientation</label>
                     </div>
                     <div class="input-group">
-                      <select x-model="pageOrientation" @change="updatePageOrientation()" 
-                        class="mt-1 block w-full h-9 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                      <select x-model="pageOrientation" @change="updatePageDimensions()"
+                        class="mt-1 block w-full h-9 rounded-md border-gray-300 text-xs shadow-sm focus:border-blue-500 focus:ring-blue-500">
                         <option value="portrait">Portrait</option>
                         <option value="landscape">Landscape</option>
                       </select>
                     </div>
                     <div class="input-group">
+                      <div class="text-sm text-gray-600">Select the page orientation</div>
+                    </div>
+                  </div>
+
+                  <div class="input-row">
+                    <div class="input-group">
                       <div class="text-sm text-gray-600 mt-1">
-                        <template x-if="pageOrientation === 'portrait'">
-                          Portrait Mode
-                        </template>
-                        <template x-if="pageOrientation === 'landscape'">
-                          Landscape Mode
-                        </template>
+                        Width: <span x-text="pageWidth"></span>mm × Height: <span x-text="pageHeight"></span>mm
                       </div>
                     </div>
                   </div>
@@ -1295,7 +1296,7 @@
                       </div>
                       <div class="input-group">
                         <select x-model="tonerSaveMode" 
-                          class="mt-1 block w-full h-9 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                          class="mt-1 block w-full h-9 rounded-md border-gray-300 text-xs shadow-sm focus:border-blue-500 focus:ring-blue-500">
                           <option value="off">Off</option>
                           <option value="light">Light (75%)</option>
                           <option value="medium">Medium (50%)</option>
@@ -1313,10 +1314,10 @@
 
             <!-- Action Buttons -->
             <div class="action-buttons">
-              <button @click.prevent="generateLabels()" class="btn btn-primary">
+              <button @click.prevent="generateLabels()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-[200px] text-center">
                 Update Labels
               </button>
-              <button @click.prevent="printLabels()" class="btn btn-success">
+              <button @click.prevent="printLabels()" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-[200px] text-center">
                 Print Labels
               </button>
           </div>
@@ -1477,12 +1478,12 @@
     <script>
       function qrCodeApp() {
         return {
-          pageFormatOpen: true, // Neue Variable für den Akkordeon-Zustand
-          pageMarginsOpen: true, // Neue Variable für den Page Margins Akkordeon-Zustand
-          labelDimensionsOpen: true, // Neue Variable für den Label Dimensions Akkordeon-Zustand
-          labelCountOpen: true, // Neue Variable für den Label Count Akkordeon-Zustand
-          textFormattingOpen: true, // Neue Variable für den Text Formatting Akkordeon-Zustand
-          printTestingOpen: true, // Neue Variable für den Print Testing Akkordeon-Zustand
+          pageFormatOpen: false, // Alle Bereiche standardmäßig eingeklappt
+          pageMarginsOpen: false,
+          labelDimensionsOpen: false,
+          labelCountOpen: false,
+          textFormattingOpen: false,
+          printTestingOpen: false,
           startNumber: 1,
           prefix: "ASN",
           leadingZeros: 4,
@@ -1547,7 +1548,7 @@
             'Legal': { width: 215.9, height: 355.6 }
           },
 
-          updatePageFormat() {
+          updatePageDimensions() {
             const format = this.pageFormats[this.pageFormat];
             if (this.pageOrientation === 'portrait') {
               this.pageWidth = format.width;
@@ -1556,15 +1557,6 @@
               this.pageWidth = format.height;
               this.pageHeight = format.width;
             }
-            this.calculateMargins();
-            this.renderLabels();
-          },
-
-          updatePageOrientation() {
-            // Swap width and height
-            const tempWidth = this.pageWidth;
-            this.pageWidth = this.pageHeight;
-            this.pageHeight = tempWidth;
             this.calculateMargins();
             this.renderLabels();
           },

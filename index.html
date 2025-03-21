@@ -764,7 +764,7 @@
                 <div class="flex-grow"></div>
                 <div class="input-group text-left">
                   <label class="text-sm font-medium text-gray-700">Sections</label>
-                  <button @click.prevent="toggleAllSections()" class="mt-1 text-sm text-blue-600 hover:text-blue-800 text-left">
+                  <button type="button" @click="toggleAllSections()" class="mt-1 text-sm text-blue-600 hover:text-blue-800 text-left">
                     <span x-text="areAllSectionsOpen ? 'Collapse All' : 'Expand All'"></span>
                   </button>
                 </div>

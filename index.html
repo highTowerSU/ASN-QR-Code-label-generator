@@ -211,15 +211,16 @@
         font-size: 12px;
         display: flex;
         align-items: center;
-        justify-content: center;
         z-index: 10;
       }
       
+      /* Page Margins (rote Werte) */
       .padding-top {
         top: 0;
         left: var(--padding-left);
         width: calc(var(--page-width) - var(--padding-left) - var(--padding-right));
         height: var(--padding-top);
+        justify-content: flex-start;  /* linksbündig */
       }
       
       .padding-bottom {
@@ -227,6 +228,7 @@
         left: var(--padding-left);
         width: calc(var(--page-width) - var(--padding-left) - var(--padding-right));
         height: var(--padding-bottom);
+        justify-content: flex-end;    /* rechtsbündig */
       }
       
       .padding-left {
@@ -236,9 +238,7 @@
         height: calc(var(--page-height) - var(--padding-top) - var(--padding-bottom));
         writing-mode: vertical-rl;
         transform: rotate(180deg);
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        justify-content: flex-end;    /* rechtsbündig */
       }
       
       .padding-right {
@@ -248,9 +248,23 @@
         height: calc(var(--page-height) - var(--padding-top) - var(--padding-bottom));
         writing-mode: vertical-rl;
         transform: rotate(180deg);
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        justify-content: flex-end;    /* rechtsbündig */
+      }
+      
+      /* Verstecke blaue Werte im Page Margins Modus */
+      .margin-view-page .padding-label .text-blue-600 {
+        display: none;
+      }
+      
+      /* Verstecke rote Werte im Label Dimensions Modus */
+      .margin-view-label .padding-label .text-red-600 {
+        display: none;
+      }
+      
+      /* Zeige beide Werte im "both" Modus */
+      .margin-view-both .padding-label .text-blue-600,
+      .margin-view-both .padding-label .text-red-600 {
+        display: block;
       }
       
       /* Container für die Vorschau */
@@ -629,35 +643,7 @@
         display: none !important;
       }
 
-      /* Padding Labels */
-      .padding-label {
-        position: absolute;
-        background: rgba(255, 0, 0, 0.1);
-        color: #ff0000;
-        font-size: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 10;
-      }
-      
-      /* Verstecke blaue Werte im Page Margins Modus */
-      .margin-view-page .padding-label .text-blue-600 {
-        display: none;
-      }
-      
-      /* Verstecke rote Werte im Label Dimensions Modus */
-      .margin-view-label .padding-label .text-red-600 {
-        display: none;
-      }
-      
-      /* Zeige beide Werte im "both" Modus */
-      .margin-view-both .padding-label .text-blue-600,
-      .margin-view-both .padding-label .text-red-600 {
-        display: block;
-      }
-
-      /* Label Dimensions Labels */
+      /* Label Dimensions Labels (blaue Werte) */
       .label-dimensions-label {
         position: absolute;
         background: rgba(0, 0, 255, 0.1);
@@ -665,7 +651,6 @@
         font-size: 12px;
         display: flex;
         align-items: center;
-        justify-content: center;
         z-index: 10;
       }
       
@@ -674,6 +659,7 @@
         left: var(--padding-left);
         width: calc(var(--page-width) - var(--padding-left) - var(--padding-right));
         height: var(--padding-top);
+        justify-content: flex-end;    /* rechtsbündig */
       }
       
       .label-dimensions-bottom {
@@ -681,6 +667,7 @@
         left: var(--padding-left);
         width: calc(var(--page-width) - var(--padding-left) - var(--padding-right));
         height: var(--padding-bottom);
+        justify-content: flex-start;  /* linksbündig */
       }
       
       .label-dimensions-left {
@@ -690,9 +677,7 @@
         height: calc(var(--page-height) - var(--padding-top) - var(--padding-bottom));
         writing-mode: vertical-rl;
         transform: rotate(180deg);
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        justify-content: flex-start;  /* linksbündig */
       }
       
       .label-dimensions-right {
@@ -702,9 +687,7 @@
         height: calc(var(--page-height) - var(--padding-top) - var(--padding-bottom));
         writing-mode: vertical-rl;
         transform: rotate(180deg);
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        justify-content: flex-start;  /* linksbündig */
       }
     </style>
   </head>
@@ -714,7 +697,7 @@
     <div class="container mx-auto print-hidden">
           <div class="flex justify-between items-center mb-4">
             <h1 class="text-xl font-bold">ASN QR Code Label Generator</h1>
-            <span class="text-sm text-gray-600">v0.916</span>
+            <span class="text-sm text-gray-600">v0.917</span>
           </div>
 
           <div class="flex gap-4 mb-4">
@@ -1789,7 +1772,7 @@
 
           const config = {
             metadata: {
-              version: document.querySelector('.text-gray-600').textContent || "v0.915",
+              version: document.querySelector('.text-gray-600').textContent || "v0.917",
               description: "Configuration file for the ASN QR Code Label Generator",
               created: new Date().toISOString(),
               purpose: "This file contains the settings for the QR code label layout, " +

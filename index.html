@@ -635,6 +635,17 @@
         border: 1px dotted #0000ff;
         background-color: rgba(0, 0, 255, 0.05);
       }
+
+      /* Hide label content when in label dimensions mode */
+      .label-dimensions-active .label {
+        border: 1px dotted #0000ff !important;
+        background-color: rgba(0, 0, 255, 0.05) !important;
+      }
+
+      .label-dimensions-active .label .qr-code,
+      .label-dimensions-active .label .text {
+        display: none !important;
+      }
       
       .hidden {
         display: none !important;
@@ -1477,6 +1488,13 @@
             container.style.setProperty('--label-border', borderStyle);
             printContainer.style.setProperty('--label-border', borderStyle);
             
+            // Prüfe, ob wir im Label Dimensions Modus sind
+            const isLabelDimensionsMode = ['label', 'both'].includes(this.marginViewMode) && this.printTestingEnabled;
+            
+            // Füge oder entferne die label-dimensions-active Klasse
+            container.classList.toggle('label-dimensions-active', isLabelDimensionsMode);
+            printContainer.classList.toggle('label-dimensions-active', isLabelDimensionsMode);
+            
             this.labels.forEach((label, index) => {
               // Skip if not selected (when selection is active and print testing is enabled)
               if (this.printTestingEnabled && selectedLabels.length > 0 && !selectedLabels.includes(index + 1)) {
@@ -1487,17 +1505,17 @@
               let labelDiv = document.createElement("div");
               labelDiv.classList.add("label");
 
-              // Im normalen Modus oder wenn Border Test aus ist
-              if (!this.printTestingEnabled || !this.borderTestMode) {
-              let qrImg = document.createElement("img");
-              qrImg.src = label.qrCodeUrl;
-              qrImg.classList.add("qr-code");
+              // Füge Label-Inhalte nur hinzu, wenn wir nicht im Label Dimensions Modus sind
+              if (!isLabelDimensionsMode && (!this.printTestingEnabled || !this.borderTestMode)) {
+                let qrImg = document.createElement("img");
+                qrImg.src = label.qrCodeUrl;
+                qrImg.classList.add("qr-code");
                 labelDiv.appendChild(qrImg);
 
-              let textDiv = document.createElement("div");
-              textDiv.classList.add("text");
-              textDiv.innerText = label.text;
-              labelDiv.appendChild(textDiv);
+                let textDiv = document.createElement("div");
+                textDiv.classList.add("text");
+                textDiv.innerText = label.text;
+                labelDiv.appendChild(textDiv);
               }
               
               container.appendChild(labelDiv);
@@ -1506,8 +1524,8 @@
               let printLabelDiv = document.createElement("div");
               printLabelDiv.classList.add("label");
 
-              // Im Print-Modus: Zeige normale Labels wenn Print Testing aus ist oder Border Test aus ist
-              if (!this.printTestingEnabled || !this.borderTestMode) {
+              // Füge Label-Inhalte nur hinzu, wenn wir nicht im Label Dimensions Modus sind
+              if (!isLabelDimensionsMode && (!this.printTestingEnabled || !this.borderTestMode)) {
                 let qrImg = document.createElement("img");
                 qrImg.src = label.qrCodeUrl;
                 qrImg.classList.add("qr-code");

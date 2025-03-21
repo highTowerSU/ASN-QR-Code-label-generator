@@ -925,84 +925,98 @@
             </div>
 
             <!-- Label Spacing Settings -->
-            <div class="section-group">
-              <h2 class="section-title">Label Dimensions</h2>
-              <div class="input-grid">
-                <div class="column-headers">
-                  <div class="column-header">Parameter</div>
-                  <div class="column-header">Target (mm)</div>
-                  <div class="column-header">Actual (mm)</div>
-                </div>
-
-                <div class="input-row">
-                  <div class="input-group">
-                    <label class="text-sm font-medium text-gray-700">Label Width</label>
-                  </div>
-                  <div class="input-group">
-                    <input type="number" x-model="targetWidth" 
-                      class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
-                      min="0" step="0.01" />
-                  </div>
-                  <div class="input-group">
-                    <input type="number" x-model="actualWidth" 
-                      class="mt-1 block rounded-md border-blue-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
-                      min="0" step="0.01" @input="calculateScaling()" />
-                  </div>
-                </div>
-
-                <div class="input-row">
-                  <div class="input-group">
-                    <label class="text-sm font-medium text-gray-700">Horizontal Gap</label>
-                  </div>
-                  <div class="input-group">
-                    <input type="number" x-model="targetGapHorizontal" 
-                      class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
-                      min="0" step="0.01" />
-                  </div>
-                  <div class="input-group">
-                    <input type="number" x-model="actualGapHorizontal" 
-                      class="mt-1 block rounded-md border-blue-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
-                      min="0" step="0.01" @input="calculateScaling()" />
-                  </div>
-                </div>
-
-                <div class="input-row">
-                  <div class="input-group">
-                    <label class="text-sm font-medium text-gray-700">Label Height</label>
-                  </div>
-                  <div class="input-group">
-                    <input type="number" x-model="targetHeight" 
-                      class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
-                      min="0" step="0.01" />
-                  </div>
-                  <div class="input-group">
-                    <input type="number" x-model="actualHeight" 
-                      class="mt-1 block rounded-md border-blue-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
-                      min="0" step="0.01" @input="calculateScaling()" />
-                  </div>
-                </div>
-
-                <div class="input-row">
-                  <div class="input-group">
-                    <label class="text-sm font-medium text-gray-700">Vertical Gap</label>
-                  </div>
-                  <div class="input-group">
-                    <input type="number" x-model="targetGapVertical" 
-                      class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
-                      min="0" step="0.01" />
-                  </div>
-                  <div class="input-group">
-                    <input type="number" x-model="actualGapVertical" 
-                      class="mt-1 block rounded-md border-blue-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
-                      min="0" step="0.01" @input="calculateScaling()" />
-                  </div>
-                </div>
+            <div class="section-group border rounded-lg p-4 mb-4">
+              <div class="flex items-center justify-between cursor-pointer" @click="labelDimensionsOpen = !labelDimensionsOpen">
+                <h2 class="section-title mb-0">Label Dimensions</h2>
+                <svg class="w-6 h-6 transform transition-transform" :class="{ 'rotate-180': labelDimensionsOpen }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
               </div>
+              <div x-show="labelDimensionsOpen" 
+                   x-transition:enter="transition ease-out duration-200" 
+                   x-transition:enter-start="opacity-0 transform -translate-y-2" 
+                   x-transition:enter-end="opacity-100 transform translate-y-0" 
+                   x-transition:leave="transition ease-in duration-150" 
+                   x-transition:leave-start="opacity-100 transform translate-y-0" 
+                   x-transition:leave-end="opacity-0 transform -translate-y-2"
+                   class="mt-4">
+                <div class="input-grid">
+                  <div class="column-headers">
+                    <div class="column-header">Parameter</div>
+                    <div class="column-header">Target (mm)</div>
+                    <div class="column-header">Actual (mm)</div>
+                  </div>
 
-              <div class="mt-4 p-2 bg-gray-100 rounded">
-                <div class="flex justify-between items-center">
-                  <span class="font-bold text-sm">Calculated Scaling Factor:</span>
-                  <span x-text="'Horizontal: ' + (scalingFactorX || '1.000') + ' / Vertical: ' + (scalingFactorY || '1.000')" class="font-mono text-xs"></span>
+                  <div class="input-row">
+                    <div class="input-group">
+                      <label class="text-sm font-medium text-gray-700">Label Width</label>
+                    </div>
+                    <div class="input-group">
+                      <input type="number" x-model="targetWidth" 
+                        class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
+                        min="0" step="0.01" />
+                    </div>
+                    <div class="input-group">
+                      <input type="number" x-model="actualWidth" 
+                        class="mt-1 block rounded-md border-blue-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
+                        min="0" step="0.01" @input="calculateScaling()" />
+                    </div>
+                  </div>
+
+                  <div class="input-row">
+                    <div class="input-group">
+                      <label class="text-sm font-medium text-gray-700">Horizontal Gap</label>
+                    </div>
+                    <div class="input-group">
+                      <input type="number" x-model="targetGapHorizontal" 
+                        class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
+                        min="0" step="0.01" />
+                    </div>
+                    <div class="input-group">
+                      <input type="number" x-model="actualGapHorizontal" 
+                        class="mt-1 block rounded-md border-blue-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
+                        min="0" step="0.01" @input="calculateScaling()" />
+                    </div>
+                  </div>
+
+                  <div class="input-row">
+                    <div class="input-group">
+                      <label class="text-sm font-medium text-gray-700">Label Height</label>
+                    </div>
+                    <div class="input-group">
+                      <input type="number" x-model="targetHeight" 
+                        class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
+                        min="0" step="0.01" />
+                    </div>
+                    <div class="input-group">
+                      <input type="number" x-model="actualHeight" 
+                        class="mt-1 block rounded-md border-blue-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
+                        min="0" step="0.01" @input="calculateScaling()" />
+                    </div>
+                  </div>
+
+                  <div class="input-row">
+                    <div class="input-group">
+                      <label class="text-sm font-medium text-gray-700">Vertical Gap</label>
+                    </div>
+                    <div class="input-group">
+                      <input type="number" x-model="targetGapVertical" 
+                        class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
+                        min="0" step="0.01" />
+                    </div>
+                    <div class="input-group">
+                      <input type="number" x-model="actualGapVertical" 
+                        class="mt-1 block rounded-md border-blue-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
+                        min="0" step="0.01" @input="calculateScaling()" />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mt-4 p-2 bg-gray-100 rounded">
+                  <div class="flex justify-between items-center">
+                    <span class="font-bold text-sm">Calculated Scaling Factor:</span>
+                    <span x-text="'Horizontal: ' + (scalingFactorX || '1.000') + ' / Vertical: ' + (scalingFactorY || '1.000')" class="font-mono text-xs"></span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1421,6 +1435,7 @@
         return {
           pageFormatOpen: true, // Neue Variable für den Akkordeon-Zustand
           pageMarginsOpen: true, // Neue Variable für den Page Margins Akkordeon-Zustand
+          labelDimensionsOpen: true, // Neue Variable für den Label Dimensions Akkordeon-Zustand
           startNumber: 1,
           prefix: "ASN",
           leadingZeros: 4,

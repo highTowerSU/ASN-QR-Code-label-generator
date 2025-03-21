@@ -728,15 +728,15 @@
             <span class="text-sm text-gray-600">v0.950</span>
           </div>
 
-          <div class="flex gap-4 mb-4">
-            <button onclick="saveConfig()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-[200px] text-center">
+          <div class="flex justify-between gap-4 mb-4 border-b pb-4">
+            <button onclick="saveConfig()" class="flex-1 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-center">
               Save Configuration
             </button>
-            <label class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded cursor-pointer w-[200px] text-center">
+            <label class="flex-1 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded cursor-pointer text-center">
               Load Configuration
               <input type="file" id="configUpload" accept=".json" class="hidden" onchange="loadConfig(event)">
             </label>
-            <button onclick="resetConfig()" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded w-[200px] text-center">
+            <button onclick="resetConfig()" class="flex-1 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded text-center">
               Reset to Default
             </button>
           </div>
@@ -1319,7 +1319,7 @@
             </div>
 
             <!-- Action Buttons -->
-            <div class="action-buttons">
+            <div class="flex justify-between items-center w-full">
               <button @click.prevent="generateLabels()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-[200px] text-center">
                 Update Labels
               </button>
@@ -1480,6 +1480,12 @@
     </div>
 
     <div id="notification" class="notification" style="display: none;"></div>
+
+    <!-- Copyright Notice -->
+    <div class="text-center text-sm text-gray-600 mt-8 mb-4 print-hidden">
+      © 2025 Murat Güven. All rights reserved. Licensed under the AGPL v3.0.
+      <a href="https://github.com/muguu/ASN-QR-Code-label-generator" class="text-blue-600 hover:text-blue-800">Contribute via GitHub</a>
+    </div>
 
     <script>
       function qrCodeApp() {

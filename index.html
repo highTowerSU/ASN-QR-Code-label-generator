@@ -1022,40 +1022,54 @@
             </div>
 
             <!-- Label Count Settings -->
-            <div class="section-group">
-              <h2 class="section-title">Label Count</h2>
-              <div class="input-grid">
-                <div class="column-headers">
-                  <div class="column-header">Parameter</div>
-                  <div class="column-header">Value</div>
-                  <div class="column-header">Calculated Margins</div>
-                </div>
+            <div class="section-group border rounded-lg p-4 mb-4">
+              <div class="flex items-center justify-between cursor-pointer" @click="labelCountOpen = !labelCountOpen">
+                <h2 class="section-title mb-0">Label Count</h2>
+                <svg class="w-6 h-6 transform transition-transform" :class="{ 'rotate-180': labelCountOpen }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+              <div x-show="labelCountOpen" 
+                   x-transition:enter="transition ease-out duration-200" 
+                   x-transition:enter-start="opacity-0 transform -translate-y-2" 
+                   x-transition:enter-end="opacity-100 transform translate-y-0" 
+                   x-transition:leave="transition ease-in duration-150" 
+                   x-transition:leave-start="opacity-100 transform translate-y-0" 
+                   x-transition:leave-end="opacity-0 transform -translate-y-2"
+                   class="mt-4">
+                <div class="input-grid">
+                  <div class="column-headers">
+                    <div class="column-header">Parameter</div>
+                    <div class="column-header">Value</div>
+                    <div class="column-header">Calculated Margins</div>
+                  </div>
 
-                <div class="input-row">
-                  <div class="input-group">
-                    <label class="text-sm font-medium text-gray-700">Labels per Row</label>
+                  <div class="input-row">
+                    <div class="input-group">
+                      <label class="text-sm font-medium text-gray-700">Labels per Row</label>
+                    </div>
+                    <div class="input-group">
+                      <input type="number" x-model="labelsPerRow" 
+                        class="mt-1 block w-full h-9 rounded-md border-blue-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
+                        min="1" step="1" @input="calculateMargins()" />
+                    </div>
+                    <div class="input-group">
+                      <div class="text-sm text-blue-600 mt-1">Right: [<span x-text="calculatedRightMargin.toFixed(2)"></span>mm]</div>
+                    </div>
                   </div>
-                  <div class="input-group">
-                    <input type="number" x-model="labelsPerRow" 
-                      class="mt-1 block w-full h-9 rounded-md border-blue-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
-                      min="1" step="1" @input="calculateMargins()" />
-                  </div>
-                  <div class="input-group">
-                    <div class="text-sm text-blue-600 mt-1">Right: [<span x-text="calculatedRightMargin.toFixed(2)"></span>mm]</div>
-                  </div>
-                </div>
 
-                <div class="input-row">
-                  <div class="input-group">
-                    <label class="text-sm font-medium text-gray-700">Number of Rows</label>
-                  </div>
-                  <div class="input-group">
-                    <input type="number" x-model="maxRows" 
-                      class="mt-1 block w-full h-9 rounded-md border-blue-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
-                      min="1" step="1" @input="calculateMargins()" />
-                  </div>
-                  <div class="input-group">
-                    <div class="text-sm text-blue-600 mt-1">Bottom: [<span x-text="calculatedBottomMargin.toFixed(2)"></span>mm]</div>
+                  <div class="input-row">
+                    <div class="input-group">
+                      <label class="text-sm font-medium text-gray-700">Number of Rows</label>
+                    </div>
+                    <div class="input-group">
+                      <input type="number" x-model="maxRows" 
+                        class="mt-1 block w-full h-9 rounded-md border-blue-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
+                        min="1" step="1" @input="calculateMargins()" />
+                    </div>
+                    <div class="input-group">
+                      <div class="text-sm text-blue-600 mt-1">Bottom: [<span x-text="calculatedBottomMargin.toFixed(2)"></span>mm]</div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1436,6 +1450,7 @@
           pageFormatOpen: true, // Neue Variable für den Akkordeon-Zustand
           pageMarginsOpen: true, // Neue Variable für den Page Margins Akkordeon-Zustand
           labelDimensionsOpen: true, // Neue Variable für den Label Dimensions Akkordeon-Zustand
+          labelCountOpen: true, // Neue Variable für den Label Count Akkordeon-Zustand
           startNumber: 1,
           prefix: "ASN",
           leadingZeros: 4,

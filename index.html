@@ -59,8 +59,8 @@
           left: 0 !important;
           margin: 0 !important;
           padding: 0 !important;
-          width: 210mm;
-          height: 297mm;
+        width: 210mm;
+        height: 297mm;
         }
 
         .print-only .page {
@@ -528,6 +528,117 @@
       .notification.show {
         opacity: 1;
       }
+
+      /* Toggle Switch Styles */
+      .toggle-switch {
+        display: flex;
+        align-items: center;
+      }
+      
+      .switch {
+        position: relative;
+        display: inline-block;
+        width: 48px;
+        height: 24px;
+        margin-left: 12px;
+      }
+      
+      .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+      
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: .4s;
+        border-radius: 24px;
+      }
+      
+      .slider:before {
+        position: absolute;
+        content: "";
+        height: 18px;
+        width: 18px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%;
+      }
+      
+      input:checked + .slider {
+        background-color: #2563eb;
+      }
+      
+      input:checked + .slider:before {
+        transform: translateX(24px);
+      }
+
+      .print-testing-section {
+        opacity: 0.5;
+        pointer-events: none;
+        transition: all 0.3s ease;
+      }
+
+      .print-testing-section.active {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      /* Label Dimensions Visualization */
+      .label-dimensions-visualization {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+        pointer-events: none;
+        box-sizing: border-box;
+        z-index: 5;
+      }
+      
+      .label-dimensions-visualization::before {
+        content: '';
+        position: absolute;
+        top: var(--padding-top);
+        left: var(--padding-left);
+        width: calc(var(--page-width) - var(--padding-left) - var(--padding-right));
+        height: calc(var(--page-height) - var(--padding-top) - var(--padding-bottom));
+        border: 2px dashed #0000ff;
+        box-sizing: border-box;
+        z-index: 5;
+      }
+      
+      .label-dimensions-grid {
+        position: absolute;
+        top: var(--padding-top);
+        left: var(--padding-left);
+        width: calc(var(--page-width) - var(--padding-left) - var(--padding-right));
+        height: calc(var(--page-height) - var(--padding-top) - var(--padding-bottom));
+        display: grid;
+        grid-template-columns: repeat(var(--labels-per-row, 7), 1fr);
+        grid-template-rows: repeat(var(--max-rows, 27), 1fr);
+        gap: var(--gap-vertical, 0mm) var(--gap-horizontal, 2.63mm);
+        pointer-events: none;
+        z-index: 6;
+      }
+      
+      .label-dimensions-cell {
+        border: 1px dotted #0000ff;
+        background-color: rgba(0, 0, 255, 0.05);
+      }
+      
+      .hidden {
+        display: none !important;
+      }
     </style>
   </head>
   <body x-data="qrCodeApp()" x-init="generateLabels()">
@@ -561,29 +672,25 @@
                   <input type="text" id="prefix" x-model="prefix" required 
                     class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 prefix-input" 
                     placeholder="ASN" />
-                </div>
+          </div>
                 <div class="input-group">
                   <label for="leadingZeros" class="text-sm font-medium text-gray-700">Leading Zeros</label>
                   <input type="number" id="leadingZeros" x-model="leadingZeros" required min="0" max="10" step="1" 
                     class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" />
-                </div>
+          </div>
                 <div class="input-group">
                   <label for="startNumber" class="text-sm font-medium text-gray-700">Start Number</label>
                   <input type="number" id="startNumber" x-model="startNumber" required min="1" step="1" 
                     class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" />
-                </div>
+        </div>
                 <div class="checkbox-container">
                   <input type="checkbox" id="showPrefix" x-model="showPrefix" 
                     class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500" />
                   <label for="showPrefix" class="text-sm font-medium text-gray-700">Display Prefix</label>
-                </div>
-                <div class="checkbox-container">
-                  <input type="checkbox" id="showBorder" x-model="showBorder" 
-                    class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500" />
-                  <label for="showBorder" class="text-sm font-medium text-gray-700">Show Label Borders</label>
-                </div>
-              </div>
-            </div>
+          </div>
+                <!-- Remove Show Label Borders checkbox from here -->
+          </div>
+          </div>
 
             <!-- Page Format Settings -->
             <div class="section-group mb-6">
@@ -593,12 +700,12 @@
                   <div class="column-header">Parameter</div>
                   <div class="column-header">Value</div>
                   <div class="column-header">Dimensions</div>
-                </div>
+        </div>
 
                 <div class="input-row">
                   <div class="input-group">
                     <label class="text-sm font-medium text-gray-700">Page Format</label>
-                  </div>
+          </div>
                   <div class="input-group">
                     <select x-model="pageFormat" @change="updatePageFormat()" 
                       class="mt-1 block w-full h-9 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
@@ -607,11 +714,11 @@
                       <option value="Letter">US Letter</option>
                       <option value="Legal">US Legal</option>
                     </select>
-                  </div>
+          </div>
                   <div class="input-group">
                     <div class="text-sm text-gray-600 mt-1">
                       Width: <span x-text="pageWidth"></span>mm × Height: <span x-text="pageHeight"></span>mm
-                    </div>
+        </div>
                   </div>
                 </div>
 
@@ -892,80 +999,112 @@
               </div>
             </div>
 
-            <!-- New Print Testing Section -->
+            <!-- Print Testing Section -->
             <div class="section-group">
-              <h2 class="section-title">Print Testing</h2>
-              <div class="input-grid">
-                <div class="column-headers">
-                  <div class="column-header">Test Options</div>
-                  <div class="column-header">Settings</div>
-                  <div class="column-header">Description</div>
-                </div>
-
-                <!-- Border Test -->
-                <div class="input-row">
-                  <div class="input-group">
-                    <label class="text-sm font-medium text-gray-700">Border Test</label>
+              <div class="flex justify-between items-center mb-4">
+                <h2 class="section-title">Print Testing</h2>
+                <label class="toggle-switch">
+                  <span class="text-sm text-gray-600 mr-2">Testing Mode</span>
+                  <div class="switch">
+                    <input type="checkbox" 
+                           x-model="printTestingEnabled"
+                           @change="resetPrintTesting()" />
+                    <span class="slider"></span>
                   </div>
-                  <div class="input-group">
-                    <div class="checkbox-container">
-                      <input type="checkbox" id="borderTestMode" x-model="borderTestMode" 
-                        class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500" />
-                      <label for="borderTestMode" class="text-sm font-medium text-gray-700">Show borders only</label>
+                </label>
+              </div>
+              <div class="print-testing-section" :class="{ 'active': printTestingEnabled }">
+                <div class="input-grid">
+                  <div class="column-headers">
+                    <div class="column-header">Test Options</div>
+                    <div class="column-header">Settings</div>
+                    <div class="column-header">Description</div>
+                  </div>
+
+                  <!-- Show Label Borders -->
+                  <div class="input-row">
+                    <div class="input-group">
+                      <label class="text-sm font-medium text-gray-700">Label Borders</label>
+                    </div>
+                    <div class="input-group">
+                      <div class="checkbox-container">
+                        <input type="checkbox" id="showBorder" x-model="showBorder" 
+                          class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500" />
+                        <label for="showBorder" class="text-sm font-medium text-gray-700">Show borders</label>
+                      </div>
+                    </div>
+                    <div class="input-group">
+                      <div class="text-sm text-gray-600">Display borders around each label</div>
                     </div>
                   </div>
-                  <div class="input-group">
-                    <div class="text-sm text-gray-600">Print label borders without QR codes for alignment testing</div>
-                  </div>
-                </div>
 
-                <!-- Preview Mode -->
-                <div class="input-row">
-                  <div class="input-group">
-                    <label class="text-sm font-medium text-gray-700">Preview Mode</label>
-                  </div>
-                  <div class="input-group">
-                    <div class="checkbox-container">
-                      <input type="checkbox" id="previewMode" x-model="previewMode" 
-                        class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500" />
-                      <label for="previewMode" class="text-sm font-medium text-gray-700">Show preview</label>
+                  <!-- Border Test -->
+                  <div class="input-row">
+                    <div class="input-group">
+                      <label class="text-sm font-medium text-gray-700">Border Test</label>
+                    </div>
+                    <div class="input-group">
+                      <div class="checkbox-container">
+                        <input type="checkbox" id="borderTestMode" x-model="borderTestMode" 
+                          class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500" />
+                        <label for="borderTestMode" class="text-sm font-medium text-gray-700">Show borders only</label>
+                      </div>
+                    </div>
+                    <div class="input-group">
+                      <div class="text-sm text-gray-600">Print label borders without QR codes for alignment testing</div>
                     </div>
                   </div>
-                  <div class="input-group">
-                    <div class="text-sm text-gray-600">Display preview of selected test options</div>
-                  </div>
-                </div>
 
-                <!-- Selected Labels -->
-                <div class="input-row">
-                  <div class="input-group">
-                    <label class="text-sm font-medium text-gray-700">Selected Labels</label>
+                  <!-- Margin View Mode -->
+                  <div class="input-row">
+                    <div class="input-group">
+                      <label class="text-sm font-medium text-gray-700">Margin View</label>
+                    </div>
+                    <div class="input-group">
+                      <select x-model="marginViewMode" 
+                        class="mt-1 block w-full h-9 rounded-md border-gray-300 text-xs shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        <option value="none">No margins</option>
+                        <option value="page">Page margins</option>
+                        <option value="label">Label dimensions</option>
+                        <option value="both">Both margins</option>
+                      </select>
+                    </div>
+                    <div class="input-group">
+                      <div class="text-sm text-gray-600">Select which margins to display in the preview</div>
+                    </div>
                   </div>
-                  <div class="input-group">
-                    <input type="text" x-model="selectedLabels" placeholder="e.g., 1,3-5,7" 
-                      class="mt-1 block w-full h-9 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" />
-                  </div>
-                  <div class="input-group">
-                    <div class="text-sm text-gray-600">Print specific labels (comma-separated, ranges allowed)</div>
-                  </div>
-                </div>
 
-                <!-- Toner Save Mode -->
-                <div class="input-row">
-                  <div class="input-group">
-                    <label class="text-sm font-medium text-gray-700">Toner Save</label>
+                  <!-- Selected Labels -->
+                  <div class="input-row">
+                    <div class="input-group">
+                      <label class="text-sm font-medium text-gray-700">Selected Labels</label>
+                    </div>
+                    <div class="input-group">
+                      <input type="text" x-model="selectedLabels" placeholder="e.g., 1,3-5,7" 
+                        class="mt-1 block w-full h-9 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" />
+                    </div>
+                    <div class="input-group">
+                      <div class="text-sm text-gray-600">Print specific labels (comma-separated, ranges allowed)</div>
+                    </div>
                   </div>
-                  <div class="input-group">
-                    <select x-model="tonerSaveMode" 
-                      class="mt-1 block w-full h-9 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                      <option value="off">Off</option>
-                      <option value="light">Light (75%)</option>
-                      <option value="medium">Medium (50%)</option>
-                      <option value="heavy">Heavy (25%)</option>
-                    </select>
-                  </div>
-                  <div class="input-group">
-                    <div class="text-sm text-gray-600">Reduce QR code density to save toner</div>
+
+                  <!-- Toner Save Mode -->
+                  <div class="input-row">
+                    <div class="input-group">
+                      <label class="text-sm font-medium text-gray-700">Toner Save</label>
+                    </div>
+                    <div class="input-group">
+                      <select x-model="tonerSaveMode" 
+                        class="mt-1 block w-full h-9 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        <option value="off">Off</option>
+                        <option value="light">Light (75%)</option>
+                        <option value="medium">Medium (50%)</option>
+                        <option value="heavy">Heavy (25%)</option>
+                      </select>
+                    </div>
+                    <div class="input-group">
+                      <div class="text-sm text-gray-600">Reduce QR code density to save toner</div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -980,28 +1119,51 @@
                 Print Labels
               </button>
           </div>
-          </form>
+      </form>
         </div>
-          </div>
-      
+    </div>
+
       <div class="preview-container print-hidden">
         <div class="page-preview">
           <div class="a4-border"></div>
-          <div class="padding-visualization"></div>
-          <div class="padding-label padding-top">
+          
+          <!-- Page Margins Visualization -->
+          <div class="padding-visualization" 
+               :class="{'hidden': !['page', 'both'].includes(marginViewMode) || !printTestingEnabled}"></div>
+          
+          <!-- Page Margins Labels -->
+          <div class="padding-label padding-top" 
+               :class="{'hidden': !['page', 'both'].includes(marginViewMode) || !printTestingEnabled}">
             <div x-text="targetPaddingTop + 'mm'" class="mb-1 text-red-600"></div>
           </div>
-          <div class="padding-label padding-bottom">
+          <div class="padding-label padding-bottom" 
+               :class="{'hidden': !['page', 'both'].includes(marginViewMode) || !printTestingEnabled}">
             <div x-text="targetPaddingBottom + 'mm'" class="mb-1 text-red-600"></div>
             <div x-text="'[' + calculatedBottomMargin.toFixed(2) + 'mm]'" class="text-blue-600 text-xs"></div>
           </div>
-          <div class="padding-label padding-left">
+          <div class="padding-label padding-left" 
+               :class="{'hidden': !['page', 'both'].includes(marginViewMode) || !printTestingEnabled}">
             <div x-text="targetPaddingLeft + 'mm'" class="mb-1 text-red-600"></div>
           </div>
-          <div class="padding-label padding-right">
+          <div class="padding-label padding-right" 
+               :class="{'hidden': !['page', 'both'].includes(marginViewMode) || !printTestingEnabled}">
             <div x-text="targetPaddingRight + 'mm'" class="mb-1 text-red-600"></div>
             <div x-text="'[' + calculatedRightMargin.toFixed(2) + 'mm]'" class="text-blue-600 text-xs"></div>
           </div>
+          
+          <!-- Label Dimensions Visualization -->
+          <div class="label-dimensions-visualization" 
+               :class="{'hidden': !['label', 'both'].includes(marginViewMode) || !printTestingEnabled}">
+            <div class="label-dimensions-grid">
+              <template x-for="row in maxRows">
+                <template x-for="col in labelsPerRow">
+                  <div class="label-dimensions-cell"></div>
+                </template>
+              </template>
+            </div>
+          </div>
+          
+          <!-- Warning for overlapping labels -->
           <div x-show="isOverflowingRight || isOverflowingBottom" 
                class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-4" 
                role="alert">
@@ -1021,7 +1183,7 @@
               <p class="mt-2">Warning: Labels overlap the bottom margin by <span x-text="Math.abs(calculatedBottomMargin).toFixed(2)"></span>mm</p>
             </template>
           </div>
-          <div class="page" id="label-container"></div>
+    <div class="page" id="label-container"></div>
         </div>
       </div>
 
@@ -1090,9 +1252,10 @@
           pageWidth: 210,
           pageHeight: 297,
           borderTestMode: false,
-          previewMode: true,  // Neue Variable für Preview Mode
+          marginViewMode: "both",  // Neue Variable für Margin View Mode
           selectedLabels: "",
           tonerSaveMode: "off",
+          printTestingEnabled: false,  // Neue Variable für Print Testing Toggle
 
           // Page format definitions
           pageFormats: {
@@ -1256,10 +1419,12 @@
             root.style.setProperty('--text-font', this.fontFamily);
             root.style.setProperty('--text-weight', this.fontWeight);
             root.style.setProperty('--qr-code-spacing', `${this.qrCodeSpacing}mm`);
+            root.style.setProperty('--labels-per-row', this.labelsPerRow);
+            root.style.setProperty('--max-rows', this.maxRows);
             
             // Setze die Grid-Templates für beide Container
-            const columnsStyle = `repeat(${this.labelsPerRow}, 25.61mm)`;
-            const rowsStyle = `repeat(${this.maxRows}, 10.06mm)`;
+            const columnsStyle = `repeat(${this.labelsPerRow}, ${this.actualWidth}mm)`;
+            const rowsStyle = `repeat(${this.maxRows}, ${this.actualHeight}mm)`;
             container.style.gridTemplateColumns = columnsStyle;
             container.style.gridTemplateRows = rowsStyle;
             printContainer.style.gridTemplateColumns = columnsStyle;
@@ -1271,8 +1436,8 @@
             printContainer.style.setProperty('--label-border', borderStyle);
             
             this.labels.forEach((label, index) => {
-              // Skip if not selected (when selection is active)
-              if (selectedLabels.length > 0 && !selectedLabels.includes(index + 1)) {
+              // Skip if not selected (when selection is active and print testing is enabled)
+              if (this.printTestingEnabled && selectedLabels.length > 0 && !selectedLabels.includes(index + 1)) {
                 return;
               }
 
@@ -1280,27 +1445,27 @@
               let labelDiv = document.createElement("div");
               labelDiv.classList.add("label");
 
-              // Nur anzeigen wenn Preview Mode aus ist oder wenn Preview Mode an ist und Border Test aktiv ist
-              if (!this.previewMode || (this.previewMode && this.borderTestMode)) {
-                if (!this.borderTestMode) {
-                  let qrImg = document.createElement("img");
-                  qrImg.src = label.qrCodeUrl;
-                  qrImg.classList.add("qr-code");
-                  labelDiv.appendChild(qrImg);
+              // Im normalen Modus oder wenn Border Test aus ist
+              if (!this.printTestingEnabled || !this.borderTestMode) {
+                let qrImg = document.createElement("img");
+                qrImg.src = label.qrCodeUrl;
+                qrImg.classList.add("qr-code");
+                labelDiv.appendChild(qrImg);
 
-                  let textDiv = document.createElement("div");
-                  textDiv.classList.add("text");
-                  textDiv.innerText = label.text;
-                  labelDiv.appendChild(textDiv);
-                }
-                container.appendChild(labelDiv);
+                let textDiv = document.createElement("div");
+                textDiv.classList.add("text");
+                textDiv.innerText = label.text;
+                labelDiv.appendChild(textDiv);
               }
+              
+              container.appendChild(labelDiv);
 
-              // Print version - immer ohne QR-Codes im Border Test Mode
+              // Print version
               let printLabelDiv = document.createElement("div");
               printLabelDiv.classList.add("label");
 
-              if (!this.borderTestMode) {
+              // Im Print-Modus: Zeige normale Labels wenn Print Testing aus ist oder Border Test aus ist
+              if (!this.printTestingEnabled || !this.borderTestMode) {
                 let qrImg = document.createElement("img");
                 qrImg.src = label.qrCodeUrl;
                 qrImg.classList.add("qr-code");
@@ -1378,6 +1543,16 @@
                 return `${baseUrl}&qzone=3&format=svg&ecc=L`;
               default:
                 return `${baseUrl}&size=100x100`;
+            }
+          },
+
+          // Methode zum Zurücksetzen der Print Testing Einstellungen
+          resetPrintTesting() {
+            if (!this.printTestingEnabled) {
+              this.borderTestMode = false;
+              this.marginViewMode = "both";
+              this.selectedLabels = "";
+              this.tonerSaveMode = "off";
             }
           },
         };

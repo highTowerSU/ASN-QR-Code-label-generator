@@ -170,7 +170,6 @@
         display: flex;
         align-items: center;
         justify-content: flex-start;
-        border: var(--label-border, 0.1mm solid black);
         padding: 0mm;
         box-sizing: border-box;
         overflow: hidden;
@@ -1404,40 +1403,37 @@
           leadingZeros: 4,
           showPrefix: true,
           showBorder: false,
-          paddingTop: 13.14,    // Neuer oberer Rand
-          paddingRight: 8.5,    // Neuer rechter Rand
-          paddingBottom: 13.7,  // Neuer unterer Rand
-          paddingLeft: 8.4,     // Neuer linker Rand
-          gapVertical: 0,       // Vertikaler Abstand
-          gapHorizontal: 2.5,   // Neuer horizontaler Abstand
+          paddingTop: 13.14,
+          paddingRight: 8.5,
+          paddingBottom: 13.7,
+          paddingLeft: 8.4,
+          gapVertical: 0,
+          gapHorizontal: 2.5,
           labels: [],
           textSize: '12',
           textFont: 'Tahoma',
           textWeight: 'normal',
           qrCodeSpacing: 0.6,
-          // Neue Variablen für Soll- und Ist-Werte
-          targetWidth: 25.35,   // Neue Etikettenbreite
-          targetHeight: 10.0,   // Neue Etikettenhöhe
-          targetGapHorizontal: 2.5,  // Neuer horizontaler Abstand
+          targetWidth: 25.35,
+          targetHeight: 10.0,
+          targetGapHorizontal: 2.5,
           targetGapVertical: 0,
-          actualWidth: 25.35,      // Mit Soll-Wert initialisiert
-          actualHeight: 10.0,      // Mit Soll-Wert initialisiert
-          actualGapHorizontal: 2.5,  // Mit Soll-Wert initialisiert
-          actualGapVertical: 0,    // Mit Soll-Wert initialisiert
+          actualWidth: 25.35,
+          actualHeight: 10.0,
+          actualGapHorizontal: 2.5,
+          actualGapVertical: 0,
           scalingFactorX: null,
           scalingFactorY: null,
-          // Neue Variablen für Soll- und Ist-Werte der Ränder
-          targetPaddingTop: 13.14,    // Neuer oberer Rand
-          targetPaddingBottom: 13.7,  // Neuer unterer Rand
-          targetPaddingLeft: 8.4,     // Neuer linker Rand
-          targetPaddingRight: 8.5,    // Neuer rechter Rand
-          actualPaddingTop: 13.14,    // Mit Soll-Wert initialisiert
-          actualPaddingBottom: 13.7,  // Mit Soll-Wert initialisiert
-          actualPaddingLeft: 8.4,     // Mit Soll-Wert initialisiert
-          actualPaddingRight: 8.5,    // Mit Soll-Wert initialisiert
+          targetPaddingTop: 13.14,
+          targetPaddingBottom: 13.7,
+          targetPaddingLeft: 8.4,
+          targetPaddingRight: 8.5,
+          actualPaddingTop: 13.14,
+          actualPaddingBottom: 13.7,
+          actualPaddingLeft: 8.4,
+          actualPaddingRight: 8.5,
           paddingScalingX: null,
           paddingScalingY: null,
-          // Neue Variablen für die Etikettenanzahl
           labelsPerRow: 7,
           maxRows: 27,
           calculatedRightMargin: 0,
@@ -1453,10 +1449,10 @@
           pageWidth: 210,
           pageHeight: 297,
           borderTestMode: false,
-          marginViewMode: "both",  // Neue Variable für Margin View Mode
+          marginViewMode: "both",
           selectedLabels: "",
           tonerSaveMode: "off",
-          printTestingEnabled: false,  // Neue Variable für Print Testing Toggle
+          printTestingEnabled: false,
 
           // Page format definitions
           pageFormats: {
@@ -1512,6 +1508,9 @@
               totalWidth: totalWidth.toFixed(2),
               availableWidth: availableWidth.toFixed(2)
             };
+
+            // Füge den Aufruf der neuen Methode hinzu
+            this.updateSelectedLabels();
 
             this.renderLabels();
           },
@@ -1631,53 +1630,59 @@
             printContainer.style.gridTemplateColumns = columnsStyle;
             printContainer.style.gridTemplateRows = rowsStyle;
             
-            // Setze die Rahmen für beide Container
-            const borderStyle = this.showBorder ? '0.1mm solid black' : 'none';
-            container.style.setProperty('--label-border', borderStyle);
-            printContainer.style.setProperty('--label-border', borderStyle);
-            
             this.labels.forEach((label, index) => {
-              // Skip if not selected (when selection is active and print testing is enabled)
-              if (this.printTestingEnabled && selectedLabels.length > 0 && !selectedLabels.includes(index + 1)) {
-                return;
-              }
+              // Prüfe, ob das Label angezeigt werden soll
+              const isSelected = !this.printTestingEnabled || selectedLabels.length === 0 || selectedLabels.includes(index + 1);
 
-              // Preview version
+              // Erstelle Label-Divs für Preview und Print
               let labelDiv = document.createElement("div");
-              labelDiv.classList.add("label");
+              let printLabelDiv = document.createElement("div");
 
-              // Im normalen Modus oder wenn Border Test aus ist
-              if (!this.printTestingEnabled || !this.borderTestMode) {
-              let qrImg = document.createElement("img");
-              qrImg.src = label.qrCodeUrl;
-              qrImg.classList.add("qr-code");
-                labelDiv.appendChild(qrImg);
+              // Füge die Label-Klasse nur hinzu, wenn das Label ausgewählt ist oder wir nicht im Testing Mode sind
+              if (isSelected) {
+                labelDiv.classList.add("label");
+                printLabelDiv.classList.add("label");
 
-              let textDiv = document.createElement("div");
-              textDiv.classList.add("text");
-              textDiv.innerText = label.text;
-              labelDiv.appendChild(textDiv);
+                // Setze den Rahmen nur wenn showBorder aktiv ist UND wir im Testing Mode sind
+                if (this.showBorder && this.printTestingEnabled) {
+                  labelDiv.style.border = '0.1mm solid black';
+                  printLabelDiv.style.border = '0.1mm solid black';
+                }
+
+                // Füge den Inhalt hinzu
+                if (!this.printTestingEnabled || !this.borderTestMode) {
+                  // Preview version
+                  let qrImg = document.createElement("img");
+                  qrImg.src = label.qrCodeUrl;
+                  qrImg.classList.add("qr-code");
+                  labelDiv.appendChild(qrImg);
+
+                  let textDiv = document.createElement("div");
+                  textDiv.classList.add("text");
+                  textDiv.innerText = label.text;
+                  labelDiv.appendChild(textDiv);
+
+                  // Print version
+                  let printQrImg = document.createElement("img");
+                  printQrImg.src = label.qrCodeUrl;
+                  printQrImg.classList.add("qr-code");
+                  printLabelDiv.appendChild(printQrImg);
+
+                  let printTextDiv = document.createElement("div");
+                  printTextDiv.classList.add("text");
+                  printTextDiv.innerText = label.text;
+                  printLabelDiv.appendChild(printTextDiv);
+                }
+              } else {
+                // Für nicht ausgewählte Labels: Füge nur ein leeres Div ohne Klassen oder Styles hinzu
+                labelDiv.style.gridColumn = "span 1";
+                labelDiv.style.gridRow = "span 1";
+                printLabelDiv.style.gridColumn = "span 1";
+                printLabelDiv.style.gridRow = "span 1";
               }
               
+              // Füge die Divs zum Container hinzu
               container.appendChild(labelDiv);
-
-              // Print version
-              let printLabelDiv = document.createElement("div");
-              printLabelDiv.classList.add("label");
-
-              // Im Print-Modus: Zeige normale Labels wenn Print Testing aus ist oder Border Test aus ist
-              if (!this.printTestingEnabled || !this.borderTestMode) {
-                let qrImg = document.createElement("img");
-                qrImg.src = label.qrCodeUrl;
-                qrImg.classList.add("qr-code");
-                printLabelDiv.appendChild(qrImg);
-
-                let textDiv = document.createElement("div");
-                textDiv.classList.add("text");
-                textDiv.innerText = label.text;
-                printLabelDiv.appendChild(textDiv);
-              }
-
               printContainer.appendChild(printLabelDiv);
             });
           },
@@ -1751,9 +1756,30 @@
           resetPrintTesting() {
             if (!this.printTestingEnabled) {
               this.borderTestMode = false;
-              this.marginViewMode = "both";
+              this.marginViewMode = "none";
               this.selectedLabels = "";
               this.tonerSaveMode = "off";
+              this.showBorder = false;
+            }
+            // Aktualisiere die Labels sofort
+            this.renderLabels();
+          },
+
+          // Neue Variable für die Initialisierung
+          isInitialized: false,
+
+          // Neue Methode zur Überprüfung und Aktualisierung der Vorauswahl
+          updateSelectedLabels() {
+            if (this.labelsPerRow && this.maxRows && !this.isInitialized) {
+              // Berechne die Positionen der Ecklabels
+              const firstLabel = 1;                              // Links oben (erstes Label)
+              const topRight = this.labelsPerRow;               // Rechts oben (letztes Label in der ersten Reihe)
+              const bottomLeft = (this.maxRows - 1) * this.labelsPerRow + 1;  // Links unten (erstes Label in der letzten Reihe)
+              const bottomRight = this.maxRows * this.labelsPerRow;           // Rechts unten (letztes Label)
+              
+              // Setze die ausgewählten Labels
+              this.selectedLabels = `${firstLabel},${topRight},${bottomLeft},${bottomRight}`;
+              this.isInitialized = true;
             }
           },
         };

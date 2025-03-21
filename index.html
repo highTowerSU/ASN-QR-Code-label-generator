@@ -594,31 +594,117 @@
 
       /* Label Dimensions Visualization */
       .label-dimensions-visualization {
-        display: none;  /* Hide the additional visualization */
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+        pointer-events: none;
+        box-sizing: border-box;
+        z-index: 5;
+      }
+      
+      .label-dimensions-visualization::before {
+        content: '';
+        position: absolute;
+        top: var(--padding-top);
+        left: var(--padding-left);
+        width: calc(var(--page-width) - var(--padding-left) - var(--padding-right));
+        height: calc(var(--page-height) - var(--padding-top) - var(--padding-bottom));
+        border: 2px dashed #0000ff;
+        box-sizing: border-box;
+        z-index: 5;
       }
       
       .label-dimensions-grid {
-        display: none;  /* Hide the additional grid */
+        display: none;  /* Grid ausblenden */
       }
       
-      /* Hide label content when in label dimensions mode */
-      .label-dimensions-active .label {
-        border: 1px dotted #0000ff !important;
-        background-color: transparent !important;
-      }
-
-      .label-dimensions-active .label .qr-code,
-      .label-dimensions-active .label .text {
-        display: none !important;
-      }
-
-      .label-dimensions-active .label-dimensions-visualization,
-      .label-dimensions-active .label-dimensions-grid {
-        display: none !important;
+      .label-dimensions-cell {
+        display: none;  /* Einzelne Zellen ausblenden */
       }
       
       .hidden {
         display: none !important;
+      }
+
+      /* Padding Labels */
+      .padding-label {
+        position: absolute;
+        background: rgba(255, 0, 0, 0.1);
+        color: #ff0000;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+      }
+      
+      /* Verstecke blaue Werte im Page Margins Modus */
+      .margin-view-page .padding-label .text-blue-600 {
+        display: none;
+      }
+      
+      /* Verstecke rote Werte im Label Dimensions Modus */
+      .margin-view-label .padding-label .text-red-600 {
+        display: none;
+      }
+      
+      /* Zeige beide Werte im "both" Modus */
+      .margin-view-both .padding-label .text-blue-600,
+      .margin-view-both .padding-label .text-red-600 {
+        display: block;
+      }
+
+      /* Label Dimensions Labels */
+      .label-dimensions-label {
+        position: absolute;
+        background: rgba(0, 0, 255, 0.1);
+        color: #0000ff;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+      }
+      
+      .label-dimensions-top {
+        top: 0;
+        left: var(--padding-left);
+        width: calc(var(--page-width) - var(--padding-left) - var(--padding-right));
+        height: var(--padding-top);
+      }
+      
+      .label-dimensions-bottom {
+        bottom: 0;
+        left: var(--padding-left);
+        width: calc(var(--page-width) - var(--padding-left) - var(--padding-right));
+        height: var(--padding-bottom);
+      }
+      
+      .label-dimensions-left {
+        top: var(--padding-top);
+        left: 0;
+        width: var(--padding-left);
+        height: calc(var(--page-height) - var(--padding-top) - var(--padding-bottom));
+        writing-mode: vertical-rl;
+        transform: rotate(180deg);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      
+      .label-dimensions-right {
+        top: var(--padding-top);
+        right: 0;
+        width: var(--padding-right);
+        height: calc(var(--page-height) - var(--padding-top) - var(--padding-bottom));
+        writing-mode: vertical-rl;
+        transform: rotate(180deg);
+        display: flex;
+        justify-content: center;
+        align-items: center;
       }
     </style>
   </head>
@@ -628,7 +714,7 @@
     <div class="container mx-auto print-hidden">
           <div class="flex justify-between items-center mb-4">
             <h1 class="text-xl font-bold">ASN QR Code Label Generator</h1>
-            <span class="text-sm text-gray-600">v0.914</span>
+            <span class="text-sm text-gray-600">v0.912</span>
           </div>
 
           <div class="flex gap-4 mb-4">
@@ -653,12 +739,12 @@
                   <input type="text" id="prefix" x-model="prefix" required 
                     class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 prefix-input" 
                     placeholder="ASN" />
-                </div>
+          </div>
                 <div class="input-group">
                   <label for="leadingZeros" class="text-sm font-medium text-gray-700">Leading Zeros</label>
                   <input type="number" id="leadingZeros" x-model="leadingZeros" required min="0" max="10" step="1" 
                     class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" />
-                </div>
+          </div>
                 <div class="input-group">
                   <label for="startNumber" class="text-sm font-medium text-gray-700">Start Number</label>
                   <input type="number" id="startNumber" x-model="startNumber" required min="1" step="1" 
@@ -681,7 +767,7 @@
                 <div class="input-row">
                   <div class="input-group">
                     <label class="text-sm font-medium text-gray-700">Page Format</label>
-        </div>
+          </div>
                   <div class="input-group">
                     <select x-model="pageFormat" @change="updatePageFormat()" 
                       class="mt-1 block w-full h-9 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
@@ -690,13 +776,13 @@
                       <option value="Letter">US Letter</option>
                       <option value="Legal">US Legal</option>
                     </select>
-          </div>
+        </div>
                   <div class="input-group">
                     <div class="text-sm text-gray-600 mt-1">
                       Width: <span x-text="pageWidth"></span>mm × Height: <span x-text="pageHeight"></span>mm
           </div>
+          </div>
         </div>
-                </div>
 
                 <div class="input-row">
                   <div class="input-group">
@@ -1147,7 +1233,11 @@
     </div>
 
       <div class="preview-container print-hidden">
-        <div class="page-preview">
+        <div class="page-preview" :class="{
+          'margin-view-page': marginViewMode === 'page',
+          'margin-view-label': marginViewMode === 'label',
+          'margin-view-both': marginViewMode === 'both'
+        }">
           <div class="a4-border"></div>
           
           <!-- Page Margins Visualization -->
@@ -1183,6 +1273,23 @@
                   <div class="label-dimensions-cell"></div>
                 </template>
               </template>
+            </div>
+            <!-- Label Dimensions Labels -->
+            <div class="label-dimensions-label label-dimensions-top" 
+                 :class="{'hidden': !['label', 'both'].includes(marginViewMode) || !printTestingEnabled}">
+              <div x-text="targetPaddingTop + 'mm'" class="text-blue-600"></div>
+            </div>
+            <div class="label-dimensions-label label-dimensions-bottom" 
+                 :class="{'hidden': !['label', 'both'].includes(marginViewMode) || !printTestingEnabled}">
+              <div x-text="calculatedBottomMargin.toFixed(2) + 'mm'" class="text-blue-600"></div>
+            </div>
+            <div class="label-dimensions-label label-dimensions-left" 
+                 :class="{'hidden': !['label', 'both'].includes(marginViewMode) || !printTestingEnabled}">
+              <div x-text="targetPaddingLeft + 'mm'" class="text-blue-600"></div>
+            </div>
+            <div class="label-dimensions-label label-dimensions-right" 
+                 :class="{'hidden': !['label', 'both'].includes(marginViewMode) || !printTestingEnabled}">
+              <div x-text="calculatedRightMargin.toFixed(2) + 'mm'" class="text-blue-600"></div>
             </div>
           </div>
           
@@ -1453,17 +1560,10 @@
             printContainer.style.gridTemplateColumns = columnsStyle;
             printContainer.style.gridTemplateRows = rowsStyle;
             
-            // Prüfe, ob wir im Label Dimensions Modus sind
-            const isLabelDimensionsMode = ['label', 'both'].includes(this.marginViewMode) && this.printTestingEnabled;
-            
-            // Setze die Rahmen für beide Container basierend auf dem Modus
-            const borderStyle = (this.showBorder || isLabelDimensionsMode) ? '0.1mm solid black' : 'none';
+            // Setze die Rahmen für beide Container
+            const borderStyle = this.showBorder ? '0.1mm solid black' : 'none';
             container.style.setProperty('--label-border', borderStyle);
             printContainer.style.setProperty('--label-border', borderStyle);
-            
-            // Füge oder entferne die label-dimensions-active Klasse
-            container.classList.toggle('label-dimensions-active', isLabelDimensionsMode);
-            printContainer.classList.toggle('label-dimensions-active', isLabelDimensionsMode);
             
             this.labels.forEach((label, index) => {
               // Skip if not selected (when selection is active and print testing is enabled)
@@ -1475,17 +1575,17 @@
               let labelDiv = document.createElement("div");
               labelDiv.classList.add("label");
 
-              // Füge Label-Inhalte nur hinzu, wenn wir nicht im Label Dimensions Modus sind
-              if (!isLabelDimensionsMode && (!this.printTestingEnabled || !this.borderTestMode)) {
-                let qrImg = document.createElement("img");
-                qrImg.src = label.qrCodeUrl;
-                qrImg.classList.add("qr-code");
+              // Im normalen Modus oder wenn Border Test aus ist
+              if (!this.printTestingEnabled || !this.borderTestMode) {
+              let qrImg = document.createElement("img");
+              qrImg.src = label.qrCodeUrl;
+              qrImg.classList.add("qr-code");
                 labelDiv.appendChild(qrImg);
 
-                let textDiv = document.createElement("div");
-                textDiv.classList.add("text");
-                textDiv.innerText = label.text;
-                labelDiv.appendChild(textDiv);
+              let textDiv = document.createElement("div");
+              textDiv.classList.add("text");
+              textDiv.innerText = label.text;
+              labelDiv.appendChild(textDiv);
               }
               
               container.appendChild(labelDiv);
@@ -1494,8 +1594,8 @@
               let printLabelDiv = document.createElement("div");
               printLabelDiv.classList.add("label");
 
-              // Füge Label-Inhalte nur hinzu, wenn wir nicht im Label Dimensions Modus sind
-              if (!isLabelDimensionsMode && (!this.printTestingEnabled || !this.borderTestMode)) {
+              // Im Print-Modus: Zeige normale Labels wenn Print Testing aus ist oder Border Test aus ist
+              if (!this.printTestingEnabled || !this.borderTestMode) {
                 let qrImg = document.createElement("img");
                 qrImg.src = label.qrCodeUrl;
                 qrImg.classList.add("qr-code");
@@ -1687,7 +1787,7 @@
 
           const config = {
             metadata: {
-              version: document.querySelector('.text-gray-600').textContent || "v0.914",
+              version: document.querySelector('.text-gray-600').textContent || "v0.912",
               description: "Configuration file for the ASN QR Code Label Generator",
               created: new Date().toISOString(),
               purpose: "This file contains the settings for the QR code label layout, " +

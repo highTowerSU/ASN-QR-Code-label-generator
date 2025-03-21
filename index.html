@@ -672,22 +672,17 @@
                   <input type="text" id="prefix" x-model="prefix" required 
                     class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 prefix-input" 
                     placeholder="ASN" />
-          </div>
+                </div>
                 <div class="input-group">
                   <label for="leadingZeros" class="text-sm font-medium text-gray-700">Leading Zeros</label>
                   <input type="number" id="leadingZeros" x-model="leadingZeros" required min="0" max="10" step="1" 
                     class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" />
-          </div>
+                </div>
                 <div class="input-group">
                   <label for="startNumber" class="text-sm font-medium text-gray-700">Start Number</label>
                   <input type="number" id="startNumber" x-model="startNumber" required min="1" step="1" 
                     class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" />
         </div>
-                <div class="checkbox-container">
-                  <input type="checkbox" id="showPrefix" x-model="showPrefix" 
-                    class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500" />
-                  <label for="showPrefix" class="text-sm font-medium text-gray-700">Display Prefix</label>
-          </div>
                 <!-- Remove Show Label Borders checkbox from here -->
           </div>
           </div>
@@ -700,12 +695,12 @@
                   <div class="column-header">Parameter</div>
                   <div class="column-header">Value</div>
                   <div class="column-header">Dimensions</div>
-        </div>
+          </div>
 
                 <div class="input-row">
                   <div class="input-group">
                     <label class="text-sm font-medium text-gray-700">Page Format</label>
-          </div>
+        </div>
                   <div class="input-group">
                     <select x-model="pageFormat" @change="updatePageFormat()" 
                       class="mt-1 block w-full h-9 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
@@ -718,8 +713,8 @@
                   <div class="input-group">
                     <div class="text-sm text-gray-600 mt-1">
                       Width: <span x-text="pageWidth"></span>mm × Height: <span x-text="pageHeight"></span>mm
+          </div>
         </div>
-                  </div>
                 </div>
 
                 <div class="input-row">
@@ -957,9 +952,35 @@
             <div class="section-group">
               <h2 class="section-title">Text Formatting</h2>
               <div class="input-grid">
+                <div class="column-headers">
+                  <div class="column-header">Parameter</div>
+                  <div class="column-header">Value</div>
+                  <div class="column-header">Description</div>
+                </div>
+
+                <!-- Display Prefix -->
+                <div class="input-row">
+                  <div class="input-group">
+                    <label class="text-sm font-medium text-gray-700">ASN Prefix</label>
+                  </div>
+                  <div class="input-group">
+                    <div class="checkbox-container">
+                      <input type="checkbox" id="displayPrefix" x-model="showPrefix" 
+                        class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500" />
+                      <label for="displayPrefix" class="text-sm font-medium text-gray-700">Show prefix</label>
+                    </div>
+                  </div>
+                  <div class="input-group">
+                    <div class="text-sm text-gray-600">Include prefix in QR code text</div>
+                  </div>
+                </div>
+
+                <!-- Font Family -->
                 <div class="input-row">
                   <div class="input-group">
                     <label class="text-sm font-medium text-gray-700">Font Family</label>
+                  </div>
+                  <div class="input-group">
                     <select x-model="fontFamily" class="mt-1 block w-full h-9 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                       <option value="Arial">Arial</option>
                       <option value="Helvetica">Helvetica</option>
@@ -967,33 +988,54 @@
                       <option value="Courier New">Courier New</option>
                     </select>
                   </div>
+                  <div class="input-group">
+                    <div class="text-sm text-gray-600">Font family for label text</div>
+                  </div>
                 </div>
 
+                <!-- Font Size -->
                 <div class="input-row">
                   <div class="input-group">
-                    <label class="text-sm font-medium text-gray-700">Font Size (pt)</label>
+                    <label class="text-sm font-medium text-gray-700">Font Size</label>
+                  </div>
+                  <div class="input-group">
                     <input type="number" x-model="fontSize" 
                       class="mt-1 block w-full h-9 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
                       min="6" step="0.5" value="11" />
                   </div>
+                  <div class="input-group">
+                    <div class="text-sm text-gray-600">Font size in points (pt)</div>
+                  </div>
                 </div>
 
+                <!-- Font Weight -->
                 <div class="input-row">
                   <div class="input-group">
                     <label class="text-sm font-medium text-gray-700">Font Weight</label>
+                  </div>
+                  <div class="input-group">
                     <select x-model="fontWeight" class="mt-1 block w-full h-9 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                       <option value="normal">Normal</option>
                       <option value="bold">Bold</option>
                     </select>
                   </div>
+                  <div class="input-group">
+                    <div class="text-sm text-gray-600">Font weight for label text</div>
+                  </div>
                 </div>
 
+                <!-- QR Code Spacing -->
                 <div class="input-row">
                   <div class="input-group">
-                    <label class="text-sm font-medium text-gray-700">QR Code Spacing (mm)</label>
+                    <label class="text-sm font-medium text-gray-700">QR Code Spacing</label>
+                  </div>
+                  <div class="input-group">
                     <input type="number" x-model="qrCodeSpacing" 
                       class="mt-1 block w-full h-9 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
                       min="0" step="0.1" value="0.6" />
+                  </div>
+                  <div class="input-group">
+                    <div class="text-sm text-gray-600">Space between QR code and text (mm)</div>
                   </div>
                 </div>
               </div>
@@ -1447,15 +1489,15 @@
 
               // Im normalen Modus oder wenn Border Test aus ist
               if (!this.printTestingEnabled || !this.borderTestMode) {
-                let qrImg = document.createElement("img");
-                qrImg.src = label.qrCodeUrl;
-                qrImg.classList.add("qr-code");
+              let qrImg = document.createElement("img");
+              qrImg.src = label.qrCodeUrl;
+              qrImg.classList.add("qr-code");
                 labelDiv.appendChild(qrImg);
 
-                let textDiv = document.createElement("div");
-                textDiv.classList.add("text");
-                textDiv.innerText = label.text;
-                labelDiv.appendChild(textDiv);
+              let textDiv = document.createElement("div");
+              textDiv.classList.add("text");
+              textDiv.innerText = label.text;
+              labelDiv.appendChild(textDiv);
               }
               
               container.appendChild(labelDiv);

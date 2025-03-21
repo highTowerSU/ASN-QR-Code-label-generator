@@ -1239,13 +1239,13 @@
                     <!-- Show Label Borders -->
                     <div class="input-row">
                       <div class="input-group">
-                        <label class="text-sm font-medium text-gray-700">Label Borders</label>
+                        <label class="text-sm font-medium text-gray-700">Label Outlines</label>
                       </div>
                       <div class="input-group">
                         <div class="checkbox-container">
                           <input type="checkbox" id="showBorder" x-model="showBorder" 
                             class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500" />
-                          <label for="showBorder" class="text-sm font-medium text-gray-700">Show borders</label>
+                          <label for="showBorder" class="text-sm font-medium text-gray-700">Show Outlines</label>
                         </div>
                       </div>
                       <div class="input-group">
@@ -1256,17 +1256,17 @@
                     <!-- Border Test -->
                     <div class="input-row">
                       <div class="input-group">
-                        <label class="text-sm font-medium text-gray-700">Border Test</label>
+                        <label class="text-sm font-medium text-gray-700">QR code label</label>
                       </div>
                       <div class="input-group">
                         <div class="checkbox-container">
                           <input type="checkbox" id="borderTestMode" x-model="borderTestMode" 
                             class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500" />
-                          <label for="borderTestMode" class="text-sm font-medium text-gray-700">Show borders only</label>
+                          <label for="borderTestMode" class="text-sm font-medium text-gray-700">Show QR code label</label>
                         </div>
                       </div>
                       <div class="input-group">
-                        <div class="text-sm text-gray-600">Print label borders without QR codes for alignment testing</div>
+                        <div class="text-sm text-gray-600">Print labels with QR codes for alignment testing</div>
                       </div>
                     </div>
 
@@ -1759,7 +1759,7 @@
                 }
 
                 // Füge den Inhalt hinzu
-                if (!this.printTestingEnabled || !this.borderTestMode) {
+                if (!this.printTestingEnabled || this.borderTestMode) {
                   // Preview version
               let qrImg = document.createElement("img");
               qrImg.src = label.qrCodeUrl;

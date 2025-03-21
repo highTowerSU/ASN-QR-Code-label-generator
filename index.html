@@ -1076,95 +1076,109 @@
             </div>
 
             <!-- Text Formatting Section -->
-            <div class="section-group">
-              <h2 class="section-title">Text Formatting</h2>
-              <div class="input-grid">
-                <div class="column-headers">
-                  <div class="column-header">Parameter</div>
-                  <div class="column-header">Value</div>
-                  <div class="column-header">Description</div>
-                </div>
-
-                <!-- Display Prefix -->
-                <div class="input-row">
-                  <div class="input-group">
-                    <label class="text-sm font-medium text-gray-700">ASN Prefix</label>
+            <div class="section-group border rounded-lg p-4 mb-4">
+              <div class="flex items-center justify-between cursor-pointer" @click="textFormattingOpen = !textFormattingOpen">
+                <h2 class="section-title mb-0">Text Formatting</h2>
+                <svg class="w-6 h-6 transform transition-transform" :class="{ 'rotate-180': textFormattingOpen }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+              <div x-show="textFormattingOpen" 
+                   x-transition:enter="transition ease-out duration-200" 
+                   x-transition:enter-start="opacity-0 transform -translate-y-2" 
+                   x-transition:enter-end="opacity-100 transform translate-y-0" 
+                   x-transition:leave="transition ease-in duration-150" 
+                   x-transition:leave-start="opacity-100 transform translate-y-0" 
+                   x-transition:leave-end="opacity-0 transform -translate-y-2"
+                   class="mt-4">
+                <div class="input-grid">
+                  <div class="column-headers">
+                    <div class="column-header">Parameter</div>
+                    <div class="column-header">Value</div>
+                    <div class="column-header">Description</div>
                   </div>
-                  <div class="input-group">
-                    <div class="checkbox-container">
-                      <input type="checkbox" id="displayPrefix" x-model="showPrefix" 
-                        class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500" />
-                      <label for="displayPrefix" class="text-sm font-medium text-gray-700">Show prefix</label>
+
+                  <!-- Display Prefix -->
+                  <div class="input-row">
+                    <div class="input-group">
+                      <label class="text-sm font-medium text-gray-700">ASN Prefix</label>
+                    </div>
+                    <div class="input-group">
+                      <div class="checkbox-container">
+                        <input type="checkbox" id="displayPrefix" x-model="showPrefix" 
+                          class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500" />
+                        <label for="displayPrefix" class="text-sm font-medium text-gray-700">Show prefix</label>
+                      </div>
+                    </div>
+                    <div class="input-group">
+                      <div class="text-sm text-gray-600">Include prefix in QR code text</div>
                     </div>
                   </div>
-                  <div class="input-group">
-                    <div class="text-sm text-gray-600">Include prefix in QR code text</div>
-                  </div>
-                </div>
 
-                <!-- Font Family -->
-                <div class="input-row">
-                  <div class="input-group">
-                    <label class="text-sm font-medium text-gray-700">Font Family</label>
+                  <!-- Font Family -->
+                  <div class="input-row">
+                    <div class="input-group">
+                      <label class="text-sm font-medium text-gray-700">Font Family</label>
+                    </div>
+                    <div class="input-group">
+                      <select x-model="fontFamily" 
+                        class="mt-1 block w-full h-9 rounded-md border-gray-300 text-xs shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        <option value="Arial">Arial</option>
+                        <option value="Helvetica">Helvetica</option>
+                        <option value="Times New Roman">Times New Roman</option>
+                        <option value="Courier New">Courier New</option>
+                      </select>
+                    </div>
+                    <div class="input-group">
+                      <div class="text-sm text-gray-600">Font family for label text</div>
+                    </div>
                   </div>
-                  <div class="input-group">
-                    <select x-model="fontFamily" 
-                      class="mt-1 block w-full h-9 rounded-md border-gray-300 text-xs shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                      <option value="Arial">Arial</option>
-                      <option value="Helvetica">Helvetica</option>
-                      <option value="Times New Roman">Times New Roman</option>
-                      <option value="Courier New">Courier New</option>
-                    </select>
-                  </div>
-                  <div class="input-group">
-                    <div class="text-sm text-gray-600">Font family for label text</div>
-                  </div>
-                </div>
 
-                <!-- Font Size -->
-                <div class="input-row">
-                  <div class="input-group">
-                    <label class="text-sm font-medium text-gray-700">Font Size</label>
+                  <!-- Font Size -->
+                  <div class="input-row">
+                    <div class="input-group">
+                      <label class="text-sm font-medium text-gray-700">Font Size</label>
+                    </div>
+                    <div class="input-group">
+                      <input type="number" x-model="fontSize" 
+                        class="mt-1 block w-full h-9 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
+                        min="6" step="0.5" value="8" />
+                    </div>
+                    <div class="input-group">
+                      <div class="text-sm text-gray-600">Font size in points (pt)</div>
+                    </div>
                   </div>
-                  <div class="input-group">
-                    <input type="number" x-model="fontSize" 
-                      class="mt-1 block w-full h-9 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
-                      min="6" step="0.5" value="8" />
-                  </div>
-                  <div class="input-group">
-                    <div class="text-sm text-gray-600">Font size in points (pt)</div>
-                  </div>
-                </div>
 
-                <!-- Font Weight -->
-                <div class="input-row">
-                  <div class="input-group">
-                    <label class="text-sm font-medium text-gray-700">Font Weight</label>
+                  <!-- Font Weight -->
+                  <div class="input-row">
+                    <div class="input-group">
+                      <label class="text-sm font-medium text-gray-700">Font Weight</label>
+                    </div>
+                    <div class="input-group">
+                      <select x-model="fontWeight" 
+                        class="mt-1 block w-full h-9 rounded-md border-gray-300 text-xs shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        <option value="normal">Normal</option>
+                        <option value="bold">Bold</option>
+                      </select>
+                    </div>
+                    <div class="input-group">
+                      <div class="text-sm text-gray-600">Font weight for label text</div>
+                    </div>
                   </div>
-                  <div class="input-group">
-                    <select x-model="fontWeight" 
-                      class="mt-1 block w-full h-9 rounded-md border-gray-300 text-xs shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                      <option value="normal">Normal</option>
-                      <option value="bold">Bold</option>
-                    </select>
-                  </div>
-                  <div class="input-group">
-                    <div class="text-sm text-gray-600">Font weight for label text</div>
-                  </div>
-                </div>
 
-                <!-- QR Code Spacing -->
-                <div class="input-row">
-                  <div class="input-group">
-                    <label class="text-sm font-medium text-gray-700">QR Code Spacing</label>
-                  </div>
-                  <div class="input-group">
-                    <input type="number" x-model="qrCodeSpacing" 
-                      class="mt-1 block w-full h-9 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
-                      min="0" step="0.1" value="0.6" />
-                  </div>
-                  <div class="input-group">
-                    <div class="text-sm text-gray-600">Space between QR code and text (mm)</div>
+                  <!-- QR Code Spacing -->
+                  <div class="input-row">
+                    <div class="input-group">
+                      <label class="text-sm font-medium text-gray-700">QR Code Spacing</label>
+                    </div>
+                    <div class="input-group">
+                      <input type="number" x-model="qrCodeSpacing" 
+                        class="mt-1 block w-full h-9 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
+                        min="0" step="0.1" value="0.6" />
+                    </div>
+                    <div class="input-group">
+                      <div class="text-sm text-gray-600">Space between QR code and text (mm)</div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1451,6 +1465,7 @@
           pageMarginsOpen: true, // Neue Variable für den Page Margins Akkordeon-Zustand
           labelDimensionsOpen: true, // Neue Variable für den Label Dimensions Akkordeon-Zustand
           labelCountOpen: true, // Neue Variable für den Label Count Akkordeon-Zustand
+          textFormattingOpen: true, // Neue Variable für den Text Formatting Akkordeon-Zustand
           startNumber: 1,
           prefix: "ASN",
           leadingZeros: 4,

@@ -594,48 +594,13 @@
 
       /* Label Dimensions Visualization */
       .label-dimensions-visualization {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        border: none;
-        pointer-events: none;
-        box-sizing: border-box;
-        z-index: 5;
-      }
-      
-      .label-dimensions-visualization::before {
-        content: '';
-        position: absolute;
-        top: var(--padding-top);
-        left: var(--padding-left);
-        width: calc(var(--page-width) - var(--padding-left) - var(--padding-right));
-        height: calc(var(--page-height) - var(--padding-top) - var(--padding-bottom));
-        border: 2px dashed #0000ff;
-        box-sizing: border-box;
-        z-index: 5;
+        display: none;  /* Hide the additional visualization */
       }
       
       .label-dimensions-grid {
-        position: absolute;
-        top: var(--padding-top);
-        left: var(--padding-left);
-        width: calc(var(--page-width) - var(--padding-left) - var(--padding-right));
-        height: calc(var(--page-height) - var(--padding-top) - var(--padding-bottom));
-        display: grid;
-        grid-template-columns: repeat(var(--labels-per-row, 7), 1fr);
-        grid-template-rows: repeat(var(--max-rows, 27), 1fr);
-        gap: var(--gap-vertical, 0mm) var(--gap-horizontal, 2.63mm);
-        pointer-events: none;
-        z-index: 6;
+        display: none;  /* Hide the additional grid */
       }
       
-      .label-dimensions-cell {
-        border: 1px dotted #0000ff;
-        background-color: rgba(0, 0, 255, 0.05);
-      }
-
       /* Hide label content when in label dimensions mode */
       .label-dimensions-active .label {
         border: 1px dotted #0000ff !important;
@@ -658,7 +623,7 @@
     <div class="container mx-auto print-hidden">
           <div class="flex justify-between items-center mb-4">
             <h1 class="text-xl font-bold">ASN QR Code Label Generator</h1>
-            <span class="text-sm text-gray-600">v0.912</span>
+            <span class="text-sm text-gray-600">v0.913</span>
           </div>
 
           <div class="flex gap-4 mb-4">
@@ -1717,7 +1682,7 @@
 
           const config = {
             metadata: {
-              version: document.querySelector('.text-gray-600').textContent || "v0.912",
+              version: document.querySelector('.text-gray-600').textContent || "v0.913",
               description: "Configuration file for the ASN QR Code Label Generator",
               created: new Date().toISOString(),
               purpose: "This file contains the settings for the QR code label layout, " +

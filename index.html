@@ -835,84 +835,91 @@
             </div>
 
             <!-- Page Margins Settings -->
-            <div class="section-group">
-              <h2 class="section-title">Page Margins</h2>
-              <div class="input-grid">
-                <div class="column-headers">
-                  <div class="column-header">Parameter</div>
-                  <div class="column-header">Target (mm)</div>
-                  <div class="column-header">Actual (mm)</div>
-                </div>
-
-                <div class="input-row">
-                  <div class="input-group">
-                    <label class="text-sm font-medium text-gray-700">Top Margin</label>
-                  </div>
-                  <div class="input-group">
-                    <input type="number" x-model="targetPaddingTop" 
-                      class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
-                      min="0" step="0.01" />
-                  </div>
-                  <div class="input-group">
-                    <input type="number" x-model="actualPaddingTop" 
-                      class="mt-1 block rounded-md border-red-300 text-red-600 shadow-sm focus:border-red-500 focus:ring-red-500 number-input" 
-                      min="0" step="0.01" @input="calculatePaddingScaling()" />
-                  </div>
-                </div>
-
-                <div class="input-row">
-                  <div class="input-group">
-                    <label class="text-sm font-medium text-gray-700">Bottom Margin</label>
-                  </div>
-                  <div class="input-group">
-                    <input type="number" x-model="targetPaddingBottom" 
-                      class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
-                      min="0" step="0.01" />
-                  </div>
-                  <div class="input-group">
-                    <input type="number" x-model="actualPaddingBottom" 
-                      class="mt-1 block rounded-md border-red-300 text-red-600 shadow-sm focus:border-red-500 focus:ring-red-500 number-input" 
-                      min="0" step="0.01" @input="calculatePaddingScaling()" />
-                  </div>
-                </div>
-
-                <div class="input-row">
-                  <div class="input-group">
-                    <label class="text-sm font-medium text-gray-700">Left Margin</label>
-                  </div>
-                  <div class="input-group">
-                    <input type="number" x-model="targetPaddingLeft" 
-                      class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
-                      min="0" step="0.01" />
-                  </div>
-                  <div class="input-group">
-                    <input type="number" x-model="actualPaddingLeft" 
-                      class="mt-1 block rounded-md border-red-300 text-red-600 shadow-sm focus:border-red-500 focus:ring-red-500 number-input" 
-                      min="0" step="0.01" @input="calculatePaddingScaling()" />
-                  </div>
-                </div>
-
-                <div class="input-row">
-                  <div class="input-group">
-                    <label class="text-sm font-medium text-gray-700">Right Margin</label>
-                  </div>
-                  <div class="input-group">
-                    <input type="number" x-model="targetPaddingRight" 
-                      class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
-                      min="0" step="0.01" />
-                  </div>
-                  <div class="input-group">
-                    <input type="number" x-model="actualPaddingRight" 
-                      class="mt-1 block rounded-md border-red-300 text-red-600 shadow-sm focus:border-red-500 focus:ring-red-500 number-input" 
-                      min="0" step="0.01" @input="calculatePaddingScaling()" />
-                  </div>
-                </div>
+            <div class="section-group border rounded-lg p-4 mb-4">
+              <div class="flex items-center justify-between cursor-pointer" @click="pageMarginsOpen = !pageMarginsOpen">
+                <h2 class="section-title mb-0">Page Margins</h2>
+                <svg class="w-6 h-6 transform transition-transform" :class="{ 'rotate-180': pageMarginsOpen }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
               </div>
+              <div x-show="pageMarginsOpen" 
+                   x-transition:enter="transition ease-out duration-200" 
+                   x-transition:enter-start="opacity-0 transform -translate-y-2" 
+                   x-transition:enter-end="opacity-100 transform translate-y-0" 
+                   x-transition:leave="transition ease-in duration-150" 
+                   x-transition:leave-start="opacity-100 transform translate-y-0" 
+                   x-transition:leave-end="opacity-0 transform -translate-y-2"
+                   class="mt-4">
+                <div class="input-grid">
+                  <div class="column-headers">
+                    <div class="column-header">Parameter</div>
+                    <div class="column-header">Target (mm)</div>
+                    <div class="column-header">Actual (mm)</div>
+                  </div>
 
-              <div class="mt-4 p-2 bg-gray-100 rounded">
-                <div class="flex justify-between items-center">
-                  <span class="font-bold text-sm">Calculated Scaling Factor for Margins:</span>
-                  <span x-text="'Horizontal: ' + (paddingScalingX || '1.000') + ' / Vertical: ' + (paddingScalingY || '1.000')" class="font-mono text-xs"></span>
+                  <div class="input-row">
+                    <div class="input-group">
+                      <label class="text-sm font-medium text-gray-700">Top Margin</label>
+                    </div>
+                    <div class="input-group">
+                      <input type="number" x-model="targetPaddingTop" 
+                        class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
+                        min="0" step="0.01" />
+                    </div>
+                    <div class="input-group">
+                      <input type="number" x-model="actualPaddingTop" 
+                        class="mt-1 block rounded-md border-red-300 text-red-600 shadow-sm focus:border-red-500 focus:ring-red-500 number-input" 
+                        min="0" step="0.01" @input="calculatePaddingScaling()" />
+                    </div>
+                  </div>
+
+                  <div class="input-row">
+                    <div class="input-group">
+                      <label class="text-sm font-medium text-gray-700">Bottom Margin</label>
+                    </div>
+                    <div class="input-group">
+                      <input type="number" x-model="targetPaddingBottom" 
+                        class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
+                        min="0" step="0.01" />
+                    </div>
+                    <div class="input-group">
+                      <input type="number" x-model="actualPaddingBottom" 
+                        class="mt-1 block rounded-md border-red-300 text-red-600 shadow-sm focus:border-red-500 focus:ring-red-500 number-input" 
+                        min="0" step="0.01" @input="calculatePaddingScaling()" />
+                    </div>
+                  </div>
+
+                  <div class="input-row">
+                    <div class="input-group">
+                      <label class="text-sm font-medium text-gray-700">Left Margin</label>
+                    </div>
+                    <div class="input-group">
+                      <input type="number" x-model="targetPaddingLeft" 
+                        class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
+                        min="0" step="0.01" />
+                    </div>
+                    <div class="input-group">
+                      <input type="number" x-model="actualPaddingLeft" 
+                        class="mt-1 block rounded-md border-red-300 text-red-600 shadow-sm focus:border-red-500 focus:ring-red-500 number-input" 
+                        min="0" step="0.01" @input="calculatePaddingScaling()" />
+                    </div>
+                  </div>
+
+                  <div class="input-row">
+                    <div class="input-group">
+                      <label class="text-sm font-medium text-gray-700">Right Margin</label>
+                    </div>
+                    <div class="input-group">
+                      <input type="number" x-model="targetPaddingRight" 
+                        class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 number-input" 
+                        min="0" step="0.01" />
+                    </div>
+                    <div class="input-group">
+                      <input type="number" x-model="actualPaddingRight" 
+                        class="mt-1 block rounded-md border-red-300 text-red-600 shadow-sm focus:border-red-500 focus:ring-red-500 number-input" 
+                        min="0" step="0.01" @input="calculatePaddingScaling()" />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1413,6 +1420,7 @@
       function qrCodeApp() {
         return {
           pageFormatOpen: true, // Neue Variable für den Akkordeon-Zustand
+          pageMarginsOpen: true, // Neue Variable für den Page Margins Akkordeon-Zustand
           startNumber: 1,
           prefix: "ASN",
           leadingZeros: 4,

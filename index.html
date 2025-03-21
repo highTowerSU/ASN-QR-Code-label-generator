@@ -714,7 +714,7 @@
     <div class="container mx-auto print-hidden">
           <div class="flex justify-between items-center mb-4">
             <h1 class="text-xl font-bold">ASN QR Code Label Generator</h1>
-            <span class="text-sm text-gray-600">v0.914</span>
+            <span class="text-sm text-gray-600">v0.915</span>
           </div>
 
           <div class="flex gap-4 mb-4">
@@ -1332,7 +1332,7 @@
           prefix: "ASN",
           leadingZeros: 4,
           showPrefix: true,
-          showBorder: true,
+          showBorder: false,
           paddingTop: 13.14,    // Neuer oberer Rand
           paddingRight: 8.5,    // Neuer rechter Rand
           paddingBottom: 13.7,  // Neuer unterer Rand
@@ -1787,7 +1787,7 @@
 
           const config = {
             metadata: {
-              version: document.querySelector('.text-gray-600').textContent || "v0.914",
+              version: document.querySelector('.text-gray-600').textContent || "v0.915",
               description: "Configuration file for the ASN QR Code Label Generator",
               created: new Date().toISOString(),
               purpose: "This file contains the settings for the QR code label layout, " +

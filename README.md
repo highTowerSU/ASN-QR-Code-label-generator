@@ -139,13 +139,13 @@ The system automatically calculates scaling factors to compensate for printer va
 - Verify QR code readability
 - Document successful printer settings
 
-### Tipps zum Sparen von Toner und Etiketten
+### Tips for Saving Toner and Label Sheets
 
-Bei der Fein-Justage des Ausdrucks können Sie Toner und Etiketten sparen:
-- Nutzen Sie die Print-Testing Funktion
-- Drucken Sie zunächst nur die Rahmen der Labels
-- Aktivieren Sie nur die Labels an den Ecken für eine optimale Ausrichtungskontrolle
-- Verwenden Sie den Toner-Sparmodus während der Testphase
+When fine-tuning your print layout, you can save toner and label sheets:
+- Use the Print Testing function
+- Initially print only the label outlines
+- Enable only the corner labels for optimal alignment control
+- Use Toner Save Mode during the testing phase
 
 ## Printing Setup and Configuration
 

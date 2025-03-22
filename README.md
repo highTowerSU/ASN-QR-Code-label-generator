@@ -147,6 +147,13 @@ When fine-tuning your print layout, you can save toner and label sheets:
 - Enable only the corner labels for optimal alignment control
 - Use Toner Save Mode during the testing phase
 
+### Toner Save Mode
+The Toner Save Mode is a feature that helps reduce toner consumption during test prints:
+- When enabled, QR codes and text are printed with reduced density
+- The feature is accessible via the checkbox in the Print Testing section
+- Recommended for initial layout and alignment testing
+- Should be disabled for final production prints to ensure optimal QR code readability
+
 ## Printing Setup and Configuration
 
 ### Critical Print Settings

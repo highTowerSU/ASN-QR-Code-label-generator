@@ -197,8 +197,9 @@
 		padding: 1mm 0;
         max-width: 14mm;
         line-height: 1;
-		border-top:    var(--border-width, 0mm) var(--border-style, solid) var(--border-color, white);
-        border-bottom: var(--border-width, 0mm) var(--border-style, solid) var(--border-color, white);
+		color: var(--border-color, black);
+		border-top:    var(--border-width, 0mm) var(--border-style, solid) var(--border-color, black);
+        border-bottom: var(--border-width, 0mm) var(--border-style, solid) var(--border-color, black);
       }
       
       /* Neue Styles für A4-Visualisierung */
@@ -1282,6 +1283,26 @@
                       <div class="text-sm text-gray-600">Select the font weight for label text</div>
                     </div>
                   </div>
+				  
+				  <!-- Font Color -->
+                  <div class="input-row">
+                    <div class="input-group">
+                      <label class="text-sm font-medium text-gray-700 flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                        Font Color
+                      </label>
+                    </div>
+                    <div class="input-group">
+                      <input type="text" id="fontColor" x-model="fontColor" required 
+                        class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 prefix-input" 
+                        placeholder="black" />
+                    </div>
+                    <div class="input-group">
+                      <div class="text-sm text-gray-600">Select the font color for label text</div>
+                    </div>
+                  </div>
 
                   <!-- QR Code Spacing -->
                   <div class="input-row">
@@ -1782,7 +1803,8 @@
           selectedLabels: "",
           tonerSaveMode: "off",
           printTestingEnabled: false,
-          borderColor: "#000000",
+          fontColor: "#000000",
+		  borderColor: "#000000",
           borderStyle: "solid",
           borderWidth: "0mm",
 
@@ -1944,7 +1966,8 @@
             root.style.setProperty('--qr-code-spacing', `${this.qrCodeSpacing}mm`);
             root.style.setProperty('--labels-per-row', this.labelsPerRow);
             root.style.setProperty('--max-rows', this.maxRows);
-            root.style.setProperty('--border-color', this.borderColor );
+            root.style.setProperty('--font-color', this.fontColor );
+			root.style.setProperty('--border-color', this.borderColor );
             root.style.setProperty('--border-style', this.borderStyle );
             root.style.setProperty('--border-width', `${this.borderWidth}mm` );
             
@@ -2193,6 +2216,7 @@
               "fontFamily": "Arial",
               "maxWidth": 14,
               "paddingLeft": 1,
+			  "fontColor": "#000000",
               "borderColor": "#000000",
               "borderStyle": "solid",
               "borderWidth": "0px"
@@ -2289,7 +2313,8 @@
               fontSize: parseInt(alpineApp.textSize),
               fontFamily: alpineApp.textFont,
               fontWeight: alpineApp.textWeight || 'normal',
-              borderColor: alpineApp.borderColor || 'black',
+              fontColor: alpineApp.fontColor || 'black',
+			  borderColor: alpineApp.borderColor || 'black',
               borderStyle: alpineApp.borderStyle || 'solid',
               borderWidth: parseFloat(alpineApp.borderWidth)
             },
@@ -2492,7 +2517,8 @@
               alpineApp.textSize = config.text.fontSize;
               alpineApp.textFont = config.text.fontFamily;
               alpineApp.textWeight = config.text.fontWeight;
-              alpineApp.borderColor = config.text.borderColor;
+              alpineApp.fontColor = config.text.fontColor;
+			  alpineApp.borderColor = config.text.borderColor;
               alpineApp.borderStyle = config.text.borderStyle;
               alpineApp.borderWidth = config.text.borderWidth;
             }

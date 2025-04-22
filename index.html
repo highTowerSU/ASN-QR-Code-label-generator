@@ -193,9 +193,11 @@
         overflow: hidden;
         text-overflow: ellipsis;
         text-align: left;
-        padding-left: 1mm;
+        margin-left: 1mm;
         max-width: 14mm;
         line-height: 1;
+        border-bottom: var(--border-with, 0px) var(--border-style, "solid") var(--border-color, "white");
+        border-top: var(--border-with, 0px) var(--border-style, "solid") var(--border-color, "white");
       }
       
       /* Neue Styles für A4-Visualisierung */
@@ -1701,6 +1703,9 @@
           selectedLabels: "",
           tonerSaveMode: "off",
           printTestingEnabled: false,
+          borderColor: "#000000",
+          borderStyle: "solid",
+          borderWith: "0px",
 
           // Page format definitions
           pageFormats: {
@@ -1860,6 +1865,9 @@
             root.style.setProperty('--qr-code-spacing', `${this.qrCodeSpacing}mm`);
             root.style.setProperty('--labels-per-row', this.labelsPerRow);
             root.style.setProperty('--max-rows', this.maxRows);
+            root.style.setProperty('--border-color', this.borderColor );
+            root.style.setProperty('--border-style', this.borderStyle );
+            root.style.setProperty('--border-width', this.borderWidth );
             
             // Setze die Grid-Templates für beide Container
             const columnsStyle = `repeat(${this.labelsPerRow}, ${this.actualWidth}mm)`;
@@ -2105,7 +2113,10 @@
               "fontSize": 11,
               "fontFamily": "Arial",
               "maxWidth": 14,
-              "paddingLeft": 1
+              "paddingLeft": 1,
+              "borderColor": "#000000",
+              "borderStyle": "solid",
+              "borderWith": "0px"
             }
           };
           console.log('Verwende Fallback-Konfiguration:', fallbackConfig);
@@ -2199,6 +2210,9 @@
               fontSize: parseInt(alpineApp.textSize),
               fontFamily: alpineApp.textFont,
               fontWeight: alpineApp.textWeight || 'normal'
+              borderColor: alpineApp.borderColor,
+              borderStyle: alpineApp.borderStyle,
+              borderWith: alpineApp.borderWith
             },
             display: {
               showBorder: alpineApp.showBorder,
@@ -2399,6 +2413,9 @@
               alpineApp.textSize = config.text.fontSize;
               alpineApp.textFont = config.text.fontFamily;
               alpineApp.textWeight = config.text.fontWeight;
+              alpineApp.borderColor = config.text.borderColor;
+              alpineApp.borderStyle = config.text.borderStyle;
+              alpineApp.borderWith = config.text.borderWith;
             }
 
             if (config.display) {

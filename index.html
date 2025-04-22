@@ -194,10 +194,11 @@
         text-overflow: ellipsis;
         text-align: left;
         margin-left: 1mm;
+		padding: 1mm 0;
         max-width: 14mm;
         line-height: 1;
-        border-top:    var(--border-width, 0px) var(--border-style, solid) var(--border-color, white);
-        border-bottom: var(--border-width, 0px) var(--border-style, solid) var(--border-color, white);
+		border-top:    var(--border-width, 0mm) var(--border-style, solid) var(--border-color, white);
+        border-bottom: var(--border-width, 0mm) var(--border-style, solid) var(--border-color, white);
       }
       
       /* Neue Styles für A4-Visualisierung */
@@ -1342,17 +1343,17 @@
                       </label>
                     </div>
                     <div class="input-group">
-                      <select x-model="borderSize" 
+                      <select x-model="borderWidth" 
                         class="mt-1 block w-full h-9 rounded-md border-gray-300 text-xs shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                        <option value="0">0px</option>
-                        <option value="1">1px</option>
-                        <option value="2">2px</option>
-                        <option value="3">3px</option>
-                        <option value="4">4px</option>
-                        <option value="5">5px</option>
-                        <option value="6">6px</option>
-                        <option value="7">7px</option>
-                        <option value="8">8px</option>
+                        <option value="0">0mm</option>
+                        <option value="0.5">0.5mm</option>
+                        <option value="1">1mm</option>
+                        <option value="1.5">1.5mm</option>
+                        <option value="2">2mm</option>
+                        <option value="2.5">2.5mm</option>
+                        <option value="3">3mm</option>
+                        <option value="3.5">3.5mm</option>
+                        <option value="4">4mm</option>
                       </select>
                     </div>
                     <div class="input-group">
@@ -1783,7 +1784,7 @@
           printTestingEnabled: false,
           borderColor: "#000000",
           borderStyle: "solid",
-          borderWidth: "0px",
+          borderWidth: "0mm",
 
           // Page format definitions
           pageFormats: {
@@ -1945,7 +1946,7 @@
             root.style.setProperty('--max-rows', this.maxRows);
             root.style.setProperty('--border-color', this.borderColor );
             root.style.setProperty('--border-style', this.borderStyle );
-            root.style.setProperty('--border-width', `${this.borderWidth}px` );
+            root.style.setProperty('--border-width', `${this.borderWidth}mm` );
             
             // Setze die Grid-Templates für beide Container
             const columnsStyle = `repeat(${this.labelsPerRow}, ${this.actualWidth}mm)`;
@@ -2288,9 +2289,9 @@
               fontSize: parseInt(alpineApp.textSize),
               fontFamily: alpineApp.textFont,
               fontWeight: alpineApp.textWeight || 'normal',
-              borderColor: alpineApp.borderColor,
-              borderStyle: alpineApp.borderStyle,
-              borderWidth: alpineApp.borderWidth
+              borderColor: alpineApp.borderColor || 'black',
+              borderStyle: alpineApp.borderStyle || 'solid',
+              borderWidth: parseFloat(alpineApp.borderWidth)
             },
             display: {
               showBorder: alpineApp.showBorder,

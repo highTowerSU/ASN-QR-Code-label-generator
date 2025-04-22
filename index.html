@@ -196,8 +196,8 @@
         margin-left: 1mm;
         max-width: 14mm;
         line-height: 1;
-        border-bottom: var(--border-with, 0px) var(--border-style, "solid") var(--border-color, "white");
-        border-top: var(--border-with, 0px) var(--border-style, "solid") var(--border-color, "white");
+        border-top:    var(--border-width, 0px) var(--border-style, solid) var(--border-color, white);
+        border-bottom: var(--border-width, 0px) var(--border-style, solid) var(--border-color, white);
       }
       
       /* Neue Styles für A4-Visualisierung */
@@ -1783,7 +1783,7 @@
           printTestingEnabled: false,
           borderColor: "#000000",
           borderStyle: "solid",
-          borderWith: "0px",
+          borderWidth: "0px",
 
           // Page format definitions
           pageFormats: {
@@ -2194,7 +2194,7 @@
               "paddingLeft": 1,
               "borderColor": "#000000",
               "borderStyle": "solid",
-              "borderWith": "0px"
+              "borderWidth": "0px"
             }
           };
           console.log('Verwende Fallback-Konfiguration:', fallbackConfig);
@@ -2290,7 +2290,7 @@
               fontWeight: alpineApp.textWeight || 'normal',
               borderColor: alpineApp.borderColor,
               borderStyle: alpineApp.borderStyle,
-              borderWith: alpineApp.borderWith
+              borderWidth: alpineApp.borderWidth
             },
             display: {
               showBorder: alpineApp.showBorder,
@@ -2493,7 +2493,7 @@
               alpineApp.textWeight = config.text.fontWeight;
               alpineApp.borderColor = config.text.borderColor;
               alpineApp.borderStyle = config.text.borderStyle;
-              alpineApp.borderWith = config.text.borderWith;
+              alpineApp.borderWidth = config.text.borderWidth;
             }
 
             if (config.display) {

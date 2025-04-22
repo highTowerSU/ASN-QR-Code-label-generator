@@ -1301,6 +1301,84 @@
                       <div class="text-sm text-gray-600">Space between QR code and text (mm)</div>
                     </div>
                   </div>
+                  
+                  <!-- Border Style -->
+                  <div class="input-row">
+                    <div class="input-group">
+                      <label class="text-sm font-medium text-gray-700 flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                        </svg>
+                        Border Style
+                      </label>
+                    </div>
+                    <div class="input-group">
+                      <select x-model="borderStyle" 
+                        class="mt-1 block w-full h-9 rounded-md border-gray-300 text-xs shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        <option value="none">none</option>
+                        <option value="solid">solid</option>
+                        <option value="dashed">dashed</option>
+                        <option value="dotted">dotted</option>
+                        <option value="double">double</option>
+                        <option value="groove">groove</option>
+                        <option value="ridge">ridge</option>
+                        <option value="inset">inset</option>
+                        <option value="outset">outset</option>
+                      </select>
+                    </div>
+                    <div class="input-group">
+                      <div class="text-sm text-gray-600">Select the border style for label text</div>
+                    </div>
+                  </div>
+
+                  <!-- Border Size -->
+                  <div class="input-row">
+                    <div class="input-group">
+                      <label class="text-sm font-medium text-gray-700 flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
+                        </svg>
+                        Border Size
+                      </label>
+                    </div>
+                    <div class="input-group">
+                      <select x-model="borderSize" 
+                        class="mt-1 block w-full h-9 rounded-md border-gray-300 text-xs shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        <option value="0">0px</option>
+                        <option value="1">1px</option>
+                        <option value="2">2px</option>
+                        <option value="3">3px</option>
+                        <option value="4">4px</option>
+                        <option value="5">5px</option>
+                        <option value="6">6px</option>
+                        <option value="7">7px</option>
+                        <option value="8">8px</option>
+                      </select>
+                    </div>
+                    <div class="input-group">
+                      <div class="text-sm text-gray-600">Select the border size for label text</div>
+                    </div>
+                  </div>
+
+                  <!-- Border Color -->
+                  <div class="input-row">
+                    <div class="input-group">
+                      <label class="text-sm font-medium text-gray-700 flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                        Border Color
+                      </label>
+                    </div>
+                    <div class="input-group">
+                      <input type="text" id="borderColor" x-model="borderColor" required 
+                        class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 prefix-input" 
+                        placeholder="black" />
+                    </div>
+                    <div class="input-group">
+                      <div class="text-sm text-gray-600">Select the border color for label text</div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1867,7 +1945,7 @@
             root.style.setProperty('--max-rows', this.maxRows);
             root.style.setProperty('--border-color', this.borderColor );
             root.style.setProperty('--border-style', this.borderStyle );
-            root.style.setProperty('--border-width', this.borderWidth );
+            root.style.setProperty('--border-width', `${this.borderWidth}px` );
             
             // Setze die Grid-Templates für beide Container
             const columnsStyle = `repeat(${this.labelsPerRow}, ${this.actualWidth}mm)`;
